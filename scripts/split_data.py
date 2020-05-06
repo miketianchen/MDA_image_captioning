@@ -53,25 +53,25 @@ def split_data(seqs, label):
         """
         x[json_data[name]['images'][ind]['filename']] = json_data[name]['images'][ind]
         return x
-
+    
+    print()
     print(f'Preparing the {label} dataset:')
 
-    rsicd_imgs = reduce(lambda x, y: aggerate(x, y, 'rsicd'), 
-                        seqs[seqs < sizes['rsicd']], {})
-    ucm_imgs = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'], 'ucm'), 
-                      seqs[(seqs >= sizes['rsicd']) & (seqs < sizes['rsicd'] + sizes['ucm'])], {})
-    sydney_imgs = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'] - sizes['ucm'], 'sydney'), 
-                         seqs[sizes['rsicd'] + sizes['ucm'] <= seqs], {})
-
     imgs = {}
-    imgs['rsicd'] = rsicd_imgs
-    imgs['ucm'] = ucm_imgs
-    imgs['sydney'] = sydney_imgs
     
-    print(f'{len(rsicd_imgs)} images from the RSICD dataset')
-    print(f'{len(ucm_imgs)} images from the UCM dataset')
-    print(f'{len(sydney_imgs)} images from the Sydney dataset')
-    print(f'{len(rsicd_imgs) + len(ucm_imgs) + len(sydney_imgs)} images in total')
+    imgs['rsicd'] = reduce(lambda x, y: aggerate(x, y, 'rsicd'),
+                           seqs[seqs < sizes['rsicd']], {})
+    
+    imgs['ucm'] = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'], 'ucm'),
+                         seqs[(seqs >= sizes['rsicd']) & (seqs < sizes['rsicd'] + sizes['ucm'])], {})
+    
+    imgs['sydney'] = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'] - sizes['ucm'], 'sydney'),
+                            seqs[sizes['rsicd'] + sizes['ucm'] <= seqs], {})
+
+    print(f"{len(imgs['rsicd'])} images from the RSICD dataset")
+    print(f"{len(imgs['ucm'])} images from the UCM dataset")
+    print(f"{len(imgs['sydney'])} images from the Sydney dataset")
+    print(f"{len(imgs['rsicd']) + len(imgs['ucm']) + len(imgs['sydney'])} images in total")
 
     return imgs
 
