@@ -103,11 +103,12 @@ all the images across all three datasets.
 
 ## Data Science Techniques Description
 
-We are going to split our dataset into training, validation, and test
-datasets. Stick to the golden rule, we will train and tune models with
-the training and validation datasets only. We decided to focus on the
-encoder-decoder model as it’s the most common method for images
-captioning. Here are the three encoder-decoder models we will try:
+We will combine all three datasets and the combined dataset into
+training (64%), validation (16%), and test (20%) datasets. Stick to the
+golden rule, we will train and tune models with the training and
+validation datasets only. We decided to focus on the encoder-decoder
+model as it’s the most common method for images captioning. Here are the
+three encoder-decoder models we will try:
 
 1.  Our first model will be a basic encoder-decoder (CNN + LSTM) model
     (Fig. 3). We’ll first use transferring learning to train this model.
@@ -119,8 +120,7 @@ captioning. Here are the three encoder-decoder models we will try:
     does not do well on some images. The problem could be that unlike
     natural images, remote sensing images usually have strange views and
     many components, and thus require very detailed captions. So we need
-    to improve the
-model.
+    to improve the model.
 
 <img src="../imgs/model_1_baseline_examples.png" alt="model_1" style="width:800px;" class="center"/>
 
@@ -134,8 +134,7 @@ adapted from (Lu et al. 2018).
     image so that the model can capture more details and produce a
     better caption (Xu et al. 2015; Zhang 2019). We will try this
     architecture and would expect this model to produce more detailed
-    captions compared to the
-baseline.
+    captions compared to the baseline.
 
 <img src="../imgs/model_2.png" alt="model_2" style="width:800px;" class="center"/>
 
@@ -147,8 +146,7 @@ Figure 4. The second model architecture (adapted from (Zhang 2019)).
     mechanisms and act as moving the focus between the image and the
     word context to help generate better captions (Li 2020). We are
     going to implement this architecture and expect this model to
-    produce captions of the best
-quality.
+    produce captions of the best quality.
 
 <img src="../imgs/model_3.png" alt="model_3" style="width:800px;" class="center"/>
 
@@ -185,7 +183,7 @@ Figure 6. Project timeline
 
 ## Reference
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-li_2020">
 
@@ -200,8 +198,7 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
-<https://doi.org/10.1109/tgrs.2017.2776321>.
+(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -210,6 +207,7 @@ Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
+<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
