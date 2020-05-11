@@ -17,13 +17,13 @@ The final data product is a complete image captioning pipeline consisting of thr
 
 In order to train our model, we have three labeled datasets. The three labeled datasets are UCM_captions, RSICD and Sydney_captions. 
 
-The UCM_captions dataset is based off of the “UC Merced Land Use Dataset”. It contains land-uses satellite images. There are 21 different types of classes of images ranging from airplane fields, baseball diamond to overpass and runways. There are 100 images in every class, and each image has a resolution of 256 X 256 pixels. 
+The UCM_captions dataset is based off of the “University of California Merced's Land Use Dataset”. It contains land-uses satellite images. There are 21 different classes of images ranging from airplane fields, baseball diamond, overpass, runways and many more. There are 100 images in every class, and each image has a resolution of 256 X 256 pixels. (2100 images)
 
-The Sydney_captions dataset is  extracted from a large 18000 X 14000 pixel image of Sydney via Google Earth. The images in the dataset are selected and cropped from the original Google Earth image.There are 7 different classes of images in this dataset, which comprises of residential, airport, river, oceans, meadow, industrial and runway images. 
+The Sydney_captions dataset is  extracted from a large 18000 X 14000 pixel image of Sydney taken from Google Earth. Each of the images in the dataset are selected and cropped from the original much larger Google Earth image.There are 7 different classes of images in this dataset, which comprises of residential, airport, river, oceans, meadow, industrial and runway images. Each image has a resolution of 500 X 500 pixels. (613 images) 
 
-The RSICD dataset (Remote Sensing Imaging Captioning Dataset) is the state of the art dataset, which contains images captured from airplanes/satellites. The captions are sourced from volunteers, and every image will include 5 different captions, from 5 different volunteers to ensure diversity of the caption.  
+The RSICD dataset (Remote Sensing Imaging Captioning Dataset) is the state of the art dataset, which contains images captured from airplanes and satellites. The captions are sourced from volunteers, and every image will include 5 different captions, from 5 different volunteers to ensure diversity of the caption. Each image has a resolution of 224 X 224 pixels. (10,922 images)
 
-Every single one of the dataset above, includes a `json` file which contains all of the image captions. In addition, a `rar` compressed file which contains all of the images. 
+Each of the datasets ontain different image file types and images sizes. In order to apply our data science techniques, we must first standarized all the images across all three datasets. 
 
 ## Data Science Techniques Description 
 
