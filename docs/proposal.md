@@ -3,26 +3,41 @@ Proposal
 
 ## Executive Summary
 
-In our MDS-MDA joint Capstone project, we aim to caption overhead Earth
-observation images captured by satellites.
+Image captioning of earth observation imagery: this is our joint
+capstone project in coalition with MDA. By Dora Qian, Fanli Zhou, James
+Huang, and Mike Chen. Special thanks to our mentor Varada, and our
+partners at MDA: Shun, and André.
+
+In this project, we aim to create a novel tool that generates captions
+for overhead satellite image, and manages and updates a database of
+these images.
 
 ## Introduction
 
-MDA is an aerospace company, and has access to a vast database of the
-aforementioned satellite images. These photos in a vacuum and without
-context do not offer very much information on their own, as people
-naturally query things with words. Extracting a caption from an image
-makes it much more accessible. These captions can be used to tag and
-sort images based on their content, return a search query, and evaluate
-similarity between images, for example. Adding captions to images is not
-a binary problem; with a wide range of quality for captions, we expect
-this to be a complex problem with a complex solution. Since MDA’s images
-are all not yet captioned, we will be using a few public datasets
-containing captioned images of overhead satellite images to train our
-model first, before testing them on a manually labelled database of MDA
-images. We will likely start with a model using the encoder-decoder
-architecture, though we may attempt to tune a pre-trained model given
-the circumstances.
+MDA is a Canadian aerospace company, manufacturing equipment for space
+applications, specializing in space surveillance, space robotics, and
+satellite systems. MDA has access to a vast database of the
+aforementioned satellite images. These uncaptioned photos without
+context do not offer very much information on their own, and are
+difficult and costly to work with, as people naturally query things with
+words. By extracting a caption from an image, it becomes much easier to
+work with in analysis. These captions can allow images to be easily
+tagged and sorted, they can be used in a search query, used to evaluate
+image similarity, and other downstream applications in machine learning,
+such as natural language processing. In doing so, we will face
+challenges, as most image models currently available are trained on
+traditional ImageNet type images, due to the fundamentally differing
+nature of satellite images, knowledge transfer will be less effective as
+we are working on a different domain. MDA currently has no existing
+solution to this problem, so our work will be novel to the company. To
+break the problem down, we will be working with other, captioned
+datasets first. We will clean and organize the data into a database, and
+run the initial training and validation process on that data. We have
+access to several different datasets, and those will be used to test
+cross dataset performance. Once we’re satisfied with the performance on
+the captioned datasets, we’ll manually evaluate the performance on the
+MDA dataset by using the model to generate captions, and then score
+those captions by hand.
 
 ## Data Product Description
 
@@ -92,7 +107,8 @@ captioning. Here are the three encoder-decoder models we will try:
     does not do well on some images. The problem could be that unlike
     natural images, remote sensing images usually have strange views and
     many components, and thus require very detailed captions. So we need
-    to improve the model.
+    to improve the
+model.
 
 <img src="../imgs/model_1_baseline_examples.png" alt="model_1" style="width:800px;" class="center"/>
 
@@ -106,7 +122,8 @@ adapted from (Lu et al. 2018).
     image so that the model can capture more details and produce a
     better caption (Xu et al. 2015; Zhang 2019). We will try this
     architecture and would expect this model to produce more detailed
-    captions compared to the baseline.
+    captions compared to the
+baseline.
 
 <img src="../imgs/model_2.png" alt="model_2" style="width:800px;" class="center"/>
 
@@ -118,7 +135,8 @@ Figure 3. The second model architecture (adapted from (Zhang 2019)).
     mechanisms and act as moving the focus between the image and the
     word context to help generate better captions (Li 2020). We are
     going to implement this architecture and expect this model to
-    produce captions of the best quality.
+    produce captions of the best
+quality.
 
 <img src="../imgs/model_3.png" alt="model_3" style="width:800px;" class="center"/>
 
@@ -168,7 +186,8 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
+(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
+<https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -177,7 +196,6 @@ Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
-<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
