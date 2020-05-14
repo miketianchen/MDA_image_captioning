@@ -7,16 +7,22 @@ bibliography: image_captioning_refs.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Image Captioning of Earth Observation Imagery
+
+A joint capstone project in coalition with MDA.
+
+By Dora Qian, Fanli Zhou, James Huang, and Mike Chen. 
+
+Special thanks to our mentor Varada, and our partners at MDA: Shun, and Andrew.
 
 ## Executive Summary
 
-Image captioning of earth observation imagery: this is our joint capstone project in coalition with MDA. By Dora Qian, Fanli Zhou, James Huang, and Mike Chen. Special thanks to our mentor Varada, and our partners at MDA: Shun, and André.
-
-In this project, we aim to create a novel tool that generates captions for overhead satellite image, and manages and updates a database of these images.
+MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of overhead satellite images, and they are interested in assigning captions to these images for image indexing. In this project, we aim to create a tool that generates captions for overhead satellite photos, and manages and updates a database of these images.
  
 ## Introduction
 
-MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of the aforementioned satellite images. These uncaptioned photos without context do not offer very much information on their own, and are difficult and costly to work with, as people naturally query things with words. By extracting a caption from an image, it becomes much easier to work with in analysis. These captions can allow images to be easily tagged and sorted, they can be used in a search query, used to evaluate image similarity, and other downstream applications in machine learning, such as natural language processing. In doing so, we will face challenges, as most image models currently available are trained on traditional ImageNet type images, due to the fundamentally differing nature of satellite images, knowledge transfer will be less effective as we are working on a different domain. MDA currently has no existing solution to this problem, so our work will be novel to the company. 
+In contrast with image classification -- which aims to sort images into predetermined buckets established by the training set -- image captioning is more dynamic and the generated sentence can often be novel to the training set. MDA's uncaptioned photos without context do not offer very much information on their own, and can be difficult and costly to work with. By extracting a caption from an image, it becomes much easier to work with in analysis. Applications of image captioning include image indexing and querying, evaluation of image similarity, and describing images to the visually impaired. In doing so, we will face challenges, as most image models currently available are trained on traditional ImageNet type images, due to the fundamentally differing nature of satellite images, transfer learning will be less effective as we are working on a different domain. MDA currently has no existing solution to this problem, so our work will be novel to the company. 
+
 To break the problem down, we will be working with other, captioned datasets first. We will clean and organize the data into a database, and run the initial training and validation process on that data. We have access to several different datasets, and those will be used to test cross dataset performance. Once we're satisfied with the performance on the captioned datasets, we'll manually evaluate the performance on the MDA dataset by using the model to generate captions, and then score those captions by hand.
 
 ## Final Data Product Description
