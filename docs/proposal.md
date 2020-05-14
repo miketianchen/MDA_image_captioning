@@ -43,8 +43,7 @@ those captions by hand.
 
 The final data product is a complete image captioning pipeline
 consisting of three independent modules: a database, a deep learning
-model and an interactive visualization and database updating
-tool.
+model and an interactive visualization and database updating tool.
 
 <img src="../imgs/dataproduct.png" alt="timeline" style="width:600px;" class="center"/>
 Figure 1. Final data product
@@ -65,8 +64,7 @@ captions from the model and update new image-caption pairs in the
 database. Users would have two options, either to select one or multiple
 images from the database or upload any new ones outside the database.
 The images, machine-generated captions, human-annotated captions and
-scores would be displayed as
-results.
+scores would be displayed as results.
 
 <img src="../imgs/tool.png" alt="timeline" style="width:400px;" class="center"/>
 
@@ -122,8 +120,7 @@ three encoder-decoder models we will try:
     does not do well on some images. The problem could be that unlike
     natural ImageNet type images, satellite images have a top-down view
     with many components, and require detailed captions. The model will
-    need to be modified to reflect
-this.
+    need to be modified to reflect this.
 
 <img src="../imgs/model_1_baseline_examples.png" alt="model_1" style="width:800px;" class="center"/>
 
@@ -137,8 +134,7 @@ adapted from (Lu et al. 2018).
     image so that the model can capture more detail and produce a better
     caption (Xu et al. 2015; Zhang 2019). We will try this architecture
     and would expect this model to produce more detailed captions
-    compared to the
-baseline.
+    compared to the baseline.
 
 <img src="../imgs/model_2.png" alt="model_2" style="width:800px;" class="center"/>
 
@@ -150,8 +146,7 @@ Figure 4. The second model architecture (adapted from (Zhang 2019)).
     mechanisms and act as moving the focus between the image and the
     word context to help generate better captions (Li 2020). We are
     going to implement this architecture and expect this model to
-    produce captions of the best
-quality.
+    produce captions of the best quality.
 
 <img src="../imgs/model_3.png" alt="model_3" style="width:800px;" class="center"/>
 
@@ -180,8 +175,7 @@ by the end of this data product development stage. The last two weeks
 will be used to improve and polish the final product based on feedback
 from our mentor, and our partners. We will deliver the final
 presentation, final written report and final data products to both our
-MDS mentor and our MDA partners by June 29th,
-2020.
+MDS mentor and our MDA partners by June 29th, 2020.
 
 <img src="../imgs/timeline.png" alt="timeline" style="width:600px;" class="center"/>
 
@@ -189,7 +183,7 @@ Figure 6. Project timeline
 
 ## Reference
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-li_2020">
 
@@ -204,8 +198,7 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
-<https://doi.org/10.1109/tgrs.2017.2776321>.
+(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -214,6 +207,7 @@ Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
+<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
