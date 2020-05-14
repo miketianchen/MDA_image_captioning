@@ -131,7 +131,7 @@ baseline model architecture and example outputs. A is adapted from (Lu
 et al. 2018).
 
 2.  The second model will have an attention structure on top of the
-    baseline model (Fig. 4). The attention structure takes image
+    baseline model (Figure 4). The attention structure takes image
     features from the CNN convolutional layer and assigns weights to
     those features. Overall, it could act as moving the focus across the
     image so that the model can capture more detail and produce a better
@@ -143,7 +143,7 @@ et al. 2018).
 architecture (adapted from (Zhang 2019)).
 
 3.  As an extension of the second model, the third model will contain
-    three attention structures on top of the baseline model (Fig. 5).
+    three attention structures on top of the baseline model (Figure 5).
     This multi-level attention model better mimics human attention
     mechanisms and act as moving the focus between the image and the
     word context to help generate better captions (Li 2020). We are
