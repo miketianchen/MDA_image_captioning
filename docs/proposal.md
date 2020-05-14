@@ -17,8 +17,8 @@ applications, specializing in space surveillance, space robotics, and
 satellite systems. MDA has access to a vast database of overhead
 satellite images, and they are interested in assigning captions to these
 images for image indexing. In this project, we aim to create a tool that
-generates captions for overhead satellite image, and manages and updates
-a database of these images.
+generates captions for overhead satellite photos, and manages and
+updates a database of these images.
 
 ## Introduction
 
@@ -52,7 +52,9 @@ The final data product is a complete image captioning pipeline
 consisting of three independent modules: a database, a deep learning
 model and an interactive visualization and database updating tool.
 
-![fig1](%22../imgs/dataproduct.png%22) Figure 1. Final data product
+![fig1](../imgs/dataproduct.png)
+
+Figure 1. Final data product
 
 First, the non-relational database will be used to store all the remote
 sensing images, associated captions and evaluation scores. We will start
@@ -74,7 +76,7 @@ evaluation scores will be displayed as outputs. For existing images, the
 evaluation metrics will be BLEU and other ones based on semantic
 similarity. For new images, a model confidence socre will be displayed.
 
-![fig2](%22../imgs/tool.png%22)
+![fig2](../imgs/tool.png)
 
 Figure 2. Visualization and database updating tool
 
@@ -83,10 +85,10 @@ Figure 2. Visualization and database updating tool
 In order to train our model, we have three labeled datasets:
 UCM\_captions, RSICD and Sydney\_captions. All of the three datasets
 include captions and images. There are upto 5 different captions that
-accompany each image in the datasets. In a single dataset, the file 
-format and size of the images are the same, but across datasets they 
+accompany each image in the datasets. In a single dataset, the file
+format and size of the images are the same, but across datasets they
 differ. Which is why we must first standardize all images across the
-three datasets, before applying data science techniques. 
+three datasets, before applying data science techniques.
 
 The UCM\_captions dataset is based off of the “University of California
 Merced’s Land Use Dataset”. It contains land-uses satellite images.
@@ -100,47 +102,57 @@ comprised of residential, airport, river, oceans, meadow, industrial and
 runway images. (613 images)
 
 The RSICD dataset (Remote Sensing Imaging Captioning Dataset) is the
-state of the art dataset, the images are sourced from BaiduMaps, GoogleMaps
-and Tianditu. The captions are sourced from volunteers, and every
-image will include 5 different captions, from 5 different volunteers to
-ensure diversity of the caption. (10,922 images)
+state of the art dataset, the images are sourced from BaiduMaps,
+GoogleMaps and Tianditu. The captions are sourced from volunteers, and
+every image will include 5 different captions, from 5 different
+volunteers to ensure diversity of the caption. (10,922 images)
 
 ## Data Science Techniques Description
 
-We will combine all three datasets and the combined dataset into
-training (64%), validation (16%), and test (20%) datasets. Sticking to
-the golden rule, we will train and tune models with the training and
+We will combine all three datasets and split the combined dataset into
+training (64%), validation (16%), and test (20%) datasets. Stick to the
+golden rule, we will train and tune models with the training and
 validation datasets only. We decided to focus on the encoder-decoder
-model as it’s the most common method for image captioning. Here are the
-three encoder-decoder models we will try:
+model as it is the most common method for images captioning. Here are
+the three encoder-decoder models we will try:
 
-1.  Our first model will be a basic encoder-decoder (CNN + LSTM) model
-    (Fig. 3). We’ll first use transferring learning to train this model.
-    We’ve trained a baseline model with `InceptionV3` for CNN and
-    `Glove` for word embedding using only 800 training examples ([source
+1.  Our baseline model is a CNN + LSTM encoder-decoder model, which uses
+    heavy transfer learning (Figure 3). Given an image, a feature vector
+    is extracted using the pre-trained [`InceptionV3`
+    model](https://www.tensorflow.org/api_docs/python/tf/keras/applications/InceptionV3),
+    a CNN trained on `ImageNet`. For LSTM, we use an embedding layer and
+    initialize embedding weights with pre-trained `GloVe` embeddings. At
+    each time step during generation, we combine the LSTM output with
+    the image feature vector and pass the result through a dense layer
+    and an output layer to generate the next word, which is fed back as
+    input to the LSTM layer in the next time step. Our current model is
+    trained with only 800 training examples ([source
     code](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/notebooks/baseline_model_tensorflow.ipynb),
-    written in `TensorFlow`). Fig. 3C shows a good caption and 2D shows
-    a bad caption generated by the model. We see that the baseline model
-    does not do well on some images. The problem could be that unlike
-    natural ImageNet type images, satellite images have a top-down view
-    with many components, and require detailed captions. The model will
-    need to be modified to reflect this.
+    written in `TensorFlow`). 3B shows a good caption (`BLEU` score =
+    0.7) and 2C shows a bad caption (`BLEU` score = 0) generated by the
+    model. We see that the baseline model does not do well on some
+    images. The problem could be that unlike natural images, remote
+    sensing images usually have strange views and many objects, and thus
+    require detailed captions to capture all objects (Zhang 2019). So we
+    need to improve the model.
 
-![fig3](%22../imgs/model_1_baseline_examples.png%22)\] Figure 3. The
-baseline model architecture and example outputs. A is adapted from (Lu
-et al. 2018).
+![fig3](../imgs/model_1_baseline_examples.png)
+
+Figure 3. The baseline model architecture and example outputs. A is
+adapted from (Lu et al. 2018).
 
 2.  The second model will have an attention structure on top of the
     baseline model (Figure 4). The attention structure takes image
     features from the CNN convolutional layer and assigns weights to
     those features. Overall, it could act as moving the focus across the
-    image so that the model can capture more detail and produce a better
-    caption (Xu et al. 2015; Zhang 2019). We will try this architecture
-    and would expect this model to produce more detailed captions
-    compared to the baseline.
+    image so that the model can capture more features or objects and
+    produce a better caption (Xu et al. 2015; Zhang 2019). We will try
+    this architecture and would expect this model to produce more
+    detailed captions compared to the baseline.
 
-![fig4](%22../imgs/model_2.png%22)\] Figure 4. The second model
-architecture (adapted from (Zhang 2019)).
+![fig4](../imgs/model_2.png)
+
+Figure 4. The second model architecture (adapted from (Zhang 2019)).
 
 3.  As an extension of the second model, the third model will contain
     three attention structures on top of the baseline model (Figure 5).
@@ -150,14 +162,19 @@ architecture (adapted from (Zhang 2019)).
     going to implement this architecture and expect this model to
     produce captions of the best quality.
 
-![fig5](%22../imgs/model_3.png%22)\] Figure 5. The third model
-architecture (adapted from (Li 2020)).
+![fig5](../imgs/model_3.png)
+
+Figure 5. The third model architecture (adapted from (Li 2020)).
 
 If time permits, we could explore other model architectures and try
-fine-tuning pre-trained cross-modal models. To assess these models, we
-can use evaluation metrics suggested in this paper (Li 2020), including
-BLEU, Meteor, ROUGE\_L, CIDEr, and SPICE. Finally, we will test our best
-model with the test dataset and evaluate the results.
+fine-tuning pre-trained cross-modal models. To assess those models, we
+can use some evaluation metrics suggested in this paper (Li 2020),
+including `BLEU`, `Meteor`, `ROUGE_L`, `CIDEr`, and `SPICE`. We will
+first test our models with the `BLEU` score, which compares sentences
+based on n-grams. However, in this project, we want to focus on the
+semantic similarity other than the syntactic similarity. So we will then
+move to metrics that measure semantic similarity instead. Finally, we
+will test our best model with the test dataset and evaluate the results.
 
 ## Timeline and Evaluation:
 
@@ -178,12 +195,13 @@ from our mentor, and our partners. We will deliver the final
 presentation, final written report and final data products to both our
 MDS mentor and our MDA partners by June 29th, 2020.
 
-![fig6](%22../imgs/timeline.png%22)\]{ width=80% } Figure 6. Project
-timeline
+![fig6](../imgs/timeline.png)\]{ width=80% }
+
+Figure 6. Project timeline
 
 ## Reference
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-li_2020">
 
