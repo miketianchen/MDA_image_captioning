@@ -1,6 +1,7 @@
 ---
 title: "Proposal"
-output: pdf_document
+output: 
+        pdf_document: default
 bibliography: image_captioning_refs.bib
 ---
 
@@ -28,11 +29,12 @@ Figure 1. Final data product
 
 First, the non-relational database will be used to store all the remote sensing images, associated captions and evaluation scores. We will start by creating three separate folders storing these data for ease of extraction. Both the human-annotated and machine-generated data will be stored in this database. 
 
-Second, the deep learning model will be capapble of loading data from the database, as well as train and predict on data. The model will be designed to be easy to maintain and update. PyTorch would be used for modelling and AWS P2 or P3 instances would be used for cloud computing.
+Second, the deep learning model will be capable of loading data from the database, as well as train and predict on data. The model will be designed to be easily maintain and update. PyTorch will be used for modelling and AWS P2 or P3 instances will be used for cloud computing.
 
-Lastly, a Dash-based visualization would allow users to get predicted captions from the model and update new image-caption pairs in the database. Users would have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and scores would be displayed as results.
+Lastly, a Dash-based visualization will allow users to get predicted captions from the model and update new image-caption pairs in the database. Users will have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and evaluation scores will be displayed as outputs. For existing images, the evaluation metrics will be BLEU and other ones based on semantic similarity. For new images, a  model confidence socre will be displayed.
 
-![fig2]("../imgs/tool.png")
+![fig2]("../imgs/tool.png"){ width=80% }
+
 Figure 2. Visualization and database updating tool
  
 ## Data Description 
@@ -73,7 +75,7 @@ If time permits, we could explore other model architectures and try fine-tuning 
 
 The length of our capstone project is two months, starting from May 4th, 2020 to June 30th,  2020. During these eight weeks, the following five milestones are expected to be achieved: proposal, EDA and database design, model development, visualization tool design and polish. The first two weeks were used for the proposal: we have delivered both a presentation and a written report. Meanwhile, we will start exploratory data analysis, data pre-processing, and database design. The next four weeks will be used for data product development. The three intermediate stages would be run in parallel during this period. Both the database and tool design will take about two weeks while the deep model development will run for four weeks. Three milestones will be achieved by the end of this data product development stage. The last two weeks will be used to improve and polish the final product based on feedback from our mentor, and our partners. We will deliver the final presentation, final written report and final data products to both our MDS mentor and our MDA partners by June 29th, 2020.
  
-![fig6]("../imgs/timeline.png")]
+![fig6]("../imgs/timeline.png")]{ width=80% }
 Figure 6. Project timeline
  
 ## Reference

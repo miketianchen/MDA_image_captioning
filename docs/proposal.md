@@ -45,8 +45,7 @@ The final data product is a complete image captioning pipeline
 consisting of three independent modules: a database, a deep learning
 model and an interactive visualization and database updating tool.
 
-<img src="../imgs/dataproduct.png" alt="timeline" style="width:600px;" class="center"/>
-Figure 1. Final data product
+![fig1](%22../imgs/dataproduct.png%22) Figure 1. Final data product
 
 First, the non-relational database will be used to store all the remote
 sensing images, associated captions and evaluation scores. We will start
@@ -54,19 +53,21 @@ by creating three separate folders storing these data for ease of
 extraction. Both the human-annotated and machine-generated data will be
 stored in this database.
 
-Second, the deep learning model will be capapble of loading data from
-the database, as well as train and predict on data. The model will be
-designed to be easy to maintain and update. PyTorch would be used for
-modelling and AWS P2 or P3 instances would be used for cloud computing.
+Second, the deep learning model will be capable of loading data from the
+database, as well as train and predict on data. The model will be
+designed to be easily maintain and update. PyTorch will be used for
+modelling and AWS P2 or P3 instances will be used for cloud computing.
 
-Lastly, a Dash-based visualization would allow users to get predicted
+Lastly, a Dash-based visualization will allow users to get predicted
 captions from the model and update new image-caption pairs in the
-database. Users would have two options, either to select one or multiple
+database. Users will have two options, either to select one or multiple
 images from the database or upload any new ones outside the database.
 The images, machine-generated captions, human-annotated captions and
-scores would be displayed as results.
+evaluation scores will be displayed as outputs. For existing images, the
+evaluation metrics will be BLEU and other ones based on semantic
+similarity. For new images, a model confidence socre will be displayed.
 
-<img src="../imgs/tool.png" alt="timeline" style="width:400px;" class="center"/>
+![fig2](%22../imgs/tool.png%22)
 
 Figure 2. Visualization and database updating tool
 
@@ -122,10 +123,9 @@ three encoder-decoder models we will try:
     with many components, and require detailed captions. The model will
     need to be modified to reflect this.
 
-<img src="../imgs/model_1_baseline_examples.png" alt="model_1" style="width:800px;" class="center"/>
-
-Figure 3. The baseline model architecture and example outputs. A is
-adapted from (Lu et al. 2018).
+![fig3](%22../imgs/model_1_baseline_examples.png%22)\] Figure 3. The
+baseline model architecture and example outputs. A is adapted from (Lu
+et al. 2018).
 
 2.  The second model will have an attention structure on top of the
     baseline model (Fig. 4). The attention structure takes image
@@ -136,9 +136,8 @@ adapted from (Lu et al. 2018).
     and would expect this model to produce more detailed captions
     compared to the baseline.
 
-<img src="../imgs/model_2.png" alt="model_2" style="width:800px;" class="center"/>
-
-Figure 4. The second model architecture (adapted from (Zhang 2019)).
+![fig4](%22../imgs/model_2.png%22)\] Figure 4. The second model
+architecture (adapted from (Zhang 2019)).
 
 3.  As an extension of the second model, the third model will contain
     three attention structures on top of the baseline model (Fig. 5).
@@ -148,9 +147,8 @@ Figure 4. The second model architecture (adapted from (Zhang 2019)).
     going to implement this architecture and expect this model to
     produce captions of the best quality.
 
-<img src="../imgs/model_3.png" alt="model_3" style="width:800px;" class="center"/>
-
-Figure 5. The third model architecture (adapted from (Li 2020)).
+![fig5](%22../imgs/model_3.png%22)\] Figure 5. The third model
+architecture (adapted from (Li 2020)).
 
 If time permits, we could explore other model architectures and try
 fine-tuning pre-trained cross-modal models. To assess these models, we
@@ -177,9 +175,8 @@ from our mentor, and our partners. We will deliver the final
 presentation, final written report and final data products to both our
 MDS mentor and our MDA partners by June 29th, 2020.
 
-<img src="../imgs/timeline.png" alt="timeline" style="width:600px;" class="center"/>
-
-Figure 6. Project timeline
+![fig6](%22../imgs/timeline.png%22)\]{ width=80% } Figure 6. Project
+timeline
 
 ## Reference
 
