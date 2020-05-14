@@ -75,33 +75,29 @@ Figure 2. Visualization and database updating tool
 ## Data Description
 
 In order to train our model, we have three labeled datasets:
-UCM\_captions, RSICD and Sydney\_captions.
+UCM\_captions, RSICD and Sydney\_captions. All of the three datasets
+include captions and images. There are upto 5 different captions that
+accompany each image in the datasets. In a single dataset, the file 
+format and size of the images are the same, but across datasets they 
+differ. Which is why we must first standardize all images across the
+three datasets, before applying data science techniques. 
 
 The UCM\_captions dataset is based off of the “University of California
 Merced’s Land Use Dataset”. It contains land-uses satellite images.
-There are 21 different classes of images ranging from airplane fields,
-baseball diamond, overpass, runways and many more. There are 100 images
-in every class, and each image has a resolution of 256 X 256 pixels.
-(2100 images)
+There are 21 different classes of images. (2100 images)
 
 The Sydney\_captions dataset is extracted from a large 18000 X 14000
 pixel image of Sydney taken from Google Earth. Each of the images in the
 dataset are selected and cropped from the original much larger Google
 Earth image. There are 7 different classes of images in this dataset,
 comprised of residential, airport, river, oceans, meadow, industrial and
-runway images. Each image has a resolution of 500 X 500 pixels. (613
-images)
+runway images. (613 images)
 
 The RSICD dataset (Remote Sensing Imaging Captioning Dataset) is the
-state of the art dataset, which contains images captured from airplanes
-and satellites. The captions are sourced from volunteers, and every
+state of the art dataset, the images are sourced from BaiduMaps, GoogleMaps
+and Tianditu. The captions are sourced from volunteers, and every
 image will include 5 different captions, from 5 different volunteers to
-ensure diversity of the caption. Each image has a resolution of 224 X
-224 pixels. (10,922 images)
-
-Each of the datasets contain different image file types and images
-sizes. In order to apply our data science techniques, we must first
-standardize all images across all three datasets.
+ensure diversity of the caption. (10,922 images)
 
 ## Data Science Techniques Description
 
