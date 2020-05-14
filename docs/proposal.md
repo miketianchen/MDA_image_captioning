@@ -52,7 +52,7 @@ The final data product is a complete image captioning pipeline
 consisting of three independent modules: a database, a deep learning
 model and an interactive visualization and database updating tool.
 
-![fig1](../imgs/dataproduct.png)
+<img src="../imgs/dataproduct.png" width="100%" />
 
 Figure 1. Final data product
 
@@ -76,7 +76,7 @@ evaluation scores will be displayed as outputs. For existing images, the
 evaluation metrics will be BLEU and other ones based on semantic
 similarity. For new images, a model confidence socre will be displayed.
 
-![fig2](../imgs/tool.png)
+<img src="../imgs/tool.png" width="80%" />
 
 Figure 2. Visualization and database updating tool
 
@@ -136,7 +136,7 @@ the three encoder-decoder models we will try:
     require detailed captions to capture all objects (Zhang 2019). So we
     need to improve the model.
 
-![fig3](../imgs/model_1_baseline_examples.png)
+<img src="../imgs/model_1_baseline_examples.png" width="100%" />
 
 Figure 3. The baseline model architecture and example outputs. A is
 adapted from (Lu et al. 2018).
@@ -150,7 +150,7 @@ adapted from (Lu et al. 2018).
     this architecture and would expect this model to produce more
     detailed captions compared to the baseline.
 
-![fig4](../imgs/model_2.png)
+<img src="../imgs/model_2.png" width="100%" />
 
 Figure 4. The second model architecture (adapted from (Zhang 2019)).
 
@@ -162,7 +162,7 @@ Figure 4. The second model architecture (adapted from (Zhang 2019)).
     going to implement this architecture and expect this model to
     produce captions of the best quality.
 
-![fig5](../imgs/model_3.png)
+<img src="../imgs/model_3.png" width="100%" />
 
 Figure 5. The third model architecture (adapted from (Li 2020)).
 
@@ -195,13 +195,13 @@ from our mentor, and our partners. We will deliver the final
 presentation, final written report and final data products to both our
 MDS mentor and our MDA partners by June 29th, 2020.
 
-![fig6](../imgs/timeline.png)\]{ width=80% }
+<img src="../imgs/timeline.png" width="100%" />
 
 Figure 6. Project timeline
 
 ## Reference
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-li_2020">
 
