@@ -1,24 +1,22 @@
 ---
-title: "Proposal"
+title: "Proposal: Image Captioning of Earth Observation Imagery"
+author: "Dora Qian, Fanli Zhou, James Huang and Mike Chen"
 output:
-        github_document: default
+        pdf_document: default
 bibliography: image_captioning_refs.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Image Captioning of Earth Observation Imagery
 
-A joint capstone project in coalition with MDA.
+*MDS Mentor: Varada Kolhatkar*
 
-By Dora Qian, Fanli Zhou, James Huang, and Mike Chen. 
-
-Special thanks to our mentor Varada, and our partners at MDA: Shun, and Andrew.
+*MDA Partners: Andrew Westwell-Roper, Shun Chi*
 
 ## Executive Summary
 
-MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of uncaptioned overhead satellite images, and they are interested in assigning captions to these images for image indexing. In this project, we aim to create a deep learning model that generates captions for overhead satellite photos, and manages and updates a database of these images. We will also create an interactive visualization tool that displays captions generated for images and their respective confidence.
+MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of uncaptioned overhead satellite images, and they are interested in assigning captions to these images for image indexing. In this project, we aim to create a deep learning model that generates captions for overhead satellite photos, and manages and updates a database of these image-caption pairs. We will also create an interactive visualization tool that displays captions generated for images and their respective evaluation scores.
 
 ## Introduction
 
@@ -38,21 +36,21 @@ Figure 1. Final data product
 
 First, the non-relational database will be used to store all the remote sensing images, associated captions and evaluation scores. We will start by creating three separate folders storing these data for ease of extraction. Both the human-annotated and machine-generated data will be stored in this database. 
 
-Second, the deep learning model will be capable of loading data from the database, as well as train and predict on data. The model will be designed to be easily maintain and update. PyTorch will be used for modelling and AWS P2 or P3 instances will be used for cloud computing.
+Second, the deep learning model will be capable of loading data from the database, as well as train and predict on data. The model will be designed to be easily maintain and update. `PyTorch` will be used for modelling and AWS P2 or P3 instances will be used for cloud computing.
 
-Lastly, a Dash-based visualization will allow users to get predicted captions from the model and update new image-caption pairs in the database. Users will have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and evaluation scores will be displayed as outputs. For existing images, the evaluation metrics will be `BLEU` and other ones based on semantic similarity. For new images, a  model confidence socre will be displayed.
+Lastly, a Dash-based visualization will allow users to get predicted captions from the model and update new image-caption pairs in the database. Users will have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and evaluation scores will be displayed as outputs. For existing images, the evaluation metrics will be `BLEU` and other ones based on semantic similarity. For new images, a model confidence score will be displayed.
 
 ```{r echo=FALSE, out.width='80%'}
 knitr::include_graphics('../imgs/tool.png')
 ```
 
-Figure 2. Visualization and database updating tool
+Figure 2. Visualization and database updating tool. Remote sensing images are adapted from RSICD dataset [@xu2018].
  
 ## Data Description 
 
-In order to train our model, we have three labeled datasets: UCM-captions [@Qu_2016], RSICD  [@xu2018] and Sydney-captions [@Qu_2016]. All of the three datasets include captions and images. There are up to 5 different captions that accompany each image in the datasets. In a single dataset, the file format and size of the images are the same, but across datasets they differ. Which is why we must first standardize all images across the three datasets, before applying data science techniques.
+In order to train our model, we have three labelled datasets: UCM-captions [@Qu_2016], RSICD  [@xu2018] and Sydney-captions [@Qu_2016]. All of the three datasets include captions and images. There are up to 5 different captions that accompany each image in the datasets. In a single dataset, the file format and size of the images are the same, but across datasets they differ. Which is why we must first standardize all images across the three datasets, before applying data science techniques.
 
-The UCM-captions dataset is based off of the “University of California Merced’s Land Use Dataset”. It contains land-uses satellite images. There are 21 different classes of images. (2100 images)
+The UCM-captions dataset is based on the “University of California Merced’s Land Use Dataset”. It contains land-uses satellite images. There are 21 different classes of images. (2100 images)
 
 The Sydney-captions dataset is extracted from a large 18000 X 14000 pixel image of Sydney taken from Google Earth. Each of the images in the dataset are selected and cropped from the original much larger Google Earth image. There are 7 different classes of images in this dataset, comprised of residential, airport, river, oceans, meadow, industrial and runway images. (613 images)
 
@@ -70,7 +68,7 @@ knitr::include_graphics('../imgs/model_1_baseline_examples.png')
 
 Figure 3. The baseline model architecture and example outputs. A is adapted from [@Lu_2018].
 
-2. The second model will have an attention structure on top of the baseline model (Figure 4). The attention structure takes image features from the CNN convolutional layer and assigns weights to those features. Overall, it could act as moving the focus across the image so that the model can capture more features or objects and produce a better caption [@xu2015attend; @zhang_2019]. We will try this architecture and would expect this model to produce more detailed captions compared to the baseline.
+2. The second model will have an attention structure on top of the baseline model (Figure 4). The attention structure takes image features from the CNN convolutional layer and assigns weights to those features. Overall, it could act as moving the focus across the image so that the model can capture more features or objects and produce a better caption [@xu2015attend; @zhang_2019]. We will try this architecture and expect this model to produce better captions compared to the baseline.
 
 ```{r echo=FALSE, out.width='100%'}
 knitr::include_graphics('../imgs/model_2.png')
@@ -99,6 +97,6 @@ knitr::include_graphics('../imgs/timeline.png')
 
 Figure 6. Project timeline
 
-## Reference
+## References
 
 
