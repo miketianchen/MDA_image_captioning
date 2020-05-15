@@ -22,7 +22,7 @@ MDA is a Canadian aerospace company, manufacturing equipment for space applicati
 
 ## Introduction
 
-In contrast with image classification -- which aims to sort images into predetermined buckets established by the training set -- image captioning is more dynamic and the generated sentence can often be novel to the training set. MDA's uncaptioned photos without context do not offer very much information on their own, and can be difficult and costly to work with. By extracting a caption from an image, it becomes much easier to work with in analysis. Applications of image captioning include image indexing and querying, evaluation of image similarity, and describing images to the visually impaired. However, most image models currently available are trained on traditional ImageNet type images; due to the fundamentally different nature of satellite images, transfer learning will be less effective as we are working on a different domain. MDA currently has no existing solution to this problem, so our work will be novel to the company.
+In contrast with image classification -- which aims to sort images into predetermined buckets established by the training set -- image captioning is more dynamic and the generated sentence can often be novel to the training set. MDA's uncaptioned photos without context do not offer very much information on their own, and can be difficult and costly to work with. By extracting a caption from an image, it becomes much easier to work with in analysis. Applications of image captioning include image indexing and querying, evaluation of image similarity, and describing images to the visually impaired. However, most image models currently available are trained on traditional `ImageNet` type images; due to the fundamentally different nature of satellite images, transfer learning will be less effective as we are working on a different domain. MDA currently has no existing solution to this problem, so our work will be novel to the company.
 
 To break the problem down, we will be working with public captioned datasets first. We will clean and organize the data into a database, and run the initial training and validation process on that data. We have access to several different datasets, and those will be used to test cross dataset performance. Once we are satisfied with the performance on the captioned datasets, we will manually evaluate the performance on the MDA dataset by using the model to generate captions, and then score those captions by hand.
 
@@ -40,7 +40,7 @@ First, the non-relational database will be used to store all the remote sensing 
 
 Second, the deep learning model will be capable of loading data from the database, as well as train and predict on data. The model will be designed to be easily maintain and update. PyTorch will be used for modelling and AWS P2 or P3 instances will be used for cloud computing.
 
-Lastly, a Dash-based visualization will allow users to get predicted captions from the model and update new image-caption pairs in the database. Users will have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and evaluation scores will be displayed as outputs. For existing images, the evaluation metrics will be BLEU and other ones based on semantic similarity. For new images, a  model confidence socre will be displayed.
+Lastly, a Dash-based visualization will allow users to get predicted captions from the model and update new image-caption pairs in the database. Users will have two options, either to select one or multiple images from the database or upload any new ones outside the database. The images, machine-generated captions, human-annotated captions and evaluation scores will be displayed as outputs. For existing images, the evaluation metrics will be `BLEU` and other ones based on semantic similarity. For new images, a  model confidence socre will be displayed.
 
 ```{r echo=FALSE, out.width='80%'}
 knitr::include_graphics('../imgs/tool.png')
@@ -50,7 +50,7 @@ Figure 2. Visualization and database updating tool
  
 ## Data Description 
 
-In order to train our model, we have three labeled datasets: UCM-captions, RSICD and Sydney-captions. All of the three datasets include captions and images. There are up to 5 different captions that accompany each image in the datasets. In a single dataset, the file format and size of the images are the same, but across datasets they differ. Which is why we must first standardize all images across the three datasets, before applying data science techniques.
+In order to train our model, we have three labeled datasets: UCM-captions [@Qu_2016], RSICD  [@xu2018] and Sydney-captions [@Qu_2016]. All of the three datasets include captions and images. There are up to 5 different captions that accompany each image in the datasets. In a single dataset, the file format and size of the images are the same, but across datasets they differ. Which is why we must first standardize all images across the three datasets, before applying data science techniques.
 
 The UCM-captions dataset is based off of the “University of California Merced’s Land Use Dataset”. It contains land-uses satellite images. There are 21 different classes of images. (2100 images)
 
