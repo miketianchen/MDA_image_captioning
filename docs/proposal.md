@@ -12,37 +12,32 @@ MDA is a Canadian aerospace company, manufacturing equipment for space
 applications, specializing in space surveillance, space robotics, and
 satellite systems. MDA has access to a vast database of uncaptioned
 overhead satellite images, and they are interested in assigning captions
-to these images for image indexing. In this project, we aim to create a
-deep learning model that generates captions for overhead satellite
+to these images for image indexing. In this project, we aim to create
+deep learning models that generate captions for overhead satellite
 photos, and manages and updates a database of these image-caption pairs.
 We will also create an interactive visualization tool that displays
 captions generated for images and their respective evaluation scores.
 
 ## Introduction
 
-In contrast with image classification – which aims to sort images into
-predetermined buckets established by the training set – image captioning
-is more dynamic and the generated sentence can often be novel to the
-training set. MDA’s uncaptioned photos without context do not offer very
-much information on their own, and can be difficult and costly to work
-with. By extracting a caption from an image, it becomes much easier to
-work with in analysis. Applications of image captioning include image
-indexing and querying, evaluation of image similarity, and describing
-images to the visually impaired. However, most image models currently
-available are trained on traditional `ImageNet` type images; due to the
-fundamentally different nature of satellite images, transfer learning
-will be less effective as we are working on a different domain. MDA
-currently has no existing solution to this problem, so our work will be
-novel to the company.
+In contrast with image classification – which aims to classify images as
+predetermined classes established by the training set – image captioning
+is more dynamic; it aims to generate sentences describing objects and
+actions in the image. Image captions can be useful in a variety of
+applications, such as image indexing for querying images and evaluating
+image similarity, and describing images to the visually impaired. Most
+image captioning models currently available are trained on traditional
+`ImageNet` type images; due to the fundamentally different nature of
+satellite images, transfer learning will be less effective as we are
+working on a different domain. MDA currently has no existing solution to
+this problem, so our work will be novel to the company.
 
 To break the problem down, we will be working with public captioned
 datasets first. We will clean and organize the data into a database, and
 run the initial training and validation process on that data. We have
 access to several different datasets, and those will be used to test
 cross dataset performance. Once we are satisfied with the performance on
-the captioned datasets, we will manually evaluate the performance on the
-MDA dataset by using the model to generate captions, and then score
-those captions by hand.
+the captioned datasets, the model will be tested on the MDA dataset.
 
 ## Final Data Product Description
 
@@ -201,7 +196,7 @@ Figure 6. Project timeline
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-li_2020">
 
@@ -216,7 +211,8 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
+(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
+<https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -241,7 +237,6 @@ on Computer, Information and Telecommunication Systems (Cits)*, 1–5.
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
-<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
