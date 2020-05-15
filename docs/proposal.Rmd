@@ -22,7 +22,7 @@ MDA is a Canadian aerospace company, manufacturing equipment for space applicati
 
 In contrast with image classification -- which aims to classify images as predetermined classes established by the training set -- image captioning is more dynamic; it aims to generate sentences describing objects and actions in the image. Image captions can be useful in a variety of applications, such as image indexing for querying images and evaluating image similarity, and describing images to the visually impaired. Most image captioning models currently available are trained on traditional `ImageNet` type images; due to the fundamentally different nature of satellite images, transfer learning will be less effective as we are working on a different domain. MDA currently has no existing solution to this problem, so our work will be novel to the company.
 
-To break the problem down, we will be working with public captioned datasets first. We will clean and organize the data into a database, and run the initial training and validation process on that data. We have access to several different datasets, and those will be used to test cross dataset performance. Once we are satisfied with the performance on the captioned datasets, the model will be tested on the MDA dataset.
+To break the problem down, we will be working with public captioned datasets first. We will be merging several different datasets into one, and we will clean and organize the data into a database. We will both train and test the model on this data. Once we are satisfied with the performance on the captioned datasets, the model will be tested on the MDA dataset.
 
 ## Final Data Product Description
 

@@ -33,11 +33,11 @@ working on a different domain. MDA currently has no existing solution to
 this problem, so our work will be novel to the company.
 
 To break the problem down, we will be working with public captioned
-datasets first. We will clean and organize the data into a database, and
-run the initial training and validation process on that data. We have
-access to several different datasets, and those will be used to test
-cross dataset performance. Once we are satisfied with the performance on
-the captioned datasets, the model will be tested on the MDA dataset.
+datasets first. We will be merging several different datasets into one,
+and we will clean and organize the data into a database. We will both
+train and test the model on this data. Once we are satisfied with the
+performance on the captioned datasets, the model will be tested on the
+MDA dataset.
 
 ## Final Data Product Description
 
