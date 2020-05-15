@@ -32,12 +32,11 @@ satellite images, transfer learning will be less effective as we are
 working on a different domain. MDA currently has no existing solution to
 this problem, so our work will be novel to the company.
 
-To break the problem down, we will be working with public captioned
-datasets first. We will be merging several different datasets into one,
-and we will clean and organize the data into a database. We will both
-train and test the model on this data. Once we are satisfied with the
-performance on the captioned datasets, the model will be tested on the
-MDA dataset.
+To break the problem down, three public captioned datasets will be used.
+We will merge them into one, clean and organize the data into a
+database. Both training and testing will be performed using this
+combined dataset. Once we are satisfied with the performance on this
+dataset, the model will be tested on the MDA dataset.
 
 ## Final Data Product Description
 
@@ -196,7 +195,7 @@ Figure 6. Project timeline
 
 ## References
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-li_2020">
 
@@ -211,8 +210,7 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
-<https://doi.org/10.1109/tgrs.2017.2776321>.
+(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -237,6 +235,7 @@ on Computer, Information and Telecommunication Systems (Cits)*, 1–5.
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
+<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
