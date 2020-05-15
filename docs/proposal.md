@@ -1,14 +1,10 @@
-Proposal
+Proposal: Image Captioning of Earth Observation Imagery
 ================
+Dora Qian, Fanli Zhou, James Huang and Mike Chen
 
-# Image Captioning of Earth Observation Imagery
+*MDS Mentor: Varada Kolhatkar*
 
-A joint capstone project in coalition with MDA.
-
-By Dora Qian, Fanli Zhou, James Huang, and Mike Chen.
-
-Special thanks to our mentor Varada, and our partners at MDA: Shun, and
-Andrew.
+*MDA Partners: Andrew Westwell-Roper, Shun Chi*
 
 ## Executive Summary
 
@@ -18,9 +14,9 @@ satellite systems. MDA has access to a vast database of uncaptioned
 overhead satellite images, and they are interested in assigning captions
 to these images for image indexing. In this project, we aim to create a
 deep learning model that generates captions for overhead satellite
-photos, and manages and updates a database of these images. We will also
-create an interactive visualization tool that displays captions
-generated for images and their respective confidence.
+photos, and manages and updates a database of these image-caption pairs.
+We will also create an interactive visualization tool that displays
+captions generated for images and their respective evaluation scores.
 
 ## Introduction
 
@@ -66,7 +62,7 @@ stored in this database.
 
 Second, the deep learning model will be capable of loading data from the
 database, as well as train and predict on data. The model will be
-designed to be easily maintain and update. PyTorch will be used for
+designed to be easily maintain and update. `PyTorch` will be used for
 modelling and AWS P2 or P3 instances will be used for cloud computing.
 
 Lastly, a Dash-based visualization will allow users to get predicted
@@ -76,15 +72,16 @@ images from the database or upload any new ones outside the database.
 The images, machine-generated captions, human-annotated captions and
 evaluation scores will be displayed as outputs. For existing images, the
 evaluation metrics will be `BLEU` and other ones based on semantic
-similarity. For new images, a model confidence socre will be displayed.
+similarity. For new images, a model confidence score will be displayed.
 
 <img src="../imgs/tool.png" width="80%" />
 
-Figure 2. Visualization and database updating tool
+Figure 2. Visualization and database updating tool. Remote sensing
+images are adapted from RSICD dataset (Lu et al. 2018).
 
 ## Data Description
 
-In order to train our model, we have three labeled datasets:
+In order to train our model, we have three labelled datasets:
 UCM-captions (Qu et al. 2016), RSICD (Lu et al. 2018) and
 Sydney-captions (Qu et al. 2016). All of the three datasets include
 captions and images. There are up to 5 different captions that accompany
@@ -93,7 +90,7 @@ size of the images are the same, but across datasets they differ. Which
 is why we must first standardize all images across the three datasets,
 before applying data science techniques.
 
-The UCM-captions dataset is based off of the “University of California
+The UCM-captions dataset is based on the “University of California
 Merced’s Land Use Dataset”. It contains land-uses satellite images.
 There are 21 different classes of images. (2100 images)
 
@@ -150,8 +147,8 @@ adapted from (Lu et al. 2018).
     those features. Overall, it could act as moving the focus across the
     image so that the model can capture more features or objects and
     produce a better caption (Xu et al. 2015; Zhang 2019). We will try
-    this architecture and would expect this model to produce more
-    detailed captions compared to the baseline.
+    this architecture and expect this model to produce better captions
+    compared to the baseline.
 
 <img src="../imgs/model_2.png" width="100%" />
 
@@ -202,9 +199,9 @@ MDS mentor and our MDA partners by June 29th, 2020.
 
 Figure 6. Project timeline
 
-## Reference
+## References
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-li_2020">
 
