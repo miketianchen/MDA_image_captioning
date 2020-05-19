@@ -12,11 +12,13 @@ MDA is a Canadian aerospace company, manufacturing equipment for space
 applications, specializing in space surveillance, space robotics, and
 satellite systems. MDA has access to a vast database of uncaptioned
 overhead satellite images, and they are interested in assigning captions
-to these images for image indexing. In this project, we aim to create
-deep learning models that generate captions for overhead satellite
-photos, and manages and updates a database of these image-caption pairs.
-We will also create an interactive visualization tool that displays
-captions generated for images and their respective evaluation scores.
+to these images for image indexing, more specifically for detection of
+events of interest; these captions will describe objects in the photo
+and how they interact. In this project, we aim to create deep learning
+models that generate these captions for overhead satellite photos, and
+manages and updates a database of these image-caption pairs. We will
+also create an interactive visualization tool that displays captions
+generated for images and their respective evaluation scores.
 
 ## Introduction
 
@@ -195,7 +197,7 @@ Figure 6. Project timeline
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-li_2020">
 
@@ -210,7 +212,8 @@ Sensing Image Captions.” *Remote Sens.* 12 (6): 939.
 Lu, Xiaoqiang, Binqiang Wang, Xiangtao Zheng, and Xuelong Li. 2018.
 “Exploring Models and Data for Remote Sensing Image Caption
 Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
-(4): 2183–95. <https://doi.org/10.1109/tgrs.2017.2776321>.
+(4). Institute of Electrical; Electronics Engineers (IEEE): 2183–95.
+<https://doi.org/10.1109/tgrs.2017.2776321>.
 
 </div>
 
@@ -235,7 +238,6 @@ on Computer, Information and Telecommunication Systems (Cits)*, 1–5.
 Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan
 Salakhutdinov, Richard Zemel, and Yoshua Bengio. 2015. “Show, Attend and
 Tell: Neural Image Caption Generation with Visual Attention.”
-<http://arxiv.org/abs/1502.03044>.
 
 </div>
 
