@@ -2,7 +2,7 @@
 title: "Proposal: Image Captioning of Earth Observation Imagery"
 author: "Dora Qian, Fanli Zhou, James Huang and Mike Chen"
 output:
-        github_document: default
+        pdf_document: default
 bibliography: image_captioning_refs.bib
 ---
 
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Executive Summary
 
-MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of uncaptioned overhead satellite images, and they are interested in assigning captions to these images for image indexing. In this project, we aim to create deep learning models that generate captions for overhead satellite photos, and manages and updates a database of these image-caption pairs. We will also create an interactive visualization tool that displays captions generated for images and their respective evaluation scores.
+MDA is a Canadian aerospace company, manufacturing equipment for space applications, specializing in space surveillance, space robotics, and satellite systems. MDA has access to a vast database of uncaptioned overhead satellite images, and they are interested in assigning captions to these images for image indexing, more specifically for detection of events of interest; these captions will describe objects in the photo and how they interact. In this project, we aim to create deep learning models that generate these captions for overhead satellite photos, and manages and updates a database of these image-caption pairs. We will also create an interactive visualization tool that displays captions generated for images and their respective evaluation scores.
 
 ## Introduction
 
