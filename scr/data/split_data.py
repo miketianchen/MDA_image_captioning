@@ -22,7 +22,7 @@ def split_data(seqs, label):
     dict
         a dict with image infromation with the following 
         structure: 
-        {dataset name (one of 'rsicd', 'ucm' and 'sydney'): 
+        {dataset name ('rsicd' or 'ucm'): 
             {
                 filename (in the format of *.tif or *.jpeg): 
                 dict of the img info
@@ -45,7 +45,7 @@ def split_data(seqs, label):
             the index of the image in the dataset
         name: str
             the name of the dataset 
-            (one of 'rsicd', 'ucm' and 'sydney')
+            ('rsicd' or 'ucm')
         Return:
         --------
         dict
@@ -63,22 +63,18 @@ def split_data(seqs, label):
                            seqs[seqs < sizes['rsicd']], {})
     
     imgs['ucm'] = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'], 'ucm'),
-                         seqs[(seqs >= sizes['rsicd']) & (seqs < sizes['rsicd'] + sizes['ucm'])], {})
-    
-    imgs['sydney'] = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'] - sizes['ucm'], 'sydney'),
-                            seqs[sizes['rsicd'] + sizes['ucm'] <= seqs], {})
+                         seqs[seqs >= sizes['rsicd']], {})
 
     print(f"{len(imgs['rsicd'])} images from the RSICD dataset")
     print(f"{len(imgs['ucm'])} images from the UCM dataset")
-    print(f"{len(imgs['sydney'])} images from the Sydney dataset")
-    print(f"{len(imgs['rsicd']) + len(imgs['ucm']) + len(imgs['sydney'])} images in total")
+    print(f"{len(imgs['rsicd']) + len(imgs['ucm'])} images in total")
 
     return imgs
 
 # main
 json_data = {}
 sizes = {}
-set_name = ['rsicd', 'ucm', 'sydney']
+set_name = ['rsicd', 'ucm']
 
 # read in json files from all three datasets
 for name in set_name:
@@ -90,7 +86,6 @@ for name in set_name:
 # create splits based on a sequence from 0 to 13633
 # an image from the RSCID dataset has a index in [0, 10920]
 # an image from the UCM dataset has a index in [10921, 13020]
-# an image from the Sydney dataset has a index in [13021, 13633]
 train_valid, test = train_test_split(np.arange(sum(list(sizes.values()))), test_size=0.2, random_state=123)
 train, valid = train_test_split(train_valid, test_size=0.2, random_state=123)
 
