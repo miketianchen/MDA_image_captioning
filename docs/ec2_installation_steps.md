@@ -1,5 +1,5 @@
 
-The `mds-capstone-mda-dp` AMI is prepared with the following commands:
+The `mds-capstone-mda-gpu` AMI is prepared with the following commands:
 
 Launch an EC2 instance with the `Deep Learning Base AMI (Ubuntu 16.04)` AMI
 
@@ -49,9 +49,6 @@ aws s3 sync s3://mds-capstone-mda s3
 sudo add-apt-repository ppa:git-core/ppa 
 sudo apt update
 sudo apt install git
-
-# clone the 591_capstone_2020-mda-mds repository
-git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 
 # handle trash
 sudo apt install trash-cli
