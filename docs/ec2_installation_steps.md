@@ -12,9 +12,11 @@ ssh -i [key.pem] -L 8888:localhost:8888 ubuntu@[public domain name].ca-central-1
 Prepare the EC2 instance:
 
 ```
-# update ubuntu and install pip
+# update ubuntu
 sudo apt-get update
 sudo apt-get upgrade
+
+# install pip
 sudo apt install python3-pip
 
 # install miniconda instead of Anaconda to save space and time
@@ -34,11 +36,13 @@ unzip awscliv2.zip
 sudo ./aws/install
 aws configure
 
+# set up aws configure
 AWS Access Key ID [None]: AKIATB63UHM3KTWNDPFG
 AWS Secret Access Key [None]: 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
 Default region name [None]: ca-central-1
 Default output format [None]: json
 
+# download data
 aws s3 sync s3://mds-capstone-mda s3
 
 # update git
