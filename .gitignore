@@ -4,3 +4,5 @@
 .Ruserdata
 *.Rproj
 /data/raw/imgs
+/data/processed/preprocessed_sydney/
+/data/processed/preprocessed_ucm/
