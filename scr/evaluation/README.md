@@ -1,4 +1,5 @@
-#The scripts in this folder is modified by Dora Qian from https://github.com/tylin/coco-caption to support python 3.#
+# The scripts in this folder is modified by Dora Qian from https://github.com/tylin/coco-caption to support python 3.
+# These codes are used to calculate evaluation metrics in UBC MDS-MDA capstone project
 
 Microsoft COCO Caption Evaluation
 ===================
