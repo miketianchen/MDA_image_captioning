@@ -6,3 +6,11 @@
 /data/raw/imgs
 /data/processed/preprocessed_sydney/
 /data/processed/preprocessed_ucm/
+/scr/evaluation/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0-models.jar
+/scr/evaluation/pycocoevalcap/spice/lib/stanford-corenlp-3.6.0.jar
+/scr/evaluation/pycocoevalcap/spice/__pycache__
+/scr/evaluation/pycocoevalcap/bleu/__pycache__
+/scr/evaluation/pycocoevalcap/cider/__pycache__
+/scr/evaluation/pycocoevalcap/meteor/__pycache__
+/scr/evaluation/pycocoevalcap/rouge/__pycache__
+/scr/evaluation/pycocoevalcap/tokenizer/__pycache__
