@@ -1,26 +1,14 @@
-#The scripts in this folder is modified by Dora Qian from https://github.com/tylin/coco-caption to support python 3.#
+**The scripts in this folder is modified by Dora Qian from https://github.com/tylin/coco-caption to support python 3**
 
-Microsoft COCO Caption Evaluation
-===================
+**These codes are used to calculate evaluation metrics in UBC MDS-MDA capstone project**
 
-Evaluation codes for MS COCO caption generation.
+**The original repo can be found [here](https://github.com/tylin/coco-caption)**
 
 ## Requirements ##
 - java 1.8.0
 - python 2.7
 
 ## Files ##
-./
-- cocoEvalCapDemo.py (demo script)
-
-./annotation
-- captions_val2014.json (MS COCO 2014 caption validation set)
-- Visit MS COCO [download](http://mscoco.org/dataset/#download) page for more details.
-
-./results
-- captions_val2014_fakecap_results.json (an example of fake results for running demo)
-- Visit MS COCO [format](http://mscoco.org/dataset/#format) page for more details.
-
 ./pycocoevalcap: The folder where all evaluation codes are stored.
 - evals.py: The file includes COCOEavlCap class that can be used to evaluate results on COCO.
 - tokenizer: Python wrapper of Stanford CoreNLP PTBTokenizer
@@ -29,12 +17,6 @@ Evaluation codes for MS COCO caption generation.
 - rouge: Rouge-L evaluation codes
 - cider: CIDEr evaluation codes
 - spice: SPICE evaluation codes
-
-## Setup ##
-
-- You will first need to download the [Stanford CoreNLP 3.6.0](http://stanfordnlp.github.io/CoreNLP/index.html) code and models for use by SPICE. To do this, run:
-    ./get_stanford_models.sh
-- Note: SPICE will try to create a cache of parsed sentences in ./pycocoevalcap/spice/cache/. This dramatically speeds up repeated evaluations. The cache directory can be moved by setting 'CACHE_DIR' in ./pycocoevalcap/spice. In the same file, caching can be turned off by removing the '-cache' argument to 'spice_cmd'. 
 
 ## References ##
 
