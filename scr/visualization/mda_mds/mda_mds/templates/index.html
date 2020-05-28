@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>MDA MDS</title>
+
+    <link rel="icon" href="">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;900&family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="stars">
+      <div class="twinkling">
+        <!-- <div class="clouds"> -->
+
+
+
+          <!-- NAV BAR -->
+          <div class="container-fluid">
+            <nav class="navbar navbar-expand-md navbar-dark">
+              <!-- <a class="navbar-brand" href="#">MDA</a> -->
+              <a class="navbar-brand" href="https://mdacorporation.com/corporate/" target="_blank">
+                <img src="{% static 'image/mda_logo.png' %}" width="" height="30" alt="">
+              </a>
+
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ml-auto">
+                  <a class="nav-item nav-link" href="https://github.com/UBC-MDS/591_capstone_2020-mda-mds" target="_blank"><i class="fab fa-github fa-2x"></i></a>
+                </div>
+            </nav>
+
+            <!-- MAIN CARD -->
+            <div class="card my-auto" style="width: 50%;">
+              <div class="card-body">
+                <h5 class="card-title">Upload Your Caption and Image</h5>
+                <h6 class="card-subtitle mb-2 text-muted">.jpg, .png, .tif Image Formats are Acceptable</h6>
+                <form action="/external/" method="post" class="form" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <!-- <input type="text" name="param" required> -->
+
+                  <!-- <input type="file" name="image_upload" required>
+                  <br><br> -->
+
+                  <label class="btn btn-outline-dark" for="my-file-selector">
+                      <input id="my-file-selector" type="file" style="display:none" name="image_upload"
+                      onchange="$('#upload-file-info').html(this.files[0].name)">
+                      Upload Your Image File Here
+                  </label>
+                  <br><br>
+                  <textarea cols="80" rows="2" name="param" required></textarea>
+                  <br><br>
+                  <input type="submit" class="btn btn-secondary" value="Submit">
+                  <span class='label label-info' id="upload-file-info"></span>
+                </form>
+                <div class="post-container">
+                  {% if raw_url or edit_url %}
+                    <div class="post-thumb">
+                      <img src="{{raw_url}}" alt="raw_image">
+                    </div>
+                  {% endif %}
+                  {% if data %}
+                    <div class="post-content">
+                      <p>Inputted Caption: {{user_caption}}</p><br>
+                      <p>Generated Caption: {{model_caption}}</p><br>
+                      <p>Evaluation Score: {{score}}</p>
+                   </div>
+                  {% endif %}
+
+                </div>
+                <!-- {% if raw_url or edit_url %}
+                <br>
+                <div>
+                  <img src="{{raw_url}}" alt="raw_image">
+                </div>
+                {% endif %} -->
+                <!-- {%if data %}
+                <p>Evaluation Score: {{score}}</p><br>
+                <p>User's Caption: {{user_caption}}</p><br>
+                <p>Model's Cpation: {{model_caption}}</p>
+                {% endif %} -->
+
+              </div>
+
+            </div>
+            <img src="{% static 'image/Canadarm.png' %}" alt="Canadaarm" class='canadarm'>
+          </div>
+
+        </div>
+      <!-- </div> -->
+
+    </div>
+
+    <script src="https://kit.fontawesome.com/503f25f00c.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
