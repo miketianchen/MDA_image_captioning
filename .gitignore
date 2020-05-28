@@ -14,3 +14,4 @@
 /scr/evaluation/pycocoevalcap/meteor/__pycache__
 /scr/evaluation/pycocoevalcap/rouge/__pycache__
 /scr/evaluation/pycocoevalcap/tokenizer/__pycache__
+/scr/evaluation/pycocoevalcap/spice/cache
