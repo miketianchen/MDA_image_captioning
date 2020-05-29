@@ -19,6 +19,7 @@ class usc_sim():
     '''
     def __init__(self):
         self.params = 'Universal Sentence Encoder Similarity'
+        self.embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
     def calc_score(self, candidate, refs):
         """
@@ -36,8 +37,8 @@ class usc_sim():
         float, average score of similarity between candidate and reference sentences
         """
         similarity_list = []
+        embed = self.embed
         candidate_embed = embed(candidate)
-        
         for caption in refs:
             ref_embed = embed(caption)
             similarity_score = np.inner(ref_embed, candidate_embed)
@@ -63,8 +64,6 @@ class usc_sim():
         """
         assert(gts.keys() == res.keys())
         imgIds = gts.keys()
-        
-        embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
         score = []
         for i in imgIds:
