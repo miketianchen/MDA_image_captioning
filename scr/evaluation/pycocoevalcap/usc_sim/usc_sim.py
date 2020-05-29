@@ -18,7 +18,7 @@ class usc_sim():
 
     '''
     def __init__(self):
-        self.params = 'Universal Sentence Encoder Similarity'
+        self.params = 'Universal_Sentence_Encoder_Similarity'
         self.embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
     def calc_score(self, candidate, refs):
@@ -44,7 +44,7 @@ class usc_sim():
             similarity_score = np.inner(ref_embed, candidate_embed)
             similarity_list.append(similarity_score)
             
-        score = np.mean(similarity_list)
+        score = np.mean(similarity_list, dtype = "float64")
         return score
 
     def compute_score(self, gts, res):
@@ -72,7 +72,7 @@ class usc_sim():
 
             score.append(self.calc_score(hypo, ref))
 
-        average_score = np.mean(score)
+        average_score = np.mean(np.array(score))
         return average_score, score
 
     def method(self):
