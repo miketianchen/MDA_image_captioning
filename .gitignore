@@ -15,3 +15,5 @@
 /scr/evaluation/pycocoevalcap/rouge/__pycache__
 /scr/evaluation/pycocoevalcap/tokenizer/__pycache__
 /scr/evaluation/pycocoevalcap/spice/cache
+/scr/evaluation/__pycache__
+/scr/evaluation/pycocoevalcap/usc_sim/__pycache__
