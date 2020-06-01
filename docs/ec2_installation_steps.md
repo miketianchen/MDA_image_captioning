@@ -72,4 +72,6 @@ Additional packages to install (not in the AMI)
 
 ```
 pip install tensorflow
+pip install tensorflow_hub
+pip install tensorflow_text
 ```
