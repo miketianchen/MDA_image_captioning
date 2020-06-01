@@ -67,3 +67,9 @@ pip install torchsummary
 pip install ipywidgets
 jupyter nbextension enable --py --sys-prefix widgetsnbextension
 ```
+
+Additional packages to install (not in the AMI)
+
+```
+pip install tensorflow
+```
