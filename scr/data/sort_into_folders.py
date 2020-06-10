@@ -32,13 +32,11 @@ for set_name in set_names:
         destination_path = 'data/processed/' + set_name + '/' + filename
         #origin_path = '../data/processed/' + 
         
-        print(destination_path)
         
         # Split the filename with `_` to find the dataset it originates from 
         dataset = filename.split('_')[0]
         
         origin_path = 'data/processed/' + 'preprocessed_'+ dataset  + '/' + filename        
-        print(origin_path)
         
         os.rename(origin_path, destination_path)
 
