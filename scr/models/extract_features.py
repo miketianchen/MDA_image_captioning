@@ -3,19 +3,19 @@
 
 '''This script 
 
-Usage: src/model/prepare_data.py [--train=<train>] [--single=<single>] INPUT_PATH NAMES ...
+Usage: scr/models/extract_features.py ROOT_PATH OUTPUT [--inputs=<inputs>] [--cnn=<cnn>]
 
 Arguments:
-INPUTS               The path for the file or folder
+ROOT_PATH         The root path of the json folder (e.g. ../s3).
+OUTPUT            The output file name (e.g. test).
 
 Options:
---train=<train>    Prepare data for training or not [default: False].
---single=<single>  Prepare a single images or not [default: False]. 
+--inputs=<inputs> The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
+--cnn=<cnn>       The pre-trained CNN type, vgg16 or inception_v3 [default: vgg16].
 '''
 
-import json
+import os, json, pickle
 from tqdm import tqdm
-import pickle
 from time import time
 import numpy as np
 from PIL import Image
@@ -31,11 +31,9 @@ from model import CNNModel
 
 START = "startseq"
 STOP = "endseq"
-opt = docopt(__doc__)
 
 
-
-def encode_image(model, img_path, device):
+def encode_image(model, img_path):
     """
     Process the images to extract features
 
@@ -79,7 +77,7 @@ def hms_string(sec_elapsed):
     s = sec_elapsed % 60
     return f"{h}:{m:>02}:{s:>05.2f}"
 
-def extract_img_features(name, img_paths, model, device):
+def extract_img_features(img_paths, model, file_path):
     """
     Extracts, stores and returns image features
 
@@ -95,31 +93,57 @@ def extract_img_features(name, img_paths, model, device):
     numpy.ndarray
         the extracted image feature matrix from CNNModel
     """ 
-
+    print(f'Extracting image features ...')
     start = time()
     img_features = []
 
     for image_path in img_paths:
         img_features.append(
-            encode_image(model, image_path, device).cpu().data.numpy()
+            encode_image(model, image_path).cpu().data.numpy()
     )
-
-    print(f"Extracting image features for the {name} set took: {hms_string(time()-start)}")
+        
+    with open(file_path, "wb") as fp:
+        pickle.dump(img_features, fp)
+        
+    print(f"Extracting image features took: {hms_string(time()-start)}")
 
     return img_features
 
 if __name__ == "__main__":
 
-    root_path = opt["--input"]
+    args = docopt(__doc__)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+       
+    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+        model_info = json.load(f)
+    
+    img_paths = []
 
-    encoder = CNNModel(cnn_type, pretrained=True)
+    if args['--inputs'] is None:
+        with open(f"{args['ROOT_PATH']}/results/train_paths.pkl", 'rb') as f:
+            img_paths = pickle.load(f)
+
+        model_info['cnn_type'] = args['--cnn']
+    
+        with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:
+            json.dump(model_info, f)
+    else:
+        path = f"{args['ROOT_PATH']}/{args['--inputs']}"
+        try:            
+            for filename in os.listdir(path):
+                if filename.endswith('.jpg'):
+                    img_paths.append(path + f'/{filename}')
+        except:
+            img_paths.append(path)
+
+    encoder = CNNModel(model_info['cnn_type'], pretrained=True)
     encoder.to(device)
     
-    train_img_features = extract_img_features(
-        'training',
-        train_paths,
-        encoder, 
-        device
+    img_features = extract_img_features(
+        img_paths,
+        encoder,
+        f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.pkl"
     )
+
+
