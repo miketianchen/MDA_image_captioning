@@ -56,3 +56,26 @@ def generateCaption(
     final = final[1 : -1]
     final = ' '.join(final)
     return final
+
+if __name__ == "__main__":
+
+    # generate results
+    for name, paths, img_features in [('test', test_paths, test_img_features),
+    ('sydney', sydney_paths, sydney_img_features)]:
+        results = {}
+        print(f'Generating captions for the {name} dataset...')
+
+        for n in range(len(paths)):
+            # note the filename splitting depends on path
+            filename = paths[n].split('/')[4]
+            results[filename] = generateCaption(
+                caption_model, 
+                img_features[n],
+                max_length,
+                vocab_size,
+                wordtoidx,
+                idxtoword,
+                device
+            )
+        with open(f'{root_captioning}/{name}_generated_captions.json', 'w') as fp:
+            json.dump(results, fp)    
