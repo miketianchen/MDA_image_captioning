@@ -54,8 +54,6 @@ def split_data(seqs, label):
         x[json_data[name]['images'][ind]['filename']] = json_data[name]['images'][ind]
         return x
     
-    print()
-    print(f'Preparing the {label} dataset:')
 
     imgs = {}
     
@@ -65,9 +63,7 @@ def split_data(seqs, label):
     imgs['ucm'] = reduce(lambda x, y: aggerate(x, y - sizes['rsicd'], 'ucm'),
                          seqs[seqs >= sizes['rsicd']], {})
 
-    print(f"{len(imgs['rsicd'])} images from the RSICD dataset")
-    print(f"{len(imgs['ucm'])} images from the UCM dataset")
-    print(f"{len(imgs['rsicd']) + len(imgs['ucm'])} images in total")
+
 
     return imgs
 
@@ -81,7 +77,6 @@ for name in set_name:
     with open('data/raw/dataset_' + name + '_modified.json', 'r') as data:
         json_data[name] = json.load(data)
         sizes[name] = len(json_data[name]['images'])
-        print(f'There are {sizes[name]} images in the {name} dataset.')
 
 # create splits based on a sequence from 0 to 13633
 # an image from the RSCID dataset has a index in [0, 10920]

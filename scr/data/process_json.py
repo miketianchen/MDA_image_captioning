@@ -25,7 +25,6 @@ for name in set_name:
     with open('data/raw/dataset_' + name + '_modified.json', 'r') as data:
         json_data[name] = json.load(data)
         sizes[name] = len(json_data[name]['images'])
-        print(f'There are {sizes[name]} images in the {name} dataset.')
 
 
 # In[65]:
@@ -50,9 +49,6 @@ for name in set_name:
         else: 
             print("uh-oh") #should add try catch later
             
-print(f'There are {len(rsicd_data)} images in the rsicd dataset.')
-print(f'There are {len(ucm_data)} images in the ucm dataset.')
-print(f'There are {len(sydney_data)} images in the sydney dataset.')
 
 
 # In[66]:
