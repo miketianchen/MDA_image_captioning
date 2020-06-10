@@ -27,8 +27,11 @@ class CNNModel(nn.Module):
         """
 
         super(CNNModel, self).__init__()
-
+        
+        print(f'Loading pre-trained CNN {cnn_type}...')
+        
         if cnn_type == 'vgg16':
+            
             self.model = models.vgg16(pretrained=pretrained)
 
             # remove the last two layers in classifier

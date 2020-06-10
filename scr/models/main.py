@@ -27,8 +27,8 @@ STOP = "endseq"
 
 if __name__ == "__main__":
 
-    root_captioning = '../../s3'
-    model_path = ''
+    root_captioning = '../../../s3'
+    model_path = f'{root_captioning}/final_model.hdf5'
 
     train_paths, train_descriptions, max_length_train =\
     get_img_info(root_captioning, 'train')
@@ -38,7 +38,11 @@ if __name__ == "__main__":
     get_img_info(root_captioning, 'test')
     sydney_paths, sydney_descriptions, max_length_sydney =\
     get_img_info(root_captioning, 'sydney')
-
+    
+    print(f'{len(train_paths)} images from RSICD and UCM datasets for training')
+    print(f'{len(test_paths)} images from RSICD and UCM datasets for testing')
+    print(f'{len(sydney_paths)} images from the Sydney dataset for testing')
+    
     train_paths.extend(valid_paths.copy())
     train_descriptions.extend(valid_descriptions.copy())
     # add a start and stop token at the beginning/end
@@ -65,22 +69,26 @@ if __name__ == "__main__":
     ) 
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     encoder = CNNModel(cnn_type, pretrained=True)
     encoder.to(device)
-
+    
     train_img_features = extract_img_features(
+        'training',
         train_paths,
         encoder, 
         device
     )
 
     test_img_features = extract_img_features(
+        'test',
         test_paths,
         encoder,
         device
     )
 
     sydney_img_features = extract_img_features(
+        'sydney',
         sydney_paths,
         encoder,
         device
@@ -95,11 +103,10 @@ if __name__ == "__main__":
 
     train_loader = DataLoader(
         train_dataset,
-        batch_size
+        batch_size,
+        collate_fn=my_collate
     )
 
-    encoder = CNNModel(cnn_type, pretrained=True)
-    encoder.to(device)
 
     caption_model = CaptionModel(
         cnn_type, 
@@ -136,9 +143,10 @@ if __name__ == "__main__":
             optimizer,
             criterion,
             clip,
-            vocab_size
+            vocab_size,
+            device
         )
-        print(loss)
+        print(f'loss = {loss}')
 
     # reduce the learning rate
     for param_group in optimizer.param_groups:
@@ -152,9 +160,10 @@ if __name__ == "__main__":
             optimizer,
             criterion,
             clip,
-            vocab_size
+            vocab_size,
+            device
         )
-        print(loss)
+        print(f'loss = {loss}')
 
     torch.save(caption_model, model_path)
     print(f"\Training took: {hms_string(time()-start)}")
@@ -163,7 +172,7 @@ if __name__ == "__main__":
     for name, paths, img_features in [('test', test_paths, test_img_features),
     ('sydney', sydney_paths, sydney_img_features)]:
         results = {}
-        print('Generating captions for the {name} dataset...')
+        print(f'Generating captions for the {name} dataset...')
 
         for n in range(len(paths)):
             # note the filename splitting depends on path

@@ -67,7 +67,7 @@ def get_vocab(descriptions, word_count_threshold=10):
     for val in descriptions:
         for cap in val:
             captions.append(cap)
-    print(f'There are {len(captions)} captions')
+    print(f'{len(captions)} captions for training')
     
     word_counts = {}
     nsents = 0
@@ -77,7 +77,8 @@ def get_vocab(descriptions, word_count_threshold=10):
             word_counts[w] = word_counts.get(w, 0) + 1
 
     vocab = [w for w in word_counts if word_counts[w] >= word_count_threshold]
-    print('preprocessed words %d ==> %d' % (len(word_counts), len(vocab)))
+    print(f'Removed uncommon words (< {word_count_threshold}) and',
+          f'reduced the number of words from {len(word_counts)} to {len(vocab)}')
     return vocab
 
 def get_word_dict(vocab):
@@ -97,6 +98,8 @@ def get_word_dict(vocab):
 def get_embeddings(root_captioning, vocab_size, embedding_dim, wordtoidx):
 
     embeddings_index = {} 
+    
+    print('Loading pre-trained Glove embeddings...')
 
     with open(f'{root_captioning}/glove.6B.200d.txt', 'r', encoding='utf-8') as file:
 
@@ -182,12 +185,12 @@ class SampleDataset(Dataset):
         img_features, captions = [], []
         for desc in self.descriptions[idx]:
             # convert each word into a list of sequences.
-            seq = [wordtoidx[word] for word in desc.split(' ')
+            seq = [self.wordtoidx[word] for word in desc.split(' ')
                   if word in self.wordtoidx]
             # pad the sequence with 0 on the right side
             in_seq = np.pad(
                 seq, 
-                (0, max_length - len(seq)),
+                (0, self.max_length - len(seq)),
                 mode='constant',
                 constant_values=(0, 0)
                 )
@@ -264,7 +267,7 @@ def hms_string(sec_elapsed):
     s = sec_elapsed % 60
     return f"{h}:{m:>02}:{s:>05.2f}"
 
-def extract_img_features(img_paths, model, device):
+def extract_img_features(name, img_paths, model, device):
     """
     Extracts, stores and returns image features
 
@@ -289,7 +292,7 @@ def extract_img_features(img_paths, model, device):
             encode_image(model, image_path, device).cpu().data.numpy()
     )
 
-    print(f"\nGenerating set took: {hms_string(time()-start)}")
+    print(f"Extracting image features for the {name} set took: {hms_string(time()-start)}")
 
     return img_features
 
