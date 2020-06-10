@@ -78,7 +78,7 @@ set_name = ['rsicd', 'ucm']
 
 # read in json files from all three datasets
 for name in set_name:
-    with open('../../data/raw/dataset_' + name + '_modified.json', 'r') as data:
+    with open('data/raw/dataset_' + name + '_modified.json', 'r') as data:
         json_data[name] = json.load(data)
         sizes[name] = len(json_data[name]['images'])
         print(f'There are {sizes[name]} images in the {name} dataset.')
@@ -108,5 +108,5 @@ for imgs, name, seq in imgs_names:
         f'The number of the {name} images does not match the size of the {name} dataset.'
 
 for imgs, name, _ in imgs_names:
-    with open('../../data/interim/' + name + '.json', 'w') as file:
+    with open('data/interim/' + name + '.json', 'w') as file:
         json.dump(imgs, file)
