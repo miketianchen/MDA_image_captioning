@@ -3,7 +3,7 @@
 
 '''This script 
 
-Usage: src/model/prepare_data.py ROOT_PATH INPUTS...
+Usage: scr/models/prepare_data.py ROOT_PATH INPUTS...
 
 Arguments:
 ROOT_PATH         The root path of the json folder.
@@ -47,7 +47,7 @@ def get_img_info(root_path, name, num=np.inf):
             if num is not None and len(caption) == num:
                 break
             img_path.append(
-                f'{root_path}/imgs/{name}/{filename}'
+                f'{root_path}/{name}/{filename}'
             )
             sen_list = []
             for sentence in data[filename]['sentences']:
@@ -167,12 +167,12 @@ if __name__ == "__main__":
         'vocab_size': vocab_size,
     }
 
-    with open( f"{args['ROOT_PATH']}/model/model_info.json", 'w') as f:
+    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:
         json.dump(model_info, f)
         
-    with open(f"{args['ROOT_PATH']}/model/train_paths.pkl", 'wb') as f:
+    with open(f"{args['ROOT_PATH']}/results/train_paths.pkl", 'wb') as f:
         pickle.dump(train_paths, f)
 
-    with open(f"{args['ROOT_PATH']}/model/train_descriptions.pkl", 'wb') as f:
+    with open(f"{args['ROOT_PATH']}/results/train_descriptions.pkl", 'wb') as f:
         pickle.dump(train_descriptions, f)
 
