@@ -3,13 +3,13 @@
 
 '''This script 
 
-Usage: scr/models/generate_captions.py ROOT_PATH INPUT MODEL OUTPUT
+Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> --output=<output>
 
-Arguments:
-ROOT_PATH         The root path of the json folder.
-INPUT             The input image feature file name without the filename extension.
-MODEL             The trained caption model name without the filename extension.
-OUTPUT            The output file name without the filename extension.
+Options:
+--root_path=<root_path>    The root path of the json folder.
+--inputs=<inputs>          The input image feature file name (no extension).
+--model=<model>            The trained caption model name (no extension).
+--output=<output>          The output file name (no extension).
 '''
 
 import json
@@ -63,19 +63,23 @@ def generate_caption(
 
 if __name__ == "__main__":
 
-    args = docopt(__doc__)
-
+    opt = docopt(__doc__)
+    root_path = opt['--root_path']
+    inputs = opt['--inputs']
+    model = opt['--model']
+    output = opt['--output']
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+    with open( f"{root_path}/results/model_info.json", 'r') as f:
         model_info = json.load(f)
         
-    with open(f"{args['ROOT_PATH']}/results/{args['INPUT']}.pkl", 'rb') as f:
+    with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
         img_features = pickle.load(f)  
-    with open(f"{args['ROOT_PATH']}/results/{args['INPUT']}_paths.pkl", 'rb') as f:
+    with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
         img_paths = pickle.load(f)  
         
-    caption_model = torch.load(f"{args['ROOT_PATH']}/results/{args['MODEL']}.hdf5")    
+    caption_model = torch.load(f"{root_path}/results/{model}.hdf5")    
     
     # generate results
     results = {}
@@ -94,7 +98,7 @@ if __name__ == "__main__":
             model_info['idxtoword']
         )
 
-    with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.json", 'w') as fp:
+    with open(f"{root_path}/results/{output}.json", 'w') as fp:
         json.dump(results, fp)    
 
     print(f"Generating captions took: {hms_string(time()-start)}")

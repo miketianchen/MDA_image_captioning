@@ -3,14 +3,12 @@
 
 '''This script 
 
-Usage: scr/models/extract_features.py ROOT_PATH OUTPUT [--inputs=<inputs>]
-
-Arguments:
-ROOT_PATH         The root path of the json folder (e.g. ../s3).
-OUTPUT            The output file name (e.g. test).
+Usage: scr/models/extract_features.py --root_path=<root_path> --output=<output> [--inputs=<inputs>]
 
 Options:
---inputs=<inputs> The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
+--root_path=<root_path>     The root path of the json folder (e.g. data).
+--output=<output>           The output file name  (no extension, e.g. test).
+--inputs=<inputs>           The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
 '''
 
 import os, json, pickle
@@ -105,21 +103,24 @@ def extract_img_features(img_paths, model):
 
 if __name__ == "__main__":
 
-    args = docopt(__doc__)
-
+    opt = docopt(__doc__)
+    root_path = opt['--root_path']
+    output = opt['--output']
+    inputs = opt['--inputs']
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
        
-    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+    with open( f"{root_path}/results/model_info.json", 'r') as f:
         model_info = json.load(f)
     
     img_paths = []
 
-    if args['--inputs'] is None:
-        with open(f"{args['ROOT_PATH']}/results/train_paths.pkl", 'rb') as f:
+    if inputs is None:
+        with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
             img_paths = pickle.load(f)
 
     else:
-        path = f"{args['ROOT_PATH']}/{args['--inputs']}"
+        path = f"{root_path}/{inputs}"
         try:            
             for filename in os.listdir(path):
                 if filename.endswith('.jpg'):
@@ -127,7 +128,7 @@ if __name__ == "__main__":
         except:
             img_paths.append(path)
             
-        with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}_paths.pkl", "wb") as f:
+        with open(f"{root_path}/results/{output}_paths.pkl", "wb") as f:
             pickle.dump(img_paths, f)
         
     encoder = CNNModel(pretrained=True)
@@ -137,6 +138,6 @@ if __name__ == "__main__":
         img_paths,
         encoder
     )
-    with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.pkl", "wb") as f:
+    with open(f"{root_path}/results/{output}.pkl", "wb") as f:
         pickle.dump(img_features, f)
 

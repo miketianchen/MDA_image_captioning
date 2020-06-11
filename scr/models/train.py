@@ -3,11 +3,11 @@
 
 '''This script 
 
-Usage: scr/models/train.py ROOT_PATH OUTPUT
+Usage: scr/models/train.py --root_path=<root_path> --output=<output>
 
-Arguments:
-ROOT_PATH         The root path of the json folder.
-OUTPUT            The output trained caption model name without the filename extension.
+Options:
+--root_path=<root_path>   The root path of the json folder.
+--output=<output>         The output trained caption model name without the filename extension.
 '''
 
 import json
@@ -226,28 +226,30 @@ def my_collate(batch):
 
 if __name__ == "__main__":
 
-    args = docopt(__doc__)
-
+    opt = docopt(__doc__)
+    root_path = opt['--root_path']
+    output = opt['--output']
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
     batch_size = 200
     hidden_size = 256
     embedding_dim = 200
     
-    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+    with open( f"{root_path}/results/model_info.json", 'r') as f:
         model_info = json.load(f)
         
     embedding_matrix = get_embeddings(
-        args['ROOT_PATH'],
+        root_path,
         model_info['vocab_size'],
         embedding_dim,
         model_info['wordtoidx']
     ) 
         
-    with open(f"{args['ROOT_PATH']}/results/train_descriptions.pkl", 'rb') as f:
+    with open(f"{root_path}/results/train_descriptions.pkl", 'rb') as f:
         train_descriptions = pickle.load(f)
         
-    with open(f"{args['ROOT_PATH']}/results/train.pkl", 'rb') as f:
+    with open(f"{root_path}/results/train.pkl", 'rb') as f:
         train_img_features = pickle.load(f)    
 
     train_dataset = SampleDataset(
@@ -317,5 +319,5 @@ if __name__ == "__main__":
         )
         print(f'loss = {loss}')
 
-    torch.save(caption_model, f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.hdf5")
+    torch.save(caption_model, f"{root_path}/results/{output}.hdf5")
     print(f"\Training took: {hms_string(time()-start)}")
