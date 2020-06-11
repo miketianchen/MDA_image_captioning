@@ -1,4 +1,17 @@
-__author__ = 'doraqmon'
+# author: Dora Qian
+# date: 2020-06-10
+
+'''This script calculates evaluation scores for test results.
+This script takes the paths of folders containing human annotated captions and model generated captions and save the scores in the desired folder.
+
+Usage: scr/evaluation/eval.py --ref_path=<ref_path> --result_path=<result_path> --output_path=<output_path>
+
+Options:
+--ref_path=<ref_path>  Folder that contains the human generated caption file
+--result_path=<result_path>  Folder that contains the model generated caption file
+--output_path=<output_path>  Folder that stores the evaluation score files
+'''
+
 from pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
 from pycocoevalcap.bleu.bleu import Bleu
 from pycocoevalcap.meteor.meteor import Meteor
@@ -7,28 +20,39 @@ from pycocoevalcap.cider.cider import Cider
 from pycocoevalcap.spice.spice import Spice
 from pycocoevalcap.usc_sim.usc_sim import usc_sim
 import subprocess
+from docopt import docopt
+import json
+import os 
 
+opt = docopt(__doc__)
 
-def eval_model(ref_data, results):
+def eval_model(ref_path, result_path, output_path):
     """
     Computes evaluation metrics of the model results against the human annotated captions
     
     Parameters:
     ------------
-    ref_data: dict
-        a dictionary containing human annotated captions, with image name as key and a list of human annotated captions as values
+    ref_path: str
+        a path to the folder containing the human annotated json files
     
-    results: dict
-        a dictionary containing model generated caption, with image name as key and a generated caption as value
+    result_path: str
+        a path to the folder containing the model generated json files
+    
+    output_path:
+        a path to save the score files
         
     Returns:
     ------------
-    score_dict: a dictionary containing the overall average score for the model
-    img_score_dict: a dictionary containing the individual scores for images
-    scores_dict: a dictionary containing the scores by metric type
+    None, it saves the overall score and individual score files under output path
     """
+    # load data
+    with open(ref_path + '/test.json', 'r') as data:
+        ref_data = json.load(data)
+    with open(result_path + '/test.json', 'r') as data1:
+        results = json.load(data1)
+    
     # download stanford nlp library
-    subprocess.call(['../scr/evaluation/get_stanford_models.sh'])
+    subprocess.call(['scr/evaluation/get_stanford_models.sh'])
     
     # format the inputs
     img_id_dict = {'image_id': list(ref_data.keys())}
@@ -91,5 +115,14 @@ def eval_model(ref_data, results):
                 img_score_dict[img_name][metrics] = scores_dict[metrics][n]['All']['f']
             else:
                 img_score_dict[img_name][metrics] = scores_dict[metrics][n]
-                
-    return score_dict, img_score_dict, scores_dict
+    
+    # save the overall score and individual image score
+    if not os.path.exists(output_path):
+        os.makedirs(output_path, exist_ok=True)
+    with open(output_path + '/score.json', 'w') as file:
+        json.dump(score_dict, file)
+    with open(output_path + '/img_score.json', 'w') as file2:
+        json.dump(img_score_dict, file2)
+
+if __name__ == "__main__":
+    eval_model(opt["--ref_path"], opt["--result_path"], opt["--output_path"])
