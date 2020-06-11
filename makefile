@@ -49,41 +49,46 @@ data/json/valid.json data/json/test.json scr/data/sort_images.py
 	python scr/data/sort_images.py --json_path="data/json" \
 	--img_path="data" --output_path="data"
 
-
-
+# combine train and valid data as the training data 
+# and prepare data for training
 data/results/train_paths.pkl data/results/train_descriptions.pkl \
 data/results/model_info.json : \
 scr/models/prepare_data.py data/json/train.json data/json/valid.json
 
-	python scr/models/prepare_data.py data train valid
+	python scr/models/prepare_data.py --root_path=data train valid
 
+# extract image features from training data
 data/results/train.pkl : \
 scr/models/extract_features.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
 data/results/train_paths.pkl
 
-	python scr/models/extract_features.py data train
+	python scr/models/extract_features.py --root_path=data --output=train
 
+# train the caption model
 data/results/final_model.hdf5 : \
 scr/models/train.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
 data/results/train_descriptions.pkl data/results/train.pkl 
 
-	python scr/models/train.py data final_model
+	python scr/models/train.py --root_path=data --output=final_model
 
-
+# extract imgae features from the test images
 data/results/test.pkl data/results/test_paths.pkl : \
 scr/models/extract_features.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json
 
-	python scr/models/extract_features.py data test --inputs=test
+	python scr/models/extract_features.py \
+    --root_path=data --output=test --inputs=test
 
+# generate captions for the test images
 data/results/test.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
 data/results/test.pkl data/results/test_paths.pkl \
 data/results/final_model.hdf5
 
-	python scr/models/generate_captions.py data test final_model test
+	python scr/models/generate_captions.py \
+    --root_path=data --inputs=test --model=final_model --output=test
 
 
 # Clean up intermediate and results files
