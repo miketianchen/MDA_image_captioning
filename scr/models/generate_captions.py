@@ -21,7 +21,7 @@ import numpy as np
 
 import torch
 
-from extract_features import hms_string
+from hms_string import hms_string
 
 START = "startseq"
 STOP = "endseq"
@@ -94,4 +94,4 @@ if __name__ == "__main__":
     with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.json", 'w') as fp:
         json.dump(results, fp)    
 
-    print(f"\Training took: {hms_string(time()-start)}")
+    print(f"Generating captions took: {hms_string(time()-start)}")

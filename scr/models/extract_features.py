@@ -3,7 +3,7 @@
 
 '''This script 
 
-Usage: scr/models/extract_features.py ROOT_PATH OUTPUT [--inputs=<inputs>] [--cnn=<cnn>]
+Usage: scr/models/extract_features.py ROOT_PATH OUTPUT [--inputs=<inputs>]
 
 Arguments:
 ROOT_PATH         The root path of the json folder (e.g. ../s3).
@@ -11,7 +11,6 @@ OUTPUT            The output file name (e.g. test).
 
 Options:
 --inputs=<inputs> The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
---cnn=<cnn>       The pre-trained CNN type, vgg16 or inception_v3 [default: vgg16].
 '''
 
 import os, json, pickle
@@ -28,6 +27,7 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from torch.utils.data import Dataset
 
 from model import CNNModel
+from hms_string import hms_string
 
 START = "startseq"
 STOP = "endseq"
@@ -71,11 +71,6 @@ def encode_image(model, img_path):
     x = np.squeeze(x)
     return x
 
-def hms_string(sec_elapsed):
-    h = int(sec_elapsed / (60 * 60))
-    m = int((sec_elapsed % (60 * 60)) / 60)
-    s = sec_elapsed % 60
-    return f"{h}:{m:>02}:{s:>05.2f}"
 
 def extract_img_features(img_paths, model):
     """
@@ -121,10 +116,6 @@ if __name__ == "__main__":
         with open(f"{args['ROOT_PATH']}/results/train_paths.pkl", 'rb') as f:
             img_paths = pickle.load(f)
 
-        model_info['cnn_type'] = args['--cnn']
-    
-        with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:
-            json.dump(model_info, f)
     else:
         path = f"{args['ROOT_PATH']}/{args['--inputs']}"
         try:            
@@ -137,7 +128,7 @@ if __name__ == "__main__":
         with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}_paths.pkl", "wb") as f:
             pickle.dump(img_paths, f)
         
-    encoder = CNNModel(model_info['cnn_type'], pretrained=True)
+    encoder = CNNModel(pretrained=True)
     encoder.to(device)
     
     img_features = extract_img_features(

@@ -121,9 +121,9 @@ if __name__ == "__main__":
 
     model_info = {
         'max_length': max_length,
+        'vocab_size': vocab_size,
         'idxtoword': idxtoword,
-        'wordtoidx': wordtoidx,
-        'vocab_size': vocab_size
+        'wordtoidx': wordtoidx
     }
 
     with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:

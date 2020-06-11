@@ -22,7 +22,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
-from extract_features import hms_string
+from hms_string import hms_string
 from model import CNNModel, RNNModel, CaptionModel
 
 EPOCHS = 10
@@ -261,7 +261,6 @@ if __name__ == "__main__":
     )
 
     caption_model = CaptionModel(
-        model_info['cnn_type'], 
         model_info['vocab_size'], 
         embedding_dim, 
         hidden_size=hidden_size,
