@@ -77,7 +77,7 @@ def hms_string(sec_elapsed):
     s = sec_elapsed % 60
     return f"{h}:{m:>02}:{s:>05.2f}"
 
-def extract_img_features(img_paths, model, file_path):
+def extract_img_features(img_paths, model):
     """
     Extracts, stores and returns image features
 
@@ -101,9 +101,6 @@ def extract_img_features(img_paths, model, file_path):
         img_features.append(
             encode_image(model, image_path).cpu().data.numpy()
     )
-        
-    with open(file_path, "wb") as fp:
-        pickle.dump(img_features, fp)
         
     print(f"Extracting image features took: {hms_string(time()-start)}")
 
@@ -136,14 +133,17 @@ if __name__ == "__main__":
                     img_paths.append(path + f'/{filename}')
         except:
             img_paths.append(path)
-
+            
+        with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}_paths.pkl", "wb") as f:
+            pickle.dump(img_paths, f)
+        
     encoder = CNNModel(model_info['cnn_type'], pretrained=True)
     encoder.to(device)
     
     img_features = extract_img_features(
         img_paths,
-        encoder,
-        f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.pkl"
+        encoder
     )
-
+    with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.pkl", "wb") as f:
+        pickle.dump(img_features, f)
 

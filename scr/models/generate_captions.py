@@ -1,37 +1,38 @@
-# generate_captions.py
-#
 # Author: Fanli Zhou
-#
 # Date: 2020-06-09
-#
-# This script 
+
+'''This script 
+
+Usage: scr/models/generate_captions.py ROOT_PATH INPUT MODEL OUTPUT
+
+Arguments:
+ROOT_PATH         The root path of the json folder.
+INPUT             The input image feature file name without the filename extension.
+MODEL             The trained caption model name without the filename extension.
+OUTPUT            The output file name without the filename extension.
+'''
 
 import json
 from tqdm import tqdm
 import pickle
 from time import time
+from docopt import docopt
 import numpy as np
 
 import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader
 
-from prepare_data import get_img_info, get_vocab, get_word_dict,\
-get_embeddings, SampleDataset, my_collate, encode_image,\
-extract_img_features, hms_string
-from model import CNNModel, RNNModel, CaptionModel
+from extract_features import hms_string
 
 START = "startseq"
 STOP = "endseq"
 
-def generateCaption(
+def generate_caption(
     model, 
     img_features,
     max_length,
     vocab_size,
     wordtoidx,
-    idxtoword,
-    device
+    idxtoword
 ):
     in_text = START
 
@@ -48,7 +49,7 @@ def generateCaption(
         )
 
         yhat = yhat.view(-1, vocab_size).argmax(1)
-        word = idxtoword[yhat.cpu().data.numpy()[i]]
+        word = idxtoword[str(yhat.cpu().data.numpy()[i])]
         in_text += ' ' + word
         if word == STOP:
             break
@@ -59,23 +60,38 @@ def generateCaption(
 
 if __name__ == "__main__":
 
-    # generate results
-    for name, paths, img_features in [('test', test_paths, test_img_features),
-    ('sydney', sydney_paths, sydney_img_features)]:
-        results = {}
-        print(f'Generating captions for the {name} dataset...')
+    args = docopt(__doc__)
 
-        for n in range(len(paths)):
-            # note the filename splitting depends on path
-            filename = paths[n].split('/')[4]
-            results[filename] = generateCaption(
-                caption_model, 
-                img_features[n],
-                max_length,
-                vocab_size,
-                wordtoidx,
-                idxtoword,
-                device
-            )
-        with open(f'{root_captioning}/{name}_generated_captions.json', 'w') as fp:
-            json.dump(results, fp)    
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+        model_info = json.load(f)
+        
+    with open(f"{args['ROOT_PATH']}/results/{args['INPUT']}.pkl", 'rb') as f:
+        img_features = pickle.load(f)  
+    with open(f"{args['ROOT_PATH']}/results/{args['INPUT']}_paths.pkl", 'rb') as f:
+        img_paths = pickle.load(f)  
+        
+    caption_model = torch.load(f"{args['ROOT_PATH']}/results/{args['MODEL']}.hdf5")    
+    
+    # generate results
+    results = {}
+    print(f'Generating captions...')
+    start = time()
+
+    for n in tqdm(range(len(img_paths))):
+        # note the filename splitting depends on path
+        filename = img_paths[n].split('/')[-1]
+        results[filename] = generate_caption(
+            caption_model, 
+            img_features[n],
+            model_info['max_length'],
+            model_info['vocab_size'],
+            model_info['wordtoidx'],
+            model_info['idxtoword']
+        )
+
+    with open(f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.json", 'w') as fp:
+        json.dump(results, fp)    
+
+    print(f"\Training took: {hms_string(time()-start)}")
