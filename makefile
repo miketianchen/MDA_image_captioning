@@ -1,32 +1,39 @@
-all : data/processed/train
+# Make file for UBC MDS-MDA Capstone Project
+# Dora Qian, Fanli Zhou, James Huang, Mike Chen
+# June 9, 2020
+# 
+# This driver script completes xxx, This script takes no arguments. 
+# 
+# usage: make all  
+#							to run all the pipeline
+# usage: make data  
+#							to prepare the data for model training 
+# usage: make clean 
+#							to clean up all the intermediate and results files
 
-# split the data
-data/interim : data/raw
-	python scr/data/split_data.py
+# run all the steps in pipeline
 
-# preprocess the images
-data/processed/marker : data/raw
-	python scr/data/preprocess_image.py
+# run all the scripts in the data preprocess stage
+data: data/train data/test data/valid data/json data/preprocessed_sydney
 
-# process the json files and correct the captions
-data/processed/json/train.json : data/interim
-	python scr/data/process_json.py
-	python scr/data/correct_captions.py
+# split the dataset into train/valid/test, process the json file and correct the captions in train json
+data/json/train.json data/json/valid.json data/json/test.json : scr/data/preprocess_json.py
+	python scr/data/preprocess_json.py --input_path="data/raw" --output_path="data/json"
 
-# sort preprocessed images into folders
-data/processed/train data/processed/valid data/processed/test : data/processed/json/train.json data/processed/marker
-	python scr/data/sort_into_folders.py	
+# preprocess the images and save under train/valid/test folders
+data/preprocessed_ucm data/preprocessed_rsicd data/preprocessed_sydney : scr/data/preprocess_image.py
+	python scr/data/preprocess_image.py --input_path="data/raw" 
 
-clean :
-	rm -f data/interim/train.json
-	rm -f data/interim/valid.json
-	rm -f data/interim/test.json
-	rm -r -f data/processed/preprocessed_UCM
-	rm -r -f data/processed/preprocessed_RSICD
-	rm -r -f data/processed/preprocessed_sydney
-	rm -r -f data/processed/json
-	mkdir data/processed/json
-	rm -r -f data/processed/train
-	rm -r -f data/processed/valid
-	rm -r -f data/processed/test
-	rm -r -f data/processed/marker
+# sort the preprocessed images into corresponding train/valid/test folders
+data/train data/test data/valid : data/preprocessed_ucm data/preprocessed_rsicd data/preprocessed_sydney data/json/train.json data/json/valid.json data/json/test.json scr/data/sort_images.py
+	python scr/data/sort_images.py --json_path="data/json" --img_path="data" --output_path="data"
+	
+# Clean up intermediate and results files
+clean : 
+	rm -rf data/json
+	rm -rf data/preprocessed_sydney
+	rm -rf data/preprocessed_ucm
+	rm -rf data/preprocessed_rsicd
+	rm -rf data/test
+	rm -rf data/train
+	rm -rf data/valid
