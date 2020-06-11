@@ -31,8 +31,6 @@ for file in data.keys():
             else:
                 err_cap_dict[file] = [caption['sentid']]
             
-print("The number of problematic caption found is", count_err)
-print(err_cap_dict)
 
 
 # In[6]:
@@ -43,8 +41,6 @@ for key, val in err_cap_dict.items():
     caption_list = [sentence['sentid'] for sentence in data[key]['sentences'] if sentence['sentid'] not in val]
     for sentence in data[key]['sentences']:
         if sentence['sentid'] in val:
-            print("The original caption:")
-            print(sentence)
 
             sel_caption = random.choice(caption_list)
             sel_tokens = [sentence['tokens'] for sentence in data[key]['sentences'] if sentence['sentid'] == sel_caption][0]
@@ -52,8 +48,6 @@ for key, val in err_cap_dict.items():
             
             sentence['tokens'] = sel_tokens
             sentence['raw'] = sel_raw
-            print("The corrected caption:")
-            print(sentence, "\n")
 
 
 # In[7]:

@@ -122,6 +122,7 @@ def process_all_folders_in_directory(raw_dataset_path, output_format = '.jpg', s
     
     # 'data' directory path (one upstream of directory_path)
     data_directory = str(Path(raw_dataset_path).parents[0])
+    os.mkdir(data_directory + "/processed/marker")
     
     for folder in folders:
         dataset_name = folder.split('_')[0]

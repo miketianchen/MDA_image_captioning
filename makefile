@@ -1,24 +1,20 @@
-all : data/interim/train.json data/processed/preprocessed_images data/processed/json/train.json data/processed/train
+all : data/processed/train
 
 # split the data
-data/interim/train.json data/interim/valid.json data/interim/test.json : scr/data/split_data.py
+data/interim : data/raw
 	python scr/data/split_data.py
 
 # preprocess the images
-data/processed/preprocessed_images : data/raw
+data/processed/marker : data/raw
 	python scr/data/preprocess_image.py
 
 # process the json files and correct the captions
-data/processed/json/train.json : data/raw
+data/processed/json/train.json : data/interim
 	python scr/data/process_json.py
 	python scr/data/correct_captions.py
 
-# correct captions
-# data/processed/json/train.json :
-#	python scr/data/correct_captions.py
-
 # sort preprocessed images into folders
-data/processed/train data/processed/test data/processed/valid : data/processed/json data/processed
+data/processed/train data/processed/valid data/processed/test : data/processed/json/train.json data/processed/marker
 	python scr/data/sort_into_folders.py	
 
 clean :
@@ -33,3 +29,4 @@ clean :
 	rm -r -f data/processed/train
 	rm -r -f data/processed/valid
 	rm -r -f data/processed/test
+	rm -r -f data/processed/marker
