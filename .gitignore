@@ -3,9 +3,7 @@
 .RData
 .Ruserdata
 *.Rproj
-/data/raw/rsicd
-/data/raw/ucm
-/data/raw/sydney
+/data/raw/imgs
 /data/preprocessed_sydney
 /data/preprocessed_ucm
 /data/preprocessed_rsicd

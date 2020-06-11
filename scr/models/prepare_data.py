@@ -3,11 +3,13 @@
 
 '''This script 
 
-Usage: scr/models/prepare_data.py ROOT_PATH INPUTS...
+Usage: scr/models/prepare_data.py --root_path=<root_path> INPUTS ...
 
 Arguments:
-ROOT_PATH         The root path of the json folder.
-INPUTS            The json file name.
+INPUTS                   The json file name.
+
+Options:
+--root_path=<root_path>  The root path of the json folder (e.g. data).
 '''
 
 import json
@@ -97,12 +99,12 @@ def get_word_dict(vocab):
 if __name__ == "__main__":
 
     args = docopt(__doc__)
-    
+    root_path = args['--root_path']
     train_paths, train_descriptions, max_length = [], [], 0
 
     for name in args['INPUTS']:
         paths, descriptions, length =\
-        get_img_info(args['ROOT_PATH'], name)
+        get_img_info(root_path, name)
         train_paths.extend(paths)
         train_descriptions.extend(descriptions)
         max_length = max(max_length, length)  
@@ -127,12 +129,12 @@ if __name__ == "__main__":
         'wordtoidx': wordtoidx
     }
 
-    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:
+    with open( f"{root_path}/results/model_info.json", 'w') as f:
         json.dump(model_info, f)
         
-    with open(f"{args['ROOT_PATH']}/results/train_paths.pkl", 'wb') as f:
+    with open(f"{root_path}/results/train_paths.pkl", 'wb') as f:
         pickle.dump(train_paths, f)
 
-    with open(f"{args['ROOT_PATH']}/results/train_descriptions.pkl", 'wb') as f:
+    with open(f"{root_path}/results/train_descriptions.pkl", 'wb') as f:
         pickle.dump(train_descriptions, f)
 
