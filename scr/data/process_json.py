@@ -14,6 +14,7 @@ Options:
 import json
 import pandas as pd
 import os
+import random
 from docopt import docopt
 from sklearn.model_selection import train_test_split
 
@@ -90,6 +91,9 @@ def main(input_path, output_path):
                 value['split'] = name
         else:
             print("uh-oh")
+            
+    # correct the captions in train json
+    train_dict = corret_captions(train_dict)
 
     imgs_names = [(train_dict, 'train', train), 
                   (valid_dict, 'valid', valid), 
@@ -102,7 +106,44 @@ def main(input_path, output_path):
     for imgs, name, _ in imgs_names:
         with open(output_path + '/' + name + '.json', 'w') as file:
             json.dump(imgs, file)
+            
+def corret_captions(train_data):
+    """
+    docstring
+    """
+    random.seed(18)
+    data = train_data
+    
+    # create problematic caption dictionary
+    count_err = 0
+    err_cap_dict = {}
+    for file in data.keys():
+        for caption in data[file]['sentences']:
+            if len(caption['tokens']) < 2:
+                count_err += 1
+                if file in err_cap_dict.keys():
+                    err_cap_dict[file].append(caption['sentid'])
+                else:
+                    err_cap_dict[file] = [caption['sentid']]
+                    
+    # print("The number of problematic caption found is", count_err)
+    # print(err_cap_dict)
+    
+    # replace the problematic caption with random selected caption from the same image
+    for key, val in err_cap_dict.items():
+        caption_list = [sentence['sentid'] for sentence in data[key]['sentences'] if sentence['sentid'] not in val]
+        for sentence in data[key]['sentences']:
+            if sentence['sentid'] in val:
 
+                sel_caption = random.choice(caption_list)
+                sel_tokens = [sentence['tokens'] for sentence in data[key]['sentences'] if sentence['sentid'] == sel_caption][0]
+                sel_raw = [sentence['raw'] for sentence in data[key]['sentences'] if sentence['sentid'] == sel_caption][0]
+
+                sentence['tokens'] = sel_tokens
+                sentence['raw'] = sel_raw
+                
+    return data
+        
 def test(output_path):
     """
     check whether the outputs has been generated successfully 

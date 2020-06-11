@@ -1,32 +1,21 @@
-all : data/processed/train
+# Make file for UBC MDS-MDA Capstone Project
+# Dora Qian, Fanli Zhou, James Huang, Mike Chen
+# June 9, 2020
+# 
+# This driver script completes xxx, This script takes no arguments. 
+# 
+# usage: make all  
+#							to run all the pipeline
+# usage: make clean 
+#							to clean up all the intermediate and results files
 
-# split the data
-data/interim : data/raw
-	python scr/data/split_data.py
+# run all the scripts in the data preprocess stage
+data: data/json/train.json data/json/valid.json data/json/test.json
 
-# preprocess the images
-data/processed/marker : data/raw
-	python scr/data/preprocess_image.py
+# split the dataset into train/valid/test, process the json file and correct the captions in train json
+data/json/train.json data/json/valid.json data/json/test.json : scr/data/process_json.py
+	python scr/data/process_json.py --input_path="data/raw" --output_path="data/json"
 
-# process the json files and correct the captions
-data/processed/json/train.json : data/interim
-	python scr/data/process_json.py
-	python scr/data/correct_captions.py
-
-# sort preprocessed images into folders
-data/processed/train data/processed/valid data/processed/test : data/processed/json/train.json data/processed/marker
-	python scr/data/sort_into_folders.py	
-
-clean :
-	rm -f data/interim/train.json
-	rm -f data/interim/valid.json
-	rm -f data/interim/test.json
-	rm -r -f data/processed/preprocessed_UCM
-	rm -r -f data/processed/preprocessed_RSICD
-	rm -r -f data/processed/preprocessed_sydney
-	rm -r -f data/processed/json
-	mkdir data/processed/json
-	rm -r -f data/processed/train
-	rm -r -f data/processed/valid
-	rm -r -f data/processed/test
-	rm -r -f data/processed/marker
+# Clean up intermediate and results files
+clean : 
+	rm -f data/json/*.json
