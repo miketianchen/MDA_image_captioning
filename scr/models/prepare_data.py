@@ -18,9 +18,10 @@ import numpy as np
 from PIL import Image
 from docopt import docopt
 
-
 START = "startseq"
 STOP = "endseq"
+
+np.random.seed(123)
 
 def get_img_info(root_path, name, num=np.inf):
     """

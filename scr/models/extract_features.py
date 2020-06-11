@@ -32,6 +32,8 @@ from hms_string import hms_string
 START = "startseq"
 STOP = "endseq"
 
+torch.manual_seed(123)
+np.random.seed(123)
 
 def encode_image(model, img_path):
     """

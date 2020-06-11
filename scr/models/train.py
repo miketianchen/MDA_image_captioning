@@ -27,6 +27,9 @@ from model import CNNModel, RNNModel, CaptionModel
 
 EPOCHS = 10
 
+torch.manual_seed(123)
+np.random.seed(123)
+
 def get_embeddings(root_path, vocab_size, embedding_dim, wordtoidx):
 
     embeddings_index = {} 
