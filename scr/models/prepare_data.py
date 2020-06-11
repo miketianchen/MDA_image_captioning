@@ -18,9 +18,10 @@ import numpy as np
 from PIL import Image
 from docopt import docopt
 
-
 START = "startseq"
 STOP = "endseq"
+
+np.random.seed(123)
 
 def get_img_info(root_path, name, num=np.inf):
     """
@@ -92,36 +93,6 @@ def get_word_dict(vocab):
     return idxtoword, wordtoidx
 
 
-def get_embeddings(root_captioning, vocab_size, embedding_dim, wordtoidx):
-
-    embeddings_index = {} 
-    
-    print('Loading pre-trained Glove embeddings...')
-
-    with open(f'{root_captioning}/glove.6B.200d.txt', 'r', encoding='utf-8') as file:
-
-        for line in tqdm(file):
-            values = line.split()
-            word = values[0]
-            coefs = np.asarray(values[1:], dtype='float32')
-            embeddings_index[word] = coefs
-
-    print(f'Found {len(embeddings_index)} word vectors.')
-
-    embedding_matrix = np.zeros((vocab_size, embedding_dim))
-    count = 0
-
-    for word, i in wordtoidx.items():
-
-        embedding_vector = embeddings_index.get(word)
-        if embedding_vector is not None:
-            count += 1
-            # Words not found in the embedding index will be all zeros
-            embedding_matrix[i] = embedding_vector
-            
-    print(f'{count} out of {vocab_size} words are found in the pre-trained matrix.')            
-    print(f'The size of embedding_matrix is {embedding_matrix.shape}')
-    return embedding_matrix
 
 if __name__ == "__main__":
 
@@ -148,23 +119,12 @@ if __name__ == "__main__":
 
     max_length += 2   
     vocab_size = len(idxtoword) + 1
-    batch_size = 200
-    hidden_size = 256
-    embedding_dim = 200
-    cnn_type = 'vgg16'
-
-    embedding_matrix = get_embeddings(
-        args['ROOT_PATH'],
-        vocab_size,
-        embedding_dim,
-        wordtoidx
-    ) 
 
     model_info = {
         'max_length': max_length,
-        'idxtoword': idxtoword,
-        'wordtoidx': wordtoidx,
         'vocab_size': vocab_size,
+        'idxtoword': idxtoword,
+        'wordtoidx': wordtoidx
     }
 
     with open( f"{args['ROOT_PATH']}/results/model_info.json", 'w') as f:

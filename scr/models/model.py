@@ -1,7 +1,4 @@
-# model.py
-#
 # Author: Fanli Zhou
-#
 # Date: 2020-06-09
 #
 # This script defines CNNModel, RNNModel and CaptionModel
@@ -13,7 +10,7 @@ from torchvision import models
 
 class CNNModel(nn.Module):
 
-    def __init__(self, cnn_type, pretrained=True):
+    def __init__(self, pretrained=True):
         """
         Initializes a CNNModel
 
@@ -28,30 +25,16 @@ class CNNModel(nn.Module):
 
         super(CNNModel, self).__init__()
         
-        print(f'Loading pre-trained CNN {cnn_type}...')
+        print(f'Loading pre-trained vgg16 CNN model...')
         
-        if cnn_type == 'vgg16':
             
-            self.model = models.vgg16(pretrained=pretrained)
+        self.model = models.vgg16(pretrained=pretrained)
 
-            # remove the last two layers in classifier
-            self.model.classifier = nn.Sequential(
-              *list(self.model.classifier.children())[:-2]
-            )
-            self.input_size = 224     
-
-        # inception v3 expects (299, 299) sized images
-        elif cnn_type == 'inception_v3':
-            self.model = models.inception_v3(pretrained=pretrained)
-            # remove the classification layer
-            self.model.fc = nn.Identity()
-
-            # turn off auxiliary output
-            self.model.aux_logits = False
-            self.input_size = 299
-
-        else:
-            raise Exception("Please choose between 'vgg16' and 'inception_v3'.")
+        # remove the last two layers in classifier
+        self.model.classifier = nn.Sequential(
+          *list(self.model.classifier.children())[:-2]
+        )
+        self.input_size = 224     
 
     def forward(self, img_input, train=False):
         """
@@ -145,7 +128,6 @@ class CaptionModel(nn.Module):
 
     def __init__(
         self, 
-        cnn_type, 
         vocab_size, 
         embedding_dim, 
         hidden_size=256,
@@ -158,8 +140,6 @@ class CaptionModel(nn.Module):
 
         Parameters:
         -----------
-        cnn_type: str
-            the CNN type, either 'vgg16' or 'inception_v3'
         vocab_size: int
             the size of the vocabulary
         embedding_dim: int
@@ -175,13 +155,8 @@ class CaptionModel(nn.Module):
         """    
         super(CaptionModel, self).__init__() 
 
-        # set feature_size based on cnn_type
-        if cnn_type == 'vgg16':
-            self.feature_size = 4096
-        elif cnn_type == 'inception_v3':
-            self.feature_size = 2048
-        else:
-            raise Exception("Please choose between 'vgg16' and 'inception_v3'.")  
+        # set feature_size based of vgg16
+        self.feature_size = 4096
 
         self.decoder = RNNModel(
             vocab_size, 

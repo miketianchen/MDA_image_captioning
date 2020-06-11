@@ -3,11 +3,11 @@
 
 '''This script 
 
-Usage: src/model/train.py --input=<input> --output=<output>
+Usage: scr/models/train.py ROOT_PATH OUTPUT
 
-Options:
---input=<input>  The root path of inputs.
---output=<output>  The output model name. 
+Arguments:
+ROOT_PATH         The root path of the json folder.
+OUTPUT            The output trained caption model name without the filename extension.
 '''
 
 import json
@@ -16,22 +16,52 @@ import pickle
 from time import time
 from docopt import docopt
 from itertools import chain
+import numpy as np
 
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 
-from prepare_data import get_img_info, get_vocab, get_word_dict,\
-get_embeddings, SampleDataset, my_collate, encode_image,\
-extract_img_features, hms_string
+from hms_string import hms_string
 from model import CNNModel, RNNModel, CaptionModel
 
 EPOCHS = 10
 
+torch.manual_seed(123)
+np.random.seed(123)
 
-opt = docopt(__doc__)
+def get_embeddings(root_path, vocab_size, embedding_dim, wordtoidx):
 
-def train(model, iterator, optimizer, criterion, clip, vocab_size, device):
+    embeddings_index = {} 
+    
+    print('Loading pre-trained Glove embeddings...')
+
+    with open(f"{root_path}/glove.6B.200d.txt", 'r', encoding='utf-8') as file:
+
+        for line in tqdm(file):
+            values = line.split()
+            word = values[0]
+            coefs = np.asarray(values[1:], dtype='float32')
+            embeddings_index[word] = coefs
+
+    print(f'Found {len(embeddings_index)} word vectors.')
+
+    embedding_matrix = np.zeros((vocab_size, embedding_dim))
+    count = 0
+
+    for word, i in wordtoidx.items():
+
+        embedding_vector = embeddings_index.get(word)
+        if embedding_vector is not None:
+            count += 1
+            # Words not found in the embedding index will be all zeros
+            embedding_matrix[i] = embedding_vector
+            
+    print(f'{count} out of {vocab_size} words are found in the pre-trained matrix.')            
+    print(f'The size of embedding_matrix is {embedding_matrix.shape}')
+    return embedding_matrix
+
+def train(model, iterator, optimizer, criterion, clip, vocab_size):
     """
     train the CaptionModel
 
@@ -196,68 +226,35 @@ def my_collate(batch):
 
 if __name__ == "__main__":
 
-    root_path = opt["--input"]
+    args = docopt(__doc__)
 
-    train_paths, train_descriptions, max_length_train =\
-    get_img_info(root_path, 'train')
-    valid_paths, valid_descriptions, max_length_valid =\
-    get_img_info(root_path, 'valid')
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
-    print(f'{len(train_paths)} images from for training')
-    
-    train_paths.extend(valid_paths.copy())
-    train_descriptions.extend(valid_descriptions.copy())
-    # add a start and stop token at the beginning/end
-    for v in train_descriptions:
-        for d in range(len(v)):
-            v[d] = f'{START} {v[d]} {STOP}'
-
-    max_length = max(max_length_train, max_length_valid) + 2
-
-    vocab = get_vocab(train_descriptions, word_count_threshold=10)
-    idxtoword, wordtoidx = get_word_dict(vocab)
-
-    vocab_size = len(idxtoword) + 1
     batch_size = 200
     hidden_size = 256
     embedding_dim = 200
-    cnn_type = 'vgg16'
-
-
-    embedding_matrix = get_embeddings(
-        root_path,
-        vocab_size,
-        embedding_dim,
-        wordtoidx
-    ) 
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    model_info = {
-        'max_length': max_length,
-        'idxtoword': idxtoword,
-        'wordtoidx': wordtoidx,
-        'vocab_size': vocab_size,
-    }
-
-    with open( f'{root_path}/model/model_info.json', 'w') as file:
-        json.dump(model_info)
-
-    encoder = CNNModel(cnn_type, pretrained=True)
-    encoder.to(device)
     
-    train_img_features = extract_img_features(
-        'training',
-        train_paths,
-        encoder, 
-        device
-    )
+    with open( f"{args['ROOT_PATH']}/results/model_info.json", 'r') as f:
+        model_info = json.load(f)
+        
+    embedding_matrix = get_embeddings(
+        args['ROOT_PATH'],
+        model_info['vocab_size'],
+        embedding_dim,
+        model_info['wordtoidx']
+    ) 
+        
+    with open(f"{args['ROOT_PATH']}/results/train_descriptions.pkl", 'rb') as f:
+        train_descriptions = pickle.load(f)
+        
+    with open(f"{args['ROOT_PATH']}/results/train.pkl", 'rb') as f:
+        train_img_features = pickle.load(f)    
 
     train_dataset = SampleDataset(
         train_descriptions,
         train_img_features,
-        wordtoidx,
-        max_length
+        model_info['wordtoidx'],
+        model_info['max_length']
     )
 
     train_loader = DataLoader(
@@ -266,10 +263,8 @@ if __name__ == "__main__":
         collate_fn=my_collate
     )
 
-
     caption_model = CaptionModel(
-        cnn_type, 
-        vocab_size, 
+        model_info['vocab_size'], 
         embedding_dim, 
         hidden_size=hidden_size,
         embedding_matrix=embedding_matrix, 
@@ -302,8 +297,7 @@ if __name__ == "__main__":
             optimizer,
             criterion,
             clip,
-            vocab_size,
-            device
+            model_info['vocab_size']
         )
         print(f'loss = {loss}')
 
@@ -319,10 +313,9 @@ if __name__ == "__main__":
             optimizer,
             criterion,
             clip,
-            vocab_size,
-            device
+            model_info['vocab_size']
         )
         print(f'loss = {loss}')
 
-    torch.save(caption_model, f'{root_path}/model/{opt["--output"]}')
+    torch.save(caption_model, f"{args['ROOT_PATH']}/results/{args['OUTPUT']}.hdf5")
     print(f"\Training took: {hms_string(time()-start)}")
