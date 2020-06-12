@@ -19,8 +19,7 @@ opt = docopt(__doc__)
 
 def main(input_path, output_path):
     """
-    Combines the rscid and ucm datasets and splits into 80%/20% trainvalid/test and train/valid set,
-    preprocesses the json files with added field of "old_dataset_name" and "split"
+    preprocesses the sydney json files with added field of "old_dataset_name" and "split"
     
     Parameters:
     -----------
