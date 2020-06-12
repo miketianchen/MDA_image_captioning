@@ -24,5 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.button),
     path('output', views.output, name="script"),
-    path('external/', views.external)
+    path('external/', views.external),
+    path('generate/', views.generate),
+    path('database/', views.database)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
