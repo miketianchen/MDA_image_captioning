@@ -64,7 +64,7 @@ scr/models/prepare_data.py data/json/train.json data/json/valid.json
 data/results/train.pkl : \
 scr/models/extract_features.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
-data/results/train_paths.pkl
+data/results/train_paths.pkl data/train data/valid
 
 	python scr/models/extract_features.py --root_path=data --output=train
 
@@ -79,7 +79,8 @@ data/results/train_descriptions.pkl data/results/train.pkl
 # extract imgae features from the test images
 data/results/test.pkl data/results/test_paths.pkl : \
 scr/models/extract_features.py scr/models/model.py \
-scr/models/hms_string.py data/results/model_info.json
+scr/models/hms_string.py data/results/model_info.json \
+data/test
 
 	python scr/models/extract_features.py \
     --root_path=data --output=test --inputs=test
@@ -94,8 +95,11 @@ data/results/final_model.hdf5
     --root_path=data --inputs=test --model=final_model --output=test
 
 # evaluate the model results
-data/score/score.json data/score/img_score.json : data/results/test.json data/json/test.json scr/evaluation/eval_model.py
-	python scr/evaluation/eval_model.py --ref_path="data/json" --result_path="data/results" --output_path="data/score"
+data/score/score.json data/score/img_score.json : \
+data/results/test.json data/json/test.json scr/evaluation/eval_model.py
+
+	python scr/evaluation/eval_model.py --ref_path="data/json" \
+	--result_path="data/results" --output_path="data/score"
 
 # Clean up intermediate and results files
 clean : 
