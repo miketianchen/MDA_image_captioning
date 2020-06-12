@@ -3,13 +3,12 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>MDA MDS</title>
+    <title>MDA + MDS</title>
 
-    <link rel="icon" href="">
-
+    <link rel="icon" href="{% static 'image/mda_m_icon_logo.png' %}">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;900&family=Ubuntu&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
@@ -23,7 +22,7 @@
           <div class="container-fluid">
             <nav class="navbar navbar-expand-md navbar-dark">
               <!-- <a class="navbar-brand" href="#">MDA</a> -->
-              <a class="navbar-brand" href="https://mdacorporation.com/corporate/" target="_blank">
+              <a class="navbar-brand" href="https://mdacorporation.com/corporate/" target="_blank" style="position:fixed;">
                 <img src="{% static 'image/mda_logo.png' %}" width="" height="30" alt="">
               </a>
 
@@ -33,70 +32,225 @@
 
               <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ml-auto">
-                  <a class="nav-item nav-link" href="https://github.com/UBC-MDS/591_capstone_2020-mda-mds" target="_blank"><i class="fab fa-github fa-2x"></i></a>
+                  <a class="nav-item nav-link" href="https://github.com/UBC-MDS/591_capstone_2020-mda-mds" target="_blank" ><i class="fab fa-github fa-2x"></i></a>
                 </div>
             </nav>
 
             <!-- MAIN CARD -->
-            <div class="card my-auto" style="width: 50%;">
-              <div class="card-body">
-                <h5 class="card-title">Upload Your Caption and Image</h5>
-                <h6 class="card-subtitle mb-2 text-muted">.jpg, .png, .tif Image Formats are Acceptable</h6>
-                <form action="/external/" method="post" class="form" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  <!-- <input type="text" name="param" required> -->
+            <div class="canadarm_container">
+              <img src="{% static 'image/Canadarm.png' %}" alt="Canadaarm" class='canadarm'>
+            </div>
 
-                  <!-- <input type="file" name="image_upload" required>
-                  <br><br> -->
+            <div class="card">
+              <div class="container">
+                  <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">User Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Demo Example</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="database-tab" data-toggle="tab" href="#database" role="tab" aria-controls="profile" aria-selected="false">Database Upload</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade" id="database" role="tabpanel" aria-labelledby="database-tab">
+                      <div class="card-body">
+                        <h5 class="card-title">Upload Your JSON Caption File and Image</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">.jpg Image Formats Only Please</h6>
 
-                  <label class="btn btn-outline-dark" for="my-file-selector">
-                      <input id="my-file-selector" type="file" style="display:none" name="image_upload"
-                      onchange="$('#upload-file-info').html(this.files[0].name)">
-                      Upload Your Image File Here
-                  </label>
-                  <br><br>
-                  <textarea cols="80" rows="2" name="param" required></textarea>
-                  <br><br>
-                  <input type="submit" class="btn btn-secondary" value="Submit">
-                  <span class='label label-info' id="upload-file-info"></span>
-                </form>
-                <div class="post-container">
-                  {% if raw_url or edit_url %}
-                    <div class="post-thumb">
-                      <img src="{{raw_url}}" alt="raw_image">
+                        <form class="database_form" action="/database/" method="post" autocomplete="off" enctype="multipart/form-data">
+                          {% csrf_token %}
+
+                          <input type="file" name="multiple_images_upload" id="multiple_images_upload_input" multiple> <br><br>
+
+                          <input type="submit" class="btn btn-secondary" id="database_upload_input" value="Database Upload">
+                        </form>
+
+
+
+
+                      </div>
+
                     </div>
-                  {% endif %}
-                  {% if data %}
-                    <div class="post-content">
-                      <p>Inputted Caption: {{user_caption}}</p><br>
-                      <p>Generated Caption: {{model_caption}}</p><br>
-                      <p>Evaluation Score: {{score}}</p>
-                   </div>
-                  {% endif %}
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                      <div class="card-body">
+                        <div class="containder">
+
+                          {% if not image_one_name %}
+                          <h5 class="card-title">See our model in action!</h5>
+                          <h6 class="card-subtitle mb-2 text-muted">Press 'Generate' to see examples of our model's captioning capabilities!</h6>
+                          {% endif %}
+
+                          <div class="row">
+                            <div class="column">
+                              {% if image_one_name %}
+                              <div class="random_generated_image">
+                                <img src="{% static 'frontend_images/'|add:image_one_name %}" alt="Snow" style="width:100%">
+                              </div>
+                              <div class="post-content">
+                                <p><em>Original Caption:</em> {{og_caption_1}}</p>
+                                <p><em>Generated Caption:</em> {{generated_caption_1}}</p>
+                                <!-- <ul>
+                                  <li><em>Bleu_1: </em>{{bleu_1_1}}</li>
+                                  <li><em>METEOR: </em>{{meteor_1}}</li>
+                                  <li><em>ROUGE_L: </em>{{rouge_l_1}}</li>
+                                  <li><em>CIDEr: </em>{{cider_1}}</li>
+                                  <li><em>SPICE: </em>{{spice_1}}</li>
+                                  <li><em>USC: </em>{{usc_1}}</li>
+                                </ul> -->
+                                <table class="table">
+                                  <tr>
+                                    <td><em>Bleu_1: </em>{{bleu_1_1}}</td>
+                                    <td><em>METEOR: </em>{{meteor_1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>ROUGE_L: </em>{{rouge_l_1}}</td>
+                                    <td><em>CIDEr: </em>{{cider_1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>SPICE: </em>{{spice_1}}</td>
+                                    <td><em>USC: </em>{{usc_1}}</td>
+                                  </tr>
+                                </table>
+                             </div>
+                             {% endif %}
+                            </div>
+                            <div class="column">
+                              {% if image_one_name %}
+                              <div class="random_generated_image">
+                                <img src="{% static 'frontend_images/'|add:image_two_name %}" alt="Rain" style="width:100%">
+                              </div>
+                              <div class="post-content">
+                                <p><em>Original Caption:</em> {{og_caption_2}}</p>
+                                <p><em>Generated Caption:</em> {{generated_caption_2}}</p>
+                                <!-- <ul>
+                                  <li><em>Bleu_1: </em>{{bleu_1_2}}</li>
+                                  <li><em>METEOR: </em>{{meteor_2}}</li>
+                                  <li><em>ROUGE_L: </em>{{rouge_l_2}}</li>
+                                  <li><em>CIDEr: </em>{{cider_2}}</li>
+                                  <li><em>SPICE: </em>{{spice_2}}</li>
+                                  <li><em>USC: </em>{{usc_2}}</li>
+                                </ul> -->
+                                <table class="table">
+                                  <tr>
+                                    <td><em>Bleu_1: </em>{{bleu_1_2}}</td>
+                                    <td><em>METEOR: </em>{{meteor_2}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>ROUGE_L: </em>{{rouge_l_2}}</td>
+                                    <td><em>CIDEr: </em>{{cider_2}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>SPICE: </em>{{spice_2}}</td>
+                                    <td><em>USC: </em>{{usc_2}}</td>
+                                  </tr>
+                                </table>
+                             </div>
+                             {% endif %}
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <form class="generate_form" action="/generate/" method="post">
+                        {% csrf_token %}
+                        <button type="submit" name="button" class="btn btn-secondary" style="margin-bottom:16px;">Generate</button>
+                      </form>
+                    </div>
+
 
                 </div>
-                <!-- {% if raw_url or edit_url %}
-                <br>
-                <div>
-                  <img src="{{raw_url}}" alt="raw_image">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                  <div class="card-body">
+                    <h5 class="card-title">Upload Your Caption and Image</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">.jpg Image Formats Only Please</h6>
+                    <form action="/external/" method="post" class="form" enctype="multipart/form-data">
+                      {% csrf_token %}
+
+                      <input type="file" name="image_upload" id="image_upload">
+
+                      <!-- <label class="btn btn-outline-dark" for="my-file-selector">
+                          <input id="my-file-selector" type="file" style="display:none" name="image_upload"
+                          onchange="$('#upload-file-info').html(this.files[0].name)" required>
+                          Upload New Image File Here
+                      </label> -->
+                      <br><br>
+                      <input type="submit" class="btn btn-secondary" name="upload_image_input" value="Submit Image">
+                      <br>
+                      <div class="post-container">
+                        {% if raw_url or edit_url %}
+                          <div class="post-thumb">
+                            <img src="{{raw_url}}" alt="raw_image" class="upload_image" style="padding-bottom:20px; width:50%; height:auto; margin-right:10px; margin-top:10px;">
+                          </div>
+                        {% endif %}
+
+                        {% if data %}
+                          <div class="post-content">
+                            <!-- <p><em>Evaluation Score:</em> {{score}}</p> -->
+                            <p><em>Generated Caption:</em> {{model_caption}}</p>
+                         </div>
+                        {% endif %}
+
+                      </div>
+
+                      {% if raw_url or edit_url %}
+                        <br>
+                        <div class="user_caption_input_text_area">
+                          <h6>If you're unstatsified with the model generated caption, please enter your own captions. Otherwise enter none and press <em>Submit</em> below.</h6>
+                          <textarea cols="70" rows="1" class="textarea" name="param" placeholder="Optional: Enter 1st image caption here... "></textarea>
+                          <br>
+                          <textarea cols="70" rows="1" class="textarea" name="param_2" placeholder="Optional: Enter 2nd image caption here... "></textarea>
+                          <br>
+                          <textarea cols="70" rows="1" class="textarea" name="param_3" placeholder="Optional: Enter 3rd image caption here... "></textarea>
+                          <br>
+                          <textarea cols="70" rows="1" class="textarea" name="param_4" placeholder="Optional: Enter 4th image caption here... "></textarea>
+                          <br>
+                          <textarea cols="70" rows="1" class="textarea" name="param_5" placeholder="Optional: Enter 5th image caption here... "></textarea>
+                          <br><br>
+
+                          <input type="submit" class="btn btn-secondary" name="upload_caption_input" value="Submit Caption">
+                        </div>
+
+                      {% endif %}
+
+                      <span class='label label-info' id="upload-file-info"></span>
+                    </form>
+                    <!-- <div class="post-container">
+                      {% if raw_url or edit_url %}
+                        <div class="post-thumb">
+                          <img src="{{raw_url}}" alt="raw_image" align="left" class="upload_image" style="padding-bottom:20px; margin-right:10px; margin-top:10px;">
+                        </div>
+                      {% endif %}
+
+                      {% if data %}
+                        <div class="post-content">
+                          <p><em>Evaluation Score:</em> {{score}}</p>
+                          <p><em>Generated Caption:</em> {{model_caption}}</p><br>
+                          <p><em>Inputted Caption:</em> {{user_caption}}</p><br>
+                       </div>
+                      {% endif %}
+
+                    </div> -->
+
+
+
+                  </div>
                 </div>
-                {% endif %} -->
-                <!-- {%if data %}
-                <p>Evaluation Score: {{score}}</p><br>
-                <p>User's Caption: {{user_caption}}</p><br>
-                <p>Model's Cpation: {{model_caption}}</p>
-                {% endif %} -->
 
               </div>
-
             </div>
-            <img src="{% static 'image/Canadarm.png' %}" alt="Canadaarm" class='canadarm'>
+            </div>
+
+
           </div>
 
         </div>
       <!-- </div> -->
 
     </div>
+
 
     <script src="https://kit.fontawesome.com/503f25f00c.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
