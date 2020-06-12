@@ -16,7 +16,7 @@
 #					 to clean up all the intermediate and results files
 
 # run all the steps in pipeline
-all: data/results/test.json
+all: data/score/score.json data/score/img_score.json
 
 # run all the scripts in the data preprocess stage
 data: data/train data/test data/valid data/json data/preprocessed_sydney
@@ -25,6 +25,9 @@ data: data/train data/test data/valid data/json data/preprocessed_sydney
 train: data/results/final_model.hdf5
 
 caption: data/results/test.json
+
+# run all the scripts in the evaluation stage
+score: data/score/score.json data/score/img_score.json
 
 # split the dataset into train/valid/test, process the json 
 # file and correct the captions in train json
@@ -90,6 +93,9 @@ data/results/final_model.hdf5
 	python scr/models/generate_captions.py \
     --root_path=data --inputs=test --model=final_model --output=test
 
+# evaluate the model results
+data/score/score.json data/score/img_score.json : data/results/test.json data/json/test.json scr/evaluation/eval_model.py
+	python scr/evaluation/eval_model.py --ref_path="data/json" --result_path="data/results" --output_path="data/score"
 
 # Clean up intermediate and results files
 clean : 
@@ -101,3 +107,4 @@ clean :
 	rm -rf data/train
 	rm -rf data/valid
 	rm -rf data/results
+	rm -rf data/score
