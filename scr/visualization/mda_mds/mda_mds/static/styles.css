@@ -6,7 +6,9 @@ https://mkrtchyan.ga
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Montserrat', sans-serif;
 }
+
 header {
     background-color:rgba(33, 33, 33, 0.9);
     color:#ffffff;
@@ -29,7 +31,7 @@ header h2{
 }
 header a, a:visited {
     text-decoration:none;
-    color:#fcfcfc;
+    /* color:#fcfcfc; */
 }
 
 @keyframes move-twink-back {
@@ -75,6 +77,8 @@ header a, a:visited {
   width:100%;
   height:100%;
   display:block;
+  /* overflow: hidden; */
+  overflow:auto;
 }
 
 .stars {
@@ -86,9 +90,9 @@ header a, a:visited {
   background:transparent url(http://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
   z-index:1;
 
-  -moz-animation:move-twink-back 500s linear infinite;
+  -moz-animation:move-twink-back 400s linear infinite;
   -ms-animation:move-twink-back 500s linear infinite;
-  -o-animation:move-twink-back 500s linear infinite;
+  -o-animation:move-twink-back 400s linear infinite;
   -webkit-animation:move-twink-back 500s linear infinite;
   animation:move-twink-back 500s linear infinite;
 }
@@ -97,44 +101,78 @@ header a, a:visited {
     background:transparent url(http://image.ibb.co/bT4N7T/clouds.png) repeat top center;
     z-index:3;
 
-  -moz-animation:move-clouds-back 400s linear infinite;
-  -ms-animation:move-clouds-back 400s linear infinite;
-  -o-animation:move-clouds-back 400s linear infinite;
-  -webkit-animation:move-clouds-back 400s linear infinite;
-  animation:move-clouds-back 400s linear infinite;
+  -moz-animation:move-clouds-back 1000s linear infinite;
+  -ms-animation:move-clouds-back 1000s linear infinite;
+  -o-animation:move-clouds-back 1000s linear infinite;
+  -webkit-animation:move-clouds-back 1000s linear infinite;
+  animation:move-clouds-back 1000s linear infinite;
 }
+ul{
+  list-style-type: none;
+}
+
+
+
+/* #multiple_images_upload_input{
+  padding-top: 16px;
+} */
+
+textarea {
+    padding: 5px;
+}
+
 
 .card {
-        margin: auto; /* Added */
-        float: none; /* Added */
+  width:55%;
+  margin: auto;
+  float: none;
+
+}
+.card a {
+  color: 	#808080;
 }
 
-.post-container {
-    margin: 20px 20px 0 0;
-    overflow: auto
-}
-.post-thumb {
-    float: left
-}
-.post-thumb img {
-    display: block
-}
-.post-content {
-    margin-left: 310px
-}
-.post-title {
-    font-weight: bold;
-    font-size: 200%
+.row {
+  display: flex;
 }
 
-.container-fluid {
-  overflow: hidden;
+/* Create three equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 5px;
+}
+
+td {
+  padding-top:0;
+  padding-bottom: 0;
+}
+
+.table th
+{
+    text-align:left;
+}
+
+.table th + th
+{
+    text-align:right;
+}
+
+p{
+  line-height: 1.5em;
+}
+
+
+.canadarm_container{
+  height: 50%;
+  
 }
 
 .canadarm {
-  max-width: 30%;
+  width: 500px;
   height: auto;
   position:fixed;
-  margin-top: 100px;
-  margin-left: 1000px;
+  margin-top: 30%;
+  right:0;
+  /* margin-left: 900px;
+  margin-top:375px; */
 }
