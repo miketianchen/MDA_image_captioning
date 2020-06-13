@@ -115,7 +115,7 @@ def eval_model(inputs, root_path):
             else:
                 img_score_dict[img_name][metrics] = scores_dict[metrics][n]
     
-    output_path = f'{root_path}/{score}'
+    output_path = f'{root_path}/score'
     # save the overall score and individual image score
     if not os.path.exists(output_path):
         os.makedirs(output_path, exist_ok=True)
