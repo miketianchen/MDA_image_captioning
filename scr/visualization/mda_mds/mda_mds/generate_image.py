@@ -51,9 +51,12 @@ def getOutputData(image_name):
     output_CIDEr = str(round(output_scores['CIDEr'], 2))
     output_SPICE = str(round(output_scores['SPICE'], 2))
     output_USC = str(round(output_scores['USC_similarity'], 2))
+    output_bleu_2 = str(round(output_scores['Bleu_2'], 2))
+    output_bleu_3 = str(round(output_scores['Bleu_3'], 2))
+    output_bleu_4 = str(round(output_scores['Bleu_4'], 2))
 
     # use `%` as deliminter
-    output_string = output_name + "%" +output_bleu_1+"%"+output_METEOR+"%"+output_ROUGE_L+"%"+output_CIDEr+"%"+output_SPICE+"%"+output_USC+'%'+output_caption +"%"+output_original_caption
+    output_string = output_name + "%" +output_bleu_1+"%"+output_METEOR+"%"+output_ROUGE_L+"%"+output_CIDEr+"%"+output_SPICE+"%"+output_USC+'%'+output_caption +"%"+output_original_caption+"%"+output_bleu_2+"%"+output_bleu_3+"%"+output_bleu_4
 
     return output_string
 read_json()

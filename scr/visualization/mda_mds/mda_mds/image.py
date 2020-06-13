@@ -5,13 +5,20 @@ import time
 import nltk
 
 from botocore.exceptions import NoCredentialsError
+from shutil import copyfile
+from PIL import Image
 
-# /Users/apple/Documents/Web_Dev/django-mda/mda_mds
+# /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # PATH for JSON CAPTION FILE
 JSON_CAPTION_PATH = os.path.join(BASE_DIR, 'media/caption.json')
 # PATH for MEDIA_URL
 MEDIA_PATH = os.path.join(BASE_DIR, 'media/')
+SCR_PATH = os.path.dirname(os.path.dirname(BASE_DIR))
+EXTRACT_FEATURES_PATH = os.path.join(SCR_PATH, 'models/extract_features.py')
+GENERATE_CAPTIONS_PATH = os.path.join(SCR_PATH, 'models/generate_captions.py')
+DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
+RESULTS_PATH = os.path.join(DATA_PATH, 'results')
 
 # NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
 ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
@@ -38,18 +45,45 @@ def upload_to_aws(local_file, bucket, s3_file = None):
         return False
 
 # Function to take the user uploaded image and run the model on it
-def model(image_path):
-    # BLAH BLAH BLAH DO THINGS...
-    # Return an evaluation score
+def model():
+    # currently the picture file is saved in temp media directory, need to copy picture to data/results folder
+    # copyfile(image_fullpath, os.path.join(DATA_PATH, image_name))
 
-    # scr directory path from current file ../../../
-    # data directory path from current file ../../../data
-    os.systems('python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg')
+    extract_features_cli_call = 'python ' + str(EXTRACT_FEATURES_PATH) + ' --root_path=' + DATA_PATH + ' --output=' + image_name.split(".")[0] + ' --inputs=' + image_name
+    # Example call:
+    # 'python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg'
+    os.system(extract_features_cli_call)
 
+    output_json_name = image_name.split(".")[0]+'_captions'
+    generate_captions_cli_call = 'python ' + str(GENERATE_CAPTIONS_PATH) + ' --root_path=' + DATA_PATH + ' --inputs=' + image_name.split(".")[0] + ' --model=final_model --output=' + output_json_name
+    # Example call:
+    # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
+    os.system(generate_captions_cli_call)
 
+    captions = read_results(output_json_name, RESULTS_PATH)
 
-    os.systems('python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030')
-    return ['NA', 'CAPTION TO BE PRODUCED BY MODEL SCRIPT']
+    return ['NA', captions]
+
+def read_results(output_json_name, RESULTS_PATH):
+    output_json_name = output_json_name + '.json'
+    JSON_PATH = os.path.join(RESULTS_PATH, output_json_name)
+    with open(JSON_PATH) as f:
+        caption_dict = json.load(f)
+
+    captions = caption_dict[image_name]
+    return captions
+
+def preprocess_image(size = (299, 299)):
+    im = Image.open(image_fullpath).resize(size, Image.ANTIALIAS)
+    rgb_im = im.convert('RGB')
+
+    name = image_name[:-4]
+    name = name + '.jpg'
+
+    output_path = os.path.join(DATA_PATH, name)
+
+    rgb_im.save(output_path, 'JPEG', quality = 95)
+
 
 
 # upload mode; if upload mode is 'image' then only images will be uploaded
@@ -61,16 +95,22 @@ if upload_mode == "image":
     image_fullpath = sys.argv[2]
     image_name = sys.argv[3]
 
+    if image_name.endswith('.png'):
+        image_name = image_name[:-4]
+        image_name = image_name + '.jpg'
+
     bucket_name = 'mds-capstone-mda'
     s3_images_file_name = 'upload/images/' + image_name
+
+    preprocess_image()
 
     uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
 
     # Return the score from the model
-    output = model(image_fullpath)
+    output = model()
     score = output[0]
     model_caption = output[1]
-    print(score+"_"+model_caption)
+    print(score+"*"+model_caption)
 
 elif upload_mode == "caption":
     # captions
