@@ -4,21 +4,25 @@
 '''This script process the original images convert them into standard format.
 This script takes a raw image folder path and save the preprocessed images in the same folder
 
-Usage: scr/data/preprocess_image.py --input_path=<input_path> 
+Usage: scr/data/preprocess_image.py --root_path=<root_path> INPUTS ... [--train=<train>]
+
+Arguments:
+INPUTS                     Path to the folder that contains the raw images to process under the root_path (e.g. raw).
 
 Options:
---input_path=<input_path>  Folder that contains the raw image folders
+--root_path=<root_path>    The path to the data folder which contains the raw folder.
+--train=<train>            Sort the images if the images are for training [default: False].
 '''
 
-import os
+import os, json
 from PIL import Image
 from pathlib import Path
 from os import walk
 from docopt import docopt
 
-opt = docopt(__doc__)
+args = docopt(__doc__)
 
-def main(input_path, output_format = '.jpg', size = (299, 299)):
+def main(root_path, inputs, train):
     """
     Preprocess all the image folders in the input directory in a folder.
     
@@ -38,21 +42,17 @@ def main(input_path, output_format = '.jpg', size = (299, 299)):
     as the image folder you wanted to preprocess, with all the pre-
     processed images inside
     """
-    folders = []
-    for (dirpath, dirnames, filenames) in walk(input_path):
-        folders.extend(dirnames)
-        break
-    
-    # 'data' directory path (one upstream of directory_path)
-    data_directory = str(Path(input_path).parents[0])
-    
-    for folder in folders:
-        dataset_name = folder
-        directory_path = input_path  + "/" + folder
-        print(directory_path)
-        preprocess(dataset_name, directory_path, output_format, size)
+ 
+    for folder in inputs:
+        dataset_name = folder.split('/')[-1]
+        directory_path = f'{root_path}/{folder}'
+        print(f'Preprocessing images in {directory_path}...')
+        preprocess(dataset_name, root_path, directory_path)
 
-def preprocess(dataset_name, directory_path, output_format = '.jpg', size = (299, 299)):
+    if train == 'True':
+        sort_image(root_path)
+    
+def preprocess(dataset_name, root_path, directory_path, output_format = '.jpg', size = (299, 299)):
     '''
     Preprocess all the images in a folder. By converting the image
     format to the desired format and resizing the image to the 
@@ -63,9 +63,10 @@ def preprocess(dataset_name, directory_path, output_format = '.jpg', size = (299
     dataset_name : str
         This name will be appeneded to every image name as well as
         used for the name of directory which will house the images
+    root_path : str
+        Relative path to the data folder
     directory_path : str
-        Absolute path, where the directory containing all the images
-        are at. Don't know if relative path works...
+        Relative path to the image folder under the root_path
     output_format : str
         output format you want example (.jpg, .png, .tif) 
         INCLUDE THE PERIOD before the type
@@ -78,27 +79,26 @@ def preprocess(dataset_name, directory_path, output_format = '.jpg', size = (299
     as the image folder you wanted to preprocess, with all the pre-
     processed images inside
     '''
-    processed_path = str(Path(directory_path).parents[1])
 
     # create folder
-    output_path = processed_path + "/preprocessed_" + dataset_name
-    if not os.path.exists(output_path):
-        os.makedirs(output_path, exist_ok=True)
+    folder_path = f'{root_path}/preprocessed_{dataset_name}'
+    
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path, exist_ok=True)
 
-    for filename in os.listdir(directory_path):   
+    for filename in os.listdir(directory_path): 
+        
+        im = Image.open(f'{directory_path}/{filename}').resize(size, Image.ANTIALIAS)
+        name, extension = os.path.splitext(filename)
+        name = f'{dataset_name}_{name}{output_format}'
+        output_path = f'{folder_path}/{name}'
+        
         # convert everything in the folder that's not the 
         # desired output_format
-        if not filename.endswith(output_format):
-            # To get rid of the current suffix tag representing
-            # current type of image file
-            name = filename[:-4]
-            name = dataset_name + "_" + name + output_format
-            
-            # PILLOW library functions 
-            im = Image.open(directory_path + "/" + filename).resize(size, Image.ANTIALIAS)
-            rgb_im = im.convert('RGB')
+        if extension != output_format:
 
-            output_path =  processed_path + "/preprocessed_" + dataset_name + "/" + name
+            # PILLOW library functions 
+            rgb_im = im.convert('RGB')
 
             # Pillow Format Type (JPEG, PNG, TIFF)
             if output_format == '.jpg':
@@ -108,23 +108,49 @@ def preprocess(dataset_name, directory_path, output_format = '.jpg', size = (299
             elif output_format == '.tif':
                 pillow_format = 'TIFF'
             else:
-                print("should make a throw statement, and some try catch")
+                raise("The output format should be one of .jpg, .png or .tif")
 
             # Save with Image Quality of 95% 
             rgb_im.save(output_path, pillow_format, quality = 95)
 
-            continue
-
-            # when the image format type is the same, and we just need to resize 
-        elif filename.endswith(output_format):
-            im = Image.open(directory_path + "/" + filename)
-            im = im.resize(size, Image.ANTIALIAS)
-            name = dataset_name + "_" + filename
-            output_path = processed_path + "/preprocessed_" + dataset_name + "/" + name
-            im.save(output_path, quality = 95)
-            continue
         else:
-            continue 
+            im.save(output_path, quality = 95)
 
+def sort_image(root_path):
+    
+    sizes = {}
+    set_names = ['test', 'train', 'valid']
+    dataset_list = set()
+
+    for set_name in set_names:
+        
+        print(f'Moving images to the {set_name} folder...')
+        
+        with open(f'{root_path}/json/{set_name}.json', 'r') as data:
+            json_data = json.load(data)
+            
+        # Make new directory to house the preprocessed images 
+        output_dir = f'{root_path}/{set_name}'
+        
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir, exist_ok=True)
+        
+        for filename in json_data.keys():
+            destination_path = f'{output_dir}/{filename}'
+
+            # Split the filename with `_` to find the dataset it originates from 
+            dataset = filename.split('_')[0]
+            dataset_list.add(dataset)
+
+            origin_path = f'{root_path}/preprocessed_{dataset}/{filename}'        
+            os.rename(origin_path, destination_path)
+            
+    # remove folder if empty
+    for set_name in dataset_list:
+        
+        folder_path = f'{root_path}/preprocessed_{set_name}'
+        if len(os.listdir(folder_path)) == 0:
+            os.rmdir(folder_path)
+    
 if __name__ == "__main__":
-    main(opt["--input_path"])
+    main(args["--root_path"], args["INPUTS"], args["--train"])
