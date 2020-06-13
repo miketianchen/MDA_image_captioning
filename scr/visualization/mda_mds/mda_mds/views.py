@@ -41,6 +41,9 @@ def generate(request):
     image_one_usc = image_one_list[6]
     image_one_caption = image_one_list[7]
     image_one_og_captions = image_one_list[8]
+    image_one_bleu_2 = image_one_list[9]
+    image_one_bleu_3 = image_one_list[10]
+    image_one_bleu_4 = image_one_list[11]
     # IMAGE TWO DATA
     image_two_data = output_list[1]
     image_two_list = image_two_data.split("%")
@@ -53,6 +56,9 @@ def generate(request):
     image_two_usc = image_two_list[6]
     image_two_caption = image_two_list[7]
     image_two_og_captions = image_two_list[8]
+    image_two_bleu_2 = image_one_list[9]
+    image_two_bleu_3 = image_one_list[10]
+    image_two_bleu_4 = image_one_list[11]
 
     #print(str(out.stdout))
     return render(request, 'index.html', {'generated_caption_1':image_one_caption,
@@ -60,11 +66,15 @@ def generate(request):
                 'rouge_l_1':image_one_rouge_l, 'cider_1':image_one_cider,
                 'spice_1':image_one_spice, 'image_one_name':image_one_name,
                 'usc_1':image_one_usc, 'og_caption_1':image_one_og_captions,
+                'bleu_2_1':image_one_bleu_2, 'bleu_3_1':image_one_bleu_3,
+                'bleu_4_1':image_one_bleu_4,
                 'generated_caption_2':image_two_caption,
                 'bleu_1_2':image_two_bleu_1, 'meteor_2':image_two_meteor,
                 'rouge_l_2':image_two_rouge_l, 'cider_2':image_two_cider,
                 'spice_2':image_two_spice, 'image_two_name':image_two_name,
-                'usc_2':image_two_usc, 'og_caption_2':image_two_og_captions})
+                'usc_2':image_two_usc, 'og_caption_2':image_two_og_captions,
+                'bleu_2_2':image_two_bleu_2, 'bleu_3_2':image_two_bleu_3,
+                'bleu_4_2':image_two_bleu_4})
 
 def external(request):
     if 'upload_image_input' in request.POST:
@@ -91,6 +101,20 @@ def external(request):
 
         # relative image path
         templateurl = fs.url(filename)
+
+        # SCR_PATH = os.path.dirname(os.path.dirname(BASE_DIR))
+        # PREPROCESS_IMAGE_PY_PATH = os.path.join(SCR_PATH, 'data/preprocess_image.py')
+        # MEDIA_PATH = os.path.join(BASE_DIR, 'media')
+        # example call: python scr/data/preprocess_image.py --input_path=<input_path>
+
+        # preprocess_script_cli = 'python ' + str(PREPROCESS_IMAGE_PY_PATH) + ' --input_path=' + MEDIA_PATH
+        #
+        # os.system(preprocess_script_cli)
+        #
+        # if templateurl.endswith('.png'):
+        #     fileurl = str(fileurl)
+        #     fileurl = fileurl[:-4] + '.jpg'
+
 
 
 
