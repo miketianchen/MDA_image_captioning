@@ -8,10 +8,10 @@ This script takes the root path to the raw data and image folders to process.
 Usage: scr/data/preprocess_json.py --root_path=<root_path> INPUTS ...
 
 Arguments:
-INPUTS                       Datasets to process (e.g. rsicd, ucm, sydney).
+INPUTS                     Datasets to process (e.g. rsicd, ucm, sydney).
 
 Options:
---root_path=<root_path>      The path to the data folder which contains the raw folder.
+--root_path=<root_path>    The path to the data folder which contains the raw folder.
 '''
 
 import json
@@ -43,8 +43,9 @@ def main(root_path, inputs):
     # read in json files from all datasets
     for name in inputs:
         
-        assert name in ['rsicd', 'ucm', 'sydney'], \
-        'the dataset name should be one of rsicd, ucm and sydney'
+        if name not in ['rsicd', 'ucm', 'sydney']:
+            print(f'No need to process the json file for {name}.')
+            continue
         
         print(f'Processing file information for the {name} dataset...')
         
