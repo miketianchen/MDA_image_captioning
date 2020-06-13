@@ -47,8 +47,8 @@ def eval_model(inputs, root_path):
     # load data
     with open(f'{root_path}/json/{inputs}.json', 'r') as data:
         ref_data = json.load(data)
-    with open(f'{root_path}/results/{inputs}.json', 'r') as data1:
-        results = json.load(data1)
+    with open(f'{root_path}/json/{inputs}_model_caption.json', 'r') as data:
+        results = json.load(data)
     
     # download stanford nlp library
     subprocess.call(['scr/evaluation/get_stanford_models.sh'])

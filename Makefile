@@ -19,7 +19,7 @@
 all: data/json/train.json data/json/valid.json data/json/test.json \
 data/json/sydney.json data/train data/test data/valid \
 data/preprocessed_sydney data/results/final_model.hdf5 \
-data/results/test.json data/results/sydney.json\
+data/json/test_model_caption.json data/json/sydney_model_caption.json\
 data/score/test_score.json data/score/test_img_score.json \
 data/score/sydney_score.json data/score/sydney_img_score.json
 
@@ -32,7 +32,7 @@ data/json/sydney.json
 train: data/results/final_model.hdf5
 
 # run all the scripts in the captioning stage
-caption: data/results/test.json data/results/sydney.json
+caption: data/json/test_model_caption.json data/json/sydney_model_caption.json
 
 # run all the scripts in the evaluation stage
 score: data/score/test_score.json data/score/test_img_score.json \
@@ -105,7 +105,7 @@ data/test
     --root_path=$(root_path) --output=test --inputs=test
 
 # generate captions for the test images
-data/results/test.json : \
+data/json/test_model_caption.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
 data/results/test.pkl data/results/test_paths.pkl \
 data/results/final_model.hdf5
@@ -123,7 +123,7 @@ data/preprocessed_sydney
     --output=sydney --inputs=preprocessed_sydney
 
 # generate captions for sydney images
-data/results/sydney.json : \
+data/json/sydney_model_caption.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
 data/results/sydney.pkl data/results/sydney_paths.pkl \
 data/results/final_model.hdf5
@@ -133,21 +133,28 @@ data/results/final_model.hdf5
     
 # evaluate the model generated captions for test images
 data/score/test_score.json data/score/test_img_score.json : \
-data/results/test.json data/json/test.json scr/evaluation/eval_model.py
+data/json/test_model_caption.json data/json/test.json scr/evaluation/eval_model.py
 
 	python scr/evaluation/eval_model.py --root_path=$(root_path) \
     --inputs=test
 
 # evaluate the model generated captions for sydney images
 data/score/sydney_score.json data/score/sydney_img_score.json : \
-data/results/sydney.json data/json/sydney.json scr/evaluation/eval_model.py
+data/json/sydney_model_caption.json data/json/sydney.json scr/evaluation/eval_model.py
 
 	python scr/evaluation/eval_model.py --root_path=$(root_path) \
     --inputs=sydney
 
 # Clean up intermediate and results files
 clean : 
-	rm -rf $(root_path)/json
+	rm -rf $(root_path)/json/train.json
+	rm -rf $(root_path)/json/test.json
+	rm -rf $(root_path)/json/valid.json
+	rm -rf $(root_path)/json/ucm.json
+	rm -rf $(root_path)/json/rsicd.json
+	rm -rf $(root_path)/json/sydney.json
+	rm -rf $(root_path)/json/test_model_caption.json
+	rm -rf $(root_path)/json/sydney_model_caption.json
 	rm -rf $(root_path)/preprocessed_sydney
 	rm -rf $(root_path)/preprocessed_ucm
 	rm -rf $(root_path)/preprocessed_rsicd
