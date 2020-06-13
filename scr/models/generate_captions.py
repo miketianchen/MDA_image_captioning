@@ -1,7 +1,7 @@
 # Author: Fanli Zhou
 # Date: 2020-06-09
 
-'''This script 
+'''This script
 
 Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> --output=<output>
 
@@ -30,7 +30,7 @@ torch.manual_seed(123)
 np.random.seed(123)
 
 def generate_caption(
-    model, 
+    model,
     img_features,
     max_length,
     vocab_size,
@@ -68,19 +68,21 @@ if __name__ == "__main__":
     inputs = opt['--inputs']
     model = opt['--model']
     output = opt['--output']
-    
+
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     with open( f"{root_path}/results/model_info.json", 'r') as f:
         model_info = json.load(f)
-        
+
     with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
-        img_features = pickle.load(f)  
+        img_features = pickle.load(f)
     with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
-        img_paths = pickle.load(f)  
-        
-    caption_model = torch.load(f"{root_path}/results/{model}.hdf5")    
-    
+        img_paths = pickle.load(f)
+
+    caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)
+
+
+
     # generate results
     results = {}
     print(f'Generating captions...')
@@ -90,7 +92,7 @@ if __name__ == "__main__":
         # note the filename splitting depends on path
         filename = img_paths[n].split('/')[-1]
         results[filename] = generate_caption(
-            caption_model, 
+            caption_model,
             img_features[n],
             model_info['max_length'],
             model_info['vocab_size'],
@@ -99,6 +101,6 @@ if __name__ == "__main__":
         )
 
     with open(f"{root_path}/results/{output}.json", 'w') as fp:
-        json.dump(results, fp)    
+        json.dump(results, fp)
 
     print(f"Generating captions took: {hms_string(time()-start)}")
