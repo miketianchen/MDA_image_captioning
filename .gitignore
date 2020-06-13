@@ -3,7 +3,11 @@
 .RData
 .Ruserdata
 *.Rproj
-/data/raw/imgs
+/data/raw/rsicd
+/data/raw/ucm
+/data/raw/sydney
+/data/results
+/data/glove.6B.200d.txt
 /data/preprocessed_sydney
 /data/preprocessed_ucm
 /data/preprocessed_rsicd
@@ -21,3 +25,5 @@
 /scr/evaluation/pycocoevalcap/spice/cache
 /scr/evaluation/__pycache__
 /scr/evaluation/pycocoevalcap/usc_sim/__pycache__
+/scr/visualization/mda_mds/mda_mds/__pycache__
+/scr/visualization/mda_mds/media/
