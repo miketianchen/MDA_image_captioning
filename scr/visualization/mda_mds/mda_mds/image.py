@@ -5,8 +5,9 @@ import time
 import nltk
 
 from botocore.exceptions import NoCredentialsError
+from shutil import copyfile
 
-# /Users/apple/Documents/Web_Dev/django-mda/mda_mds
+# /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # PATH for JSON CAPTION FILE
 JSON_CAPTION_PATH = os.path.join(BASE_DIR, 'media/caption.json')
@@ -38,18 +39,42 @@ def upload_to_aws(local_file, bucket, s3_file = None):
         return False
 
 # Function to take the user uploaded image and run the model on it
-def model(image_path):
-    # BLAH BLAH BLAH DO THINGS...
-    # Return an evaluation score
+def model():
+    # BASE DIR: /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 
-    # scr directory path from current file ../../../
-    # data directory path from current file ../../../data
-    os.systems('python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg')
+    SCR_PATH = os.path.dirname(os.path.dirname(BASE_DIR))
+    EXTRACT_FEATURES_PATH = os.path.join(SCR_PATH, 'models/extract_features.py')
+    GENERATE_CAPTIONS_PATH = os.path.join(SCR_PATH, 'models/generate_captions.py')
+    DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
+    RESULTS_PATH = os.path.join(DATA_PATH, 'results')
 
 
+    # currently the picture file is saved in temp media directory, need to copy picture to data/results folder
+    copyfile(image_fullpath, os.path.join(DATA_PATH, image_name))
 
-    os.systems('python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030')
-    return ['NA', 'CAPTION TO BE PRODUCED BY MODEL SCRIPT']
+    extract_features_cli_call = 'python ' + str(EXTRACT_FEATURES_PATH) + ' --root_path=' + DATA_PATH + ' --output=' + image_name.split(".")[0] + ' --inputs=' + image_name
+    # Example call:
+    # 'python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg'
+    os.system(extract_features_cli_call)
+
+    output_json_name = image_name.split(".")[0]+'_captions'
+    generate_captions_cli_call = 'python ' + str(GENERATE_CAPTIONS_PATH) + ' --root_path=' + DATA_PATH + ' --inputs=' + image_name.split(".")[0] + ' --model=final_model --output=' + output_json_name
+    # Example call:
+    # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
+    os.system(generate_captions_cli_call)
+
+    captions = read_results(output_json_name, RESULTS_PATH)
+
+    return ['NA', captions]
+
+def read_results(output_json_name, RESULTS_PATH):
+    output_json_name = output_json_name + '.json'
+    JSON_PATH = os.path.join(RESULTS_PATH, output_json_name)
+    with open(JSON_PATH) as f:
+        caption_dict = json.load(f)
+
+    captions = caption_dict[image_name]
+    return captions
 
 
 # upload mode; if upload mode is 'image' then only images will be uploaded
@@ -67,10 +92,10 @@ if upload_mode == "image":
     uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
 
     # Return the score from the model
-    output = model(image_fullpath)
+    output = model()
     score = output[0]
     model_caption = output[1]
-    print(score+"_"+model_caption)
+    print(score+"*"+model_caption)
 
 elif upload_mode == "caption":
     # captions

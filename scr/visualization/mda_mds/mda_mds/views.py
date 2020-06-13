@@ -99,7 +99,7 @@ def external(request):
         image = run([sys.executable,image_script_path,
                                 str(upload_mode), str(fileurl), str(filename)], shell=False, stdout=PIPE, universal_newlines=True)
         sys_out = str(image.stdout).replace('Upload Successful','')
-        output = sys_out.split('_')
+        output = sys_out.split('*')
         score = output[0]
         model_caption = output[1]
         print("SYSTEM OUT IS "+sys_out)
