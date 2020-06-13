@@ -6,7 +6,7 @@
 Usage: scr/models/train.py --root_path=<root_path> --output=<output>
 
 Options:
---root_path=<root_path>   The root path of the json folder.
+--root_path=<root_path>   The path to the data folder which contains the raw folder.
 --output=<output>         The output trained caption model name without the filename extension.
 '''
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     clip = 1
     start = time()
     print(f'Training...')
-    for i in tqdm(range(EPOCHS * 7)):
+    for i in tqdm(range(EPOCHS * 6)):
 
         loss = train(
             caption_model,
@@ -307,7 +307,7 @@ if __name__ == "__main__":
     for param_group in optimizer.param_groups:
         param_group['lr'] = 1e-4
 
-    for i in tqdm(range(EPOCHS * 7)):
+    for i in tqdm(range(EPOCHS * 6)):
 
         loss = train(
             caption_model,

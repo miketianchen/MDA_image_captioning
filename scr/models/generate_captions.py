@@ -6,7 +6,7 @@
 Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> --output=<output>
 
 Options:
---root_path=<root_path>    The root path of the json folder.
+--root_path=<root_path>    The path to the data folder which contains the raw folder.
 --inputs=<inputs>          The input image feature file name (no extension).
 --model=<model>            The trained caption model name (no extension).
 --output=<output>          The output file name (no extension).

@@ -6,15 +6,14 @@
 Usage: scr/models/prepare_data.py --root_path=<root_path> INPUTS ...
 
 Arguments:
-INPUTS                   The json file name.
+INPUTS                   One or more json file names.
 
 Options:
---root_path=<root_path>  The root path of the json folder (e.g. data).
+--root_path=<root_path>  The path to the data folder which contains the raw folder.
 '''
 
-import json
+import json, os, pickle
 from tqdm import tqdm
-import pickle
 from time import time
 import numpy as np
 from PIL import Image
@@ -109,7 +108,7 @@ if __name__ == "__main__":
         train_descriptions.extend(descriptions)
         max_length = max(max_length, length)  
 
-    print(f'{len(train_paths)} images from for training')
+    print(f'{len(train_paths)} images for training')
     
     # add a start and stop token at the beginning/end
     for v in train_descriptions:
@@ -128,7 +127,10 @@ if __name__ == "__main__":
         'idxtoword': idxtoword,
         'wordtoidx': wordtoidx
     }
-
+    
+    if not os.path.exists(f"{root_path}/results"):
+        os.makedirs(f"{root_path}/results", exist_ok=True)
+        
     with open( f"{root_path}/results/model_info.json", 'w') as f:
         json.dump(model_info, f)
         
