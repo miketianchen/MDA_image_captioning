@@ -91,7 +91,8 @@
                               </div>
                               <div class="post-content">
                                 <p><em>Original Caption:</em> {{og_caption_1}}</p>
-                                <p><em>Generated Caption:</em> {{generated_caption_1}}</p>
+                                <p><em>Generated Caption:</em>
+                                  {{generated_caption_1}}</p>
                                 <!-- <ul>
                                   <li><em>Bleu_1: </em>{{bleu_1_1}}</li>
                                   <li><em>METEOR: </em>{{meteor_1}}</li>
@@ -103,7 +104,11 @@
                                 <table class="table">
                                   <tr>
                                     <td><em>Bleu_1: </em>{{bleu_1_1}}</td>
-                                    <td><em>METEOR: </em>{{meteor_1}}</td>
+                                    <td><em>Bleu_2: </em>{{bleu_2_1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>Bleu_3: </em>{{bleu_3_1}}</td>
+                                    <td><em>Bleu_4: </em>{{bleu_4_1}}</td>
                                   </tr>
                                   <tr>
                                     <td><em>ROUGE_L: </em>{{rouge_l_1}}</td>
@@ -112,6 +117,9 @@
                                   <tr>
                                     <td><em>SPICE: </em>{{spice_1}}</td>
                                     <td><em>USC: </em>{{usc_1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>METEOR: </em>{{meteor_1}}</td>
                                   </tr>
                                 </table>
                              </div>
@@ -136,7 +144,11 @@
                                 <table class="table">
                                   <tr>
                                     <td><em>Bleu_1: </em>{{bleu_1_2}}</td>
-                                    <td><em>METEOR: </em>{{meteor_2}}</td>
+                                    <td><em>Bleu_2: </em>{{bleu_2_2}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>Bleu_3: </em>{{bleu_3_2}}</td>
+                                    <td><em>Bleu_4: </em>{{bleu_4_2}}</td>
                                   </tr>
                                   <tr>
                                     <td><em>ROUGE_L: </em>{{rouge_l_2}}</td>
@@ -145,6 +157,9 @@
                                   <tr>
                                     <td><em>SPICE: </em>{{spice_2}}</td>
                                     <td><em>USC: </em>{{usc_2}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td><em>METEOR: </em>{{meteor_2}}</td>
                                   </tr>
                                 </table>
                              </div>
@@ -182,14 +197,14 @@
                       <div class="post-container">
                         {% if raw_url or edit_url %}
                           <div class="post-thumb">
-                            <img src="{{raw_url}}" alt="raw_image" class="upload_image" style="padding-bottom:20px; width:50%; height:auto; margin-right:10px; margin-top:10px;">
+                            <img src="{{raw_url}}" alt="raw_image" class="upload_image" style="padding-bottom:20px; width:55%; height:auto; margin-right:10px; margin-top:10px;">
                           </div>
                         {% endif %}
 
                         {% if data %}
                           <div class="post-content">
                             <!-- <p><em>Evaluation Score:</em> {{score}}</p> -->
-                            <p><em>Generated Caption:</em> {{model_caption}}</p>
+                            <p><em>Generated Caption:</em> <strong>{{model_caption}}</strong></p>
                          </div>
                         {% endif %}
 
