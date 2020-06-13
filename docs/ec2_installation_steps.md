@@ -105,3 +105,7 @@ python manage.py runserver ec2-3-951-16.ca-central-1.compute.amazonaws.com:8443
 You can define the port number when you launch the EC2 instance when setting the `Security Groups` by adding `Custom TCP Rule` and setting the `Port Range` to the port number.
 
 If you launched an instance in the `sg-4a03c42a` group, then the port number is 8443.
+
+4. Open `http://[public domain name].ca-central-1.compute.amazonaws.com:[port]` in Chrome.
+
+For example: `http://ec2-3-96-51-16.ca-central-1.compute.amazonaws.com:8443`
