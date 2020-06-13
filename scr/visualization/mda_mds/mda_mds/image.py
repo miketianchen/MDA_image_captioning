@@ -41,6 +41,14 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 def model(image_path):
     # BLAH BLAH BLAH DO THINGS...
     # Return an evaluation score
+
+    # scr directory path from current file ../../../
+    # data directory path from current file ../../../data
+    os.systems('python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg')
+
+
+
+    os.systems('python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030')
     return ['NA', 'CAPTION TO BE PRODUCED BY MODEL SCRIPT']
 
 
