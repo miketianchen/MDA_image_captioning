@@ -115,18 +115,16 @@ def external(request):
         #     fileurl = str(fileurl)
         #     fileurl = fileurl[:-4] + '.jpg'
 
-
-
-
         #print(raw_url)
         #output = run([sys.executable,'//Users//apple//Documents//Web_dev//django-mda//mda_mds//mda_mds//test.py', input], shell=False, stdout=PIPE)
+
         image = run([sys.executable,image_script_path,
                                 str(upload_mode), str(fileurl), str(filename)], shell=False, stdout=PIPE, universal_newlines=True)
         sys_out = str(image.stdout).replace('Upload Successful','')
         output = sys_out.split('*')
         score = output[0]
         model_caption = output[1]
-        print("SYSTEM OUT IS "+sys_out)
+        print("SYSTEM OUT IS "+ templateurl)
         #print("IMAGE STD OUT, NEW RELATIVE PATH FOR IMAGE"+str(image.stdout).replace('Upload Successful',''))
         return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
                                 'edit_url':image.stdout, 'score':score, 'model_caption':model_caption})

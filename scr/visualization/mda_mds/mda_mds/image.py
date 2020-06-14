@@ -3,9 +3,9 @@ import boto3
 import os
 import time
 import nltk
+import shutil
 
 from botocore.exceptions import NoCredentialsError
-from shutil import copyfile
 from PIL import Image
 
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
@@ -55,7 +55,8 @@ def model():
     os.system(extract_features_cli_call)
 
     output_json_name = image_name.split(".")[0]+'_captions'
-    generate_captions_cli_call = 'python ' + str(GENERATE_CAPTIONS_PATH) + ' --root_path=' + DATA_PATH + ' --inputs=' + image_name.split(".")[0] + ' --model=final_model --output=' + output_json_name
+    # generate_captions_cli_call = 'python {' + str(GENERATE_CAPTIONS_PATH) + '} --root_path={' + DATA_PATH + '} --inputs={' + image_name.split(".")[0] + '} --model=final_model --single=True'
+    generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
     # Example call:
     # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
     os.system(generate_captions_cli_call)
@@ -66,7 +67,7 @@ def model():
 
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
-    JSON_PATH = os.path.join(RESULTS_PATH, output_json_name)
+    JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
     with open(JSON_PATH) as f:
         caption_dict = json.load(f)
 
@@ -84,6 +85,10 @@ def preprocess_image(size = (299, 299)):
 
     rgb_im.save(output_path, 'JPEG', quality = 95)
 
+def relocate_image_path(image_name):
+    UPLOAD_PATH = os.path.join(DATA_PATH, 'raw/upload', image_name)
+    CURRENT_PATH = os.path.join(DATA_PATH, image_name)
+    shutil.move(CURRENT_PATH, UPLOAD_PATH)
 
 
 # upload mode; if upload mode is 'image' then only images will be uploaded
@@ -110,7 +115,9 @@ if upload_mode == "image":
     output = model()
     score = output[0]
     model_caption = output[1]
+
     print(score+"*"+model_caption)
+
 
 elif upload_mode == "caption":
     # captions
@@ -120,13 +127,21 @@ elif upload_mode == "caption":
     optional_caption_4 = sys.argv[5]
     optional_caption_5 = sys.argv[6]
 
+
+
     for filename in os.listdir(MEDIA_PATH):
-        if filename.endswith(".jpg"):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
             image_name = filename
-            os.remove(os.path.join(MEDIA_PATH, filename))
+            os.remove(os.path.join(MEDIA_PATH, image_name))
             continue
         else:
             continue
+
+    if image_name.endswith('.png'):
+        image_name = image_name[:-4]
+        image_name = image_name + '.jpg'
+
+    relocate_image_path(image_name)
 
 
     if (optional_caption_2 == ""):
