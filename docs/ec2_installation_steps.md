@@ -75,4 +75,37 @@ pip install tensorflow
 pip install tensorflow_hub
 pip install tensorflow_text
 pip install docopt
+pip install django
 ```
+
+To run the visualization tool on the EC2 instance:
+
+1. From the root of the repo, navigate to `scr/visualization/mda_mds`, open `settings.py`
+
+2. Add `[public domain name].ca-central-1.compute.amazonaws.com` to `ALLOWED_HOSTS`
+
+For example:
+
+```
+ALLOWED_HOSTS = ['ec2-3-96-51-16.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
+```
+
+3. Save and exit, call
+
+```
+python manage.py runserver [public domain name].ca-central-1.compute.amazonaws.com:[port]
+```
+
+For example:
+
+```
+python manage.py runserver ec2-3-951-16.ca-central-1.compute.amazonaws.com:8443
+```
+
+You can define the port number when you launch the EC2 instance when setting the `Security Groups` by adding `Custom TCP Rule` and setting the `Port Range` to the port number.
+
+If you launched an instance in the `sg-4a03c42a` group, then the port number is `8443`.
+
+4. Open `http://[public domain name].ca-central-1.compute.amazonaws.com:[port]` in Chrome.
+
+For example: `http://ec2-3-96-51-16.ca-central-1.compute.amazonaws.com:8443`

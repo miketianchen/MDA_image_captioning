@@ -2,14 +2,13 @@
 # date: 2020-06-10
 
 '''This script calculates evaluation scores for test results.
-This script takes the paths of folders containing human annotated captions and model generated captions and save the scores in the desired folder.
+This script takes the path to the data folder and the caption file name and save the scores under data/score.
 
-Usage: scr/evaluation/eval.py --ref_path=<ref_path> --result_path=<result_path> --output_path=<output_path>
+Usage: scr/evaluation/eval.py --root_path=<root_path> --inputs=<inputs>
 
 Options:
---ref_path=<ref_path>  Folder that contains the human generated caption file
---result_path=<result_path>  Folder that contains the model generated caption file
---output_path=<output_path>  Folder that stores the evaluation score files
+--root_path=<root_path>      The path of the data folder.
+--inputs=<inputs>            The name of the caption file to process.
 '''
 
 from pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
@@ -26,7 +25,7 @@ import os
 
 opt = docopt(__doc__)
 
-def eval_model(ref_path, result_path, output_path):
+def eval_model(inputs, root_path):
     """
     Computes evaluation metrics of the model results against the human annotated captions
     
@@ -46,10 +45,10 @@ def eval_model(ref_path, result_path, output_path):
     None, it saves the overall score and individual score files under output path
     """
     # load data
-    with open(ref_path + '/test.json', 'r') as data:
+    with open(f'{root_path}/json/{inputs}.json', 'r') as data:
         ref_data = json.load(data)
-    with open(result_path + '/test.json', 'r') as data1:
-        results = json.load(data1)
+    with open(f'{root_path}/json/{inputs}_model_caption.json', 'r') as data:
+        results = json.load(data)
     
     # download stanford nlp library
     subprocess.call(['scr/evaluation/get_stanford_models.sh'])
@@ -116,13 +115,16 @@ def eval_model(ref_path, result_path, output_path):
             else:
                 img_score_dict[img_name][metrics] = scores_dict[metrics][n]
     
+    output_path = f'{root_path}/score'
     # save the overall score and individual image score
     if not os.path.exists(output_path):
         os.makedirs(output_path, exist_ok=True)
-    with open(output_path + '/score.json', 'w') as file:
+        
+    with open(f'{output_path}/{inputs}_score.json', 'w') as file:
         json.dump(score_dict, file)
-    with open(output_path + '/img_score.json', 'w') as file2:
-        json.dump(img_score_dict, file2)
+        
+    with open(f'{output_path}/{inputs}_img_score.json', 'w') as file:
+        json.dump(img_score_dict, file)
 
 if __name__ == "__main__":
-    eval_model(opt["--ref_path"], opt["--result_path"], opt["--output_path"])
+    eval_model(opt["--inputs"], opt["--root_path"])

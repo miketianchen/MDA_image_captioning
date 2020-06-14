@@ -3,13 +3,14 @@
 
 '''This script
 
-Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> --output=<output>
+Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> [--output=<output>] [--single=<single>]
 
 Options:
---root_path=<root_path>    The root path of the json folder.
+--root_path=<root_path>    The path to the data folder which contains the raw folder.
 --inputs=<inputs>          The input image feature file name (no extension).
 --model=<model>            The trained caption model name (no extension).
 --output=<output>          The output file name (no extension).
+--single=<single>          Save the caption to `imgs_no_human_caption.json` or not [default: False].
 '''
 
 import json
@@ -79,9 +80,7 @@ if __name__ == "__main__":
     with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
         img_paths = pickle.load(f)
 
-    caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)
-
-
+    caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)  
 
     # generate results
     results = {}
@@ -99,8 +98,22 @@ if __name__ == "__main__":
             model_info['wordtoidx'],
             model_info['idxtoword']
         )
+    
+    if opt['--single'] == 'False':
 
-    with open(f"{root_path}/results/{output}.json", 'w') as fp:
-        json.dump(results, fp)
+        assert output is not None, 'output is not defined'
+        with open(f"{root_path}/json/{output}_model_caption.json", 'w') as fp:
+            json.dump(results, fp)
+
+    else:
+        try:
+            with open(f"{root_path}/json/upload_model_caption.json", 'r') as fp:
+                single_captions = json.load(fp)
+            single_captions.update(results)
+        except:
+            single_captions = results
+            
+        with open(f"{root_path}/json/upload_model_caption.json", 'w') as fp:
+            json.dump(single_captions, fp)
 
     print(f"Generating captions took: {hms_string(time()-start)}")

@@ -6,7 +6,7 @@
 Usage: scr/models/extract_features.py --root_path=<root_path> --output=<output> [--inputs=<inputs>]
 
 Options:
---root_path=<root_path>     The root path of the json folder (e.g. data).
+--root_path=<root_path>     The path to the data folder which contains the raw folder.
 --output=<output>           The output file name  (no extension, e.g. test).
 --inputs=<inputs>           The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
 '''
