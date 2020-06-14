@@ -78,6 +78,14 @@ pip install docopt
 pip install django
 ```
 
+Download nltk_data (not in the AMI)
+
+```
+python
+>>> import nltk
+>>> nltk.download('punkt')
+```
+
 To run the visualization tool on the EC2 instance:
 
 1. From the root of the repo, navigate to `scr/visualization/mda_mds`, open `settings.py`
