@@ -90,6 +90,11 @@ def relocate_image_path(image_name):
     CURRENT_PATH = os.path.join(DATA_PATH, image_name)
     shutil.move(CURRENT_PATH, UPLOAD_PATH)
 
+def merge_two_dicts(x, y):
+    z = x.copy()   # start with x's keys and values
+    z.update(y)    # modifies z with y's keys and values & returns None
+    return z
+
 
 # upload mode; if upload mode is 'image' then only images will be uploaded
 #              if upload mode is 'caption' then captions will be created and uploaded
@@ -198,26 +203,6 @@ elif upload_mode == "caption":
         'sentid': int(str(time_stamp) + str(5))
     })
 
-    # captions dictionary
-    # data = {}
-    #
-    # data[image_name] = []
-    # data[image_name].append({
-    #     'first_caption': user_caption_input
-    # })
-    # data[image_name].append({
-    #     'second_caption': optional_caption_2
-    # })
-    # data[image_name].append({
-    #     'third_caption': optional_caption_3
-    # })
-    # data[image_name].append({
-    #     'fourth_caption': optional_caption_4
-    # })
-    # data[image_name].append({
-    #     'fifth_caption': optional_caption_5
-    # })
-
     with open(JSON_CAPTION_PATH, 'w') as outfile:
         json.dump(caption, outfile)
 
@@ -227,65 +212,13 @@ elif upload_mode == "caption":
     caption_uploaded = upload_to_aws(JSON_CAPTION_PATH, bucket_name, s3_captions_file_name)
 
 
-# # get our data as an array from sys
-# image_fullpath = sys.argv[1]
-# image_name = sys.argv[2]
-# # captions
-# user_caption_input = sys.argv[3]
-# optional_caption_2 = sys.argv[4]
-# optional_caption_3 = sys.argv[5]
-# optional_caption_4 = sys.argv[6]
-# optional_caption_5 = sys.argv[7]
-# # captions dictionary
-# data = {}
-# data[image_name] = []
-# data[image_name].append({
-#     'first_caption': user_caption_input
-# })
-#
-# if (optional_caption_2 == ""):
-#     optional_caption_2 = user_caption_input
-#     optional_caption_3 = user_caption_input
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# elif (optional_caption_3 == ""):
-#     optional_caption_3 = user_caption_input
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# elif (optional_caption_4 == ""):
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# else:
-#     optional_caption_5 = user_caption_input
-#     # throw execption here later
-#
-# data[image_name].append({
-#     'second_caption': optional_caption_2
-# })
-# data[image_name].append({
-#     'third_caption': optional_caption_3
-# })
-# data[image_name].append({
-#     'fourth_caption': optional_caption_4
-# })
-# data[image_name].append({
-#     'fifth_caption': optional_caption_5
-# })
-#
-# with open(JSON_CAPTION_PATH, 'w') as outfile:
-#     json.dump(data, outfile)
+    USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
 
 
+    with open(USER_JSON_PATH, 'r') as json_file:
+        user_caption_dict = json.load(json_file)
 
-# bucket_name = 'mds-capstone-mda'
-# s3_images_file_name = 'upload/images/' + image_name
-# s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
-#
-# uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
-# caption_uploaded = upload_to_aws(JSON_CAPTION_PATH, bucket_name, s3_captions_file_name)
-#
-# # Return the score from the model
-# output = model(image_fullpath, user_caption_input)
-# score = output[0]
-# model_caption = output[1]
-# print(score+"_"+model_caption)
+    new_caption_dict = merge_two_dicts(caption, user_caption_dict)
+
+    with open(USER_JSON_PATH, 'w') as json_file:
+        json.dump(new_caption_dict, json_file)
