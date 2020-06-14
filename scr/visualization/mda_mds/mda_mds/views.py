@@ -74,7 +74,7 @@ def generate(request):
                 'spice_2':image_two_spice, 'image_two_name':image_two_name,
                 'usc_2':image_two_usc, 'og_caption_2':image_two_og_captions,
                 'bleu_2_2':image_two_bleu_2, 'bleu_3_2':image_two_bleu_3,
-                'bleu_4_2':image_two_bleu_4})
+                'bleu_4_2':image_two_bleu_4, 'active_tab':'demo_tab'})
 
 def external(request):
     if 'upload_image_input' in request.POST:
