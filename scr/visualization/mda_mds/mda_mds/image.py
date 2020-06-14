@@ -3,9 +3,9 @@ import boto3
 import os
 import time
 import nltk
+import shutil
 
 from botocore.exceptions import NoCredentialsError
-from shutil import copyfile
 from PIL import Image
 
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
@@ -55,7 +55,8 @@ def model():
     os.system(extract_features_cli_call)
 
     output_json_name = image_name.split(".")[0]+'_captions'
-    generate_captions_cli_call = 'python ' + str(GENERATE_CAPTIONS_PATH) + ' --root_path=' + DATA_PATH + ' --inputs=' + image_name.split(".")[0] + ' --model=final_model --output=' + output_json_name
+    # generate_captions_cli_call = 'python {' + str(GENERATE_CAPTIONS_PATH) + '} --root_path={' + DATA_PATH + '} --inputs={' + image_name.split(".")[0] + '} --model=final_model --single=True'
+    generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
     # Example call:
     # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
     os.system(generate_captions_cli_call)
@@ -66,7 +67,7 @@ def model():
 
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
-    JSON_PATH = os.path.join(RESULTS_PATH, output_json_name)
+    JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
     with open(JSON_PATH) as f:
         caption_dict = json.load(f)
 
@@ -84,6 +85,15 @@ def preprocess_image(size = (299, 299)):
 
     rgb_im.save(output_path, 'JPEG', quality = 95)
 
+def relocate_image_path(image_name):
+    UPLOAD_PATH = os.path.join(DATA_PATH, 'raw/upload', image_name)
+    CURRENT_PATH = os.path.join(DATA_PATH, image_name)
+    shutil.move(CURRENT_PATH, UPLOAD_PATH)
+
+def merge_two_dicts(x, y):
+    z = x.copy()   # start with x's keys and values
+    z.update(y)    # modifies z with y's keys and values & returns None
+    return z
 
 
 # upload mode; if upload mode is 'image' then only images will be uploaded
@@ -110,7 +120,9 @@ if upload_mode == "image":
     output = model()
     score = output[0]
     model_caption = output[1]
+
     print(score+"*"+model_caption)
+
 
 elif upload_mode == "caption":
     # captions
@@ -120,13 +132,21 @@ elif upload_mode == "caption":
     optional_caption_4 = sys.argv[5]
     optional_caption_5 = sys.argv[6]
 
+
+
     for filename in os.listdir(MEDIA_PATH):
-        if filename.endswith(".jpg"):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
             image_name = filename
-            os.remove(os.path.join(MEDIA_PATH, filename))
+            os.remove(os.path.join(MEDIA_PATH, image_name))
             continue
         else:
             continue
+
+    if image_name.endswith('.png'):
+        image_name = image_name[:-4]
+        image_name = image_name + '.jpg'
+
+    relocate_image_path(image_name)
 
 
     if (optional_caption_2 == ""):
@@ -183,26 +203,6 @@ elif upload_mode == "caption":
         'sentid': int(str(time_stamp) + str(5))
     })
 
-    # captions dictionary
-    # data = {}
-    #
-    # data[image_name] = []
-    # data[image_name].append({
-    #     'first_caption': user_caption_input
-    # })
-    # data[image_name].append({
-    #     'second_caption': optional_caption_2
-    # })
-    # data[image_name].append({
-    #     'third_caption': optional_caption_3
-    # })
-    # data[image_name].append({
-    #     'fourth_caption': optional_caption_4
-    # })
-    # data[image_name].append({
-    #     'fifth_caption': optional_caption_5
-    # })
-
     with open(JSON_CAPTION_PATH, 'w') as outfile:
         json.dump(caption, outfile)
 
@@ -212,65 +212,13 @@ elif upload_mode == "caption":
     caption_uploaded = upload_to_aws(JSON_CAPTION_PATH, bucket_name, s3_captions_file_name)
 
 
-# # get our data as an array from sys
-# image_fullpath = sys.argv[1]
-# image_name = sys.argv[2]
-# # captions
-# user_caption_input = sys.argv[3]
-# optional_caption_2 = sys.argv[4]
-# optional_caption_3 = sys.argv[5]
-# optional_caption_4 = sys.argv[6]
-# optional_caption_5 = sys.argv[7]
-# # captions dictionary
-# data = {}
-# data[image_name] = []
-# data[image_name].append({
-#     'first_caption': user_caption_input
-# })
-#
-# if (optional_caption_2 == ""):
-#     optional_caption_2 = user_caption_input
-#     optional_caption_3 = user_caption_input
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# elif (optional_caption_3 == ""):
-#     optional_caption_3 = user_caption_input
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# elif (optional_caption_4 == ""):
-#     optional_caption_4 = user_caption_input
-#     optional_caption_5 = user_caption_input
-# else:
-#     optional_caption_5 = user_caption_input
-#     # throw execption here later
-#
-# data[image_name].append({
-#     'second_caption': optional_caption_2
-# })
-# data[image_name].append({
-#     'third_caption': optional_caption_3
-# })
-# data[image_name].append({
-#     'fourth_caption': optional_caption_4
-# })
-# data[image_name].append({
-#     'fifth_caption': optional_caption_5
-# })
-#
-# with open(JSON_CAPTION_PATH, 'w') as outfile:
-#     json.dump(data, outfile)
+    USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
 
 
+    with open(USER_JSON_PATH, 'r') as json_file:
+        user_caption_dict = json.load(json_file)
 
-# bucket_name = 'mds-capstone-mda'
-# s3_images_file_name = 'upload/images/' + image_name
-# s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
-#
-# uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
-# caption_uploaded = upload_to_aws(JSON_CAPTION_PATH, bucket_name, s3_captions_file_name)
-#
-# # Return the score from the model
-# output = model(image_fullpath, user_caption_input)
-# score = output[0]
-# model_caption = output[1]
-# print(score+"_"+model_caption)
+    new_caption_dict = merge_two_dicts(caption, user_caption_dict)
+
+    with open(USER_JSON_PATH, 'w') as json_file:
+        json.dump(new_caption_dict, json_file)
