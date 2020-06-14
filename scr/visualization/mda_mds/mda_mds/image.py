@@ -86,6 +86,10 @@ def preprocess_image(size = (299, 299)):
     rgb_im.save(output_path, 'JPEG', quality = 95)
 
 def relocate_image_path(image_name):
+
+    if not os.path.exists(f'{DATA_PATH}/raw/upload'):
+        os.makedirs(f'{DATA_PATH}/raw/upload', exist_ok=True)
+
     UPLOAD_PATH = os.path.join(DATA_PATH, 'raw/upload', image_name)
     CURRENT_PATH = os.path.join(DATA_PATH, image_name)
     shutil.move(CURRENT_PATH, UPLOAD_PATH)
@@ -131,8 +135,6 @@ elif upload_mode == "caption":
     optional_caption_3 = sys.argv[4]
     optional_caption_4 = sys.argv[5]
     optional_caption_5 = sys.argv[6]
-
-
 
     for filename in os.listdir(MEDIA_PATH):
         if filename.endswith(".jpg") or filename.endswith(".png"):
@@ -214,11 +216,13 @@ elif upload_mode == "caption":
 
     USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
 
+    try:
+        with open(USER_JSON_PATH, 'r') as json_file:
+            user_caption_dict = json.load(json_file)
 
-    with open(USER_JSON_PATH, 'r') as json_file:
-        user_caption_dict = json.load(json_file)
-
-    new_caption_dict = merge_two_dicts(caption, user_caption_dict)
+        new_caption_dict = merge_two_dicts(caption, user_caption_dict)
+    except:
+        new_caption_dict = caption
 
     with open(USER_JSON_PATH, 'w') as json_file:
         json.dump(new_caption_dict, json_file)
