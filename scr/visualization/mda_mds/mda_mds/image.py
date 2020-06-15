@@ -124,14 +124,14 @@ if upload_mode == "image":
 
     preprocess_image()
 
-    model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
-
-    uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
-
     # Return the score from the model
     output = model()
     score = output[0]
     model_caption = output[1]
+
+    model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
+
+    uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
 
     relocate_image_path(image_name)
 
@@ -221,7 +221,7 @@ elif upload_mode == "caption":
 
     bucket_name = 'mds-capstone-mda'
     # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
-    s3_captions_file_name = 'upload/captions/user_upload.json'
+    s3_captions_file_name = 'upload/captions/upload.json'
 
     if user_caption_input != "":
 
