@@ -8,7 +8,7 @@ This script takes the root path to the raw data and image folders to process.
 Usage: scr/data/preprocess_json.py --root_path=<root_path> INPUTS ...
 
 Arguments:
-INPUTS                     Datasets to process (e.g. rsicd, ucm, sydney).
+INPUTS                     Datasets to process (e.g. rsicd, ucm, sydney, ...).
 
 Options:
 --root_path=<root_path>    The path to the data folder which contains the raw folder.
@@ -43,19 +43,23 @@ def main(root_path, inputs):
     # read in json files from all datasets
     for name in inputs:
         
-        if name not in ['rsicd', 'ucm', 'sydney']:
-            print(f'No need to process the json file for {name}.')
-            continue
-        
         print(f'Processing file information for the {name} dataset...')
         
-        with open(f'{root_path}/raw/dataset_{name}_modified.json', 'r') as data:
-            json_data = json.load(data)
-
-        for single_image in json_data['images']:
-            new_filename = f"{name}_{os.path.splitext(single_image['filename'])[0]}.jpg"
-            data_info[name][new_filename] = single_image
-            data_info[name][new_filename]['old_dataset_name'] = f'dataset_{name}_modified'
+        try:
+            with open(f'{root_path}/raw/dataset_{name}_modified.json', 'r') as data:
+                json_data = json.load(data)
+            for single_image in json_data['images']:
+                new_filename = f"{name}_{os.path.splitext(single_image['filename'])[0]}.jpg"
+                data_info[name][new_filename] = single_image
+                data_info[name][new_filename]['old_dataset_name'] = f'dataset_{name}_modified'
+        except:
+            with open(f'{root_path}/json/{name}.json', 'r') as data:
+                json_data = json.load(data)
+            for filename, value in json_data.items():
+                new_filename = f"{name}_{os.path.splitext(filename)[0]}.jpg"
+                data_info[name][new_filename] = value
+                data_info[name][new_filename]['filename'] = filename
+                data_info[name][new_filename]['old_dataset_name'] = name
 
     output_path = f'{root_path}/json'
     if not os.path.exists(output_path):
