@@ -189,6 +189,10 @@ def external(request):
 def database(request):
     # PATH to LOCAL DIRECTORY which temporary houses the images the user uploaded
     image_temp_save_dir = os.path.join(BASE_DIR, 'media/database_images')
+
+    if not os.path.exists(image_temp_save_dir):
+        os.makedirs(image_temp_save_dir, exist_ok=True)
+
     # PATH to LOCAL DIRECTORY which temporary houses the json captions the user uploaded
     json_temp_save_dir = os.path.join(BASE_DIR, 'media/caption_json')
 
