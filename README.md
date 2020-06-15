@@ -46,7 +46,7 @@ To run the whole pipeline, please type the following command in terminal.
 make all
 ```
 
-The following usage are allowed to run speicific part of pipeline:
+The following usage are allowed to run any speicific part of pipeline:
 ```
 # To prepare the data for model training
 make data
