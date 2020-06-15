@@ -24,11 +24,20 @@ add dependencies here
 
 ## Input Data
 
-We have prepared two google drive links for users to download the data.
+1. We have prepared two google drive links for users to download the data.
 
 **Option 1:** To run the complete pipeline, only raw data are needed. Please download the data [here]().
 
 **Option 2:** To use the visualization tool only, both the raw data and final model are needed. Please download the data [here]().
+
+2. After downloading the data, please unzip it and upload to S3 bucket.
+
+3. Download this github repository.
+
+4. Sync the s3 bucket with data folder under this repo usinh the command below.
+```
+aws s3 sync data  s3://{bucket_name}
+```
 
 ## Runnning the pipeline
 
@@ -44,6 +53,11 @@ make clean
 To run the whole pipeline, please type the following command in terminal.
 ```
 make all
+```
+
+Sync the updated data folder with s3 bucket using the command below.
+```
+aws s3 sync s3://{bucket_name} data
 ```
 
 The following usage are allowed to run any speicific part of pipeline:
