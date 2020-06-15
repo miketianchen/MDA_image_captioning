@@ -8,6 +8,10 @@ import shutil
 from botocore.exceptions import NoCredentialsError
 from PIL import Image
 
+# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
+ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
+SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # PATH for JSON CAPTION FILE
@@ -20,9 +24,9 @@ GENERATE_CAPTIONS_PATH = os.path.join(SCR_PATH, 'models/generate_captions.py')
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
 RESULTS_PATH = os.path.join(DATA_PATH, 'results')
 
-# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
-ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
-SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+# PATH FOR MODEL GENENERATED CAPTIONS JSON
+JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
+
 
 # Upload data to AWS S3
 def upload_to_aws(local_file, bucket, s3_file = None):
@@ -67,7 +71,7 @@ def model():
 
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
-    JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
+    # JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
     with open(JSON_PATH) as f:
         caption_dict = json.load(f)
 
@@ -116,7 +120,11 @@ if upload_mode == "image":
     bucket_name = 'mds-capstone-mda'
     s3_images_file_name = 'upload/images/' + image_name
 
+    s3_upload_model_caption_name = 'upload/model_generated_captions/upload_model_caption.json'
+
     preprocess_image()
+
+    model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
 
     uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
 
@@ -124,6 +132,8 @@ if upload_mode == "image":
     output = model()
     score = output[0]
     model_caption = output[1]
+
+    relocate_image_path(image_name)
 
     print(score+"*"+model_caption)
 
@@ -148,7 +158,8 @@ elif upload_mode == "caption":
         image_name = image_name[:-4]
         image_name = image_name + '.jpg'
 
-    relocate_image_path(image_name)
+    # relocate_image_path(image_name)
+
 
 
     if (optional_caption_2 == ""):
@@ -209,20 +220,24 @@ elif upload_mode == "caption":
         json.dump(caption, outfile)
 
     bucket_name = 'mds-capstone-mda'
-    s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
+    # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
+    s3_captions_file_name = 'upload/captions/user_upload.json'
 
-    caption_uploaded = upload_to_aws(JSON_CAPTION_PATH, bucket_name, s3_captions_file_name)
+    if user_caption_input != "":
 
 
-    USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
 
-    try:
-        with open(USER_JSON_PATH, 'r') as json_file:
-            user_caption_dict = json.load(json_file)
+        USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
 
-        new_caption_dict = merge_two_dicts(caption, user_caption_dict)
-    except:
-        new_caption_dict = caption
+        try:
+            with open(USER_JSON_PATH, 'r') as json_file:
+                user_caption_dict = json.load(json_file)
 
-    with open(USER_JSON_PATH, 'w') as json_file:
-        json.dump(new_caption_dict, json_file)
+            new_caption_dict = merge_two_dicts(caption, user_caption_dict)
+        except:
+            new_caption_dict = caption
+
+        with open(USER_JSON_PATH, 'w') as json_file:
+            json.dump(new_caption_dict, json_file)
+
+        caption_uploaded = upload_to_aws(USER_JSON_PATH, bucket_name, s3_captions_file_name)

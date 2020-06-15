@@ -45,9 +45,9 @@ folder_name = str(int(time.time()))
 IMAGE_FOLDER_PATH = os.path.join(RAW_PATH, folder_name)
 JSON_FOLDER_PATH = os.path.join(JSON_PATH, folder_name)
 if not os.path.exists(IMAGE_FOLDER_PATH):
-    os.makedirs(IMAGE_FOLDER_PATH)
+    os.makedirs(IMAGE_FOLDER_PATH, exist_ok=True)
 if not os.path.exists(JSON_FOLDER_PATH):
-    os.makedirs(JSON_FOLDER_PATH)
+    os.makedirs(JSON_FOLDER_PATH, exist_ok=True)
 
 bucket_name = 'mds-capstone-mda'
 
