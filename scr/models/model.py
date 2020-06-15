@@ -16,8 +16,6 @@ class CNNModel(nn.Module):
 
         Parameters:
         -----------
-        cnn_type: str
-            the CNN type, either 'vgg16' or 'inception_v3'
         pretrained: bool (default: True)
             use pretrained model if True
 

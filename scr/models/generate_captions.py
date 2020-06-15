@@ -1,7 +1,8 @@
+
 # Author: Fanli Zhou
 # Date: 2020-06-09
 
-'''This script
+'''This script generates captions for input images.
 
 Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> [--output=<output>] [--single=<single>]
 
@@ -13,9 +14,8 @@ Options:
 --single=<single>          Save the caption to `imgs_no_human_caption.json` or not [default: False].
 '''
 
-import json
+import os, json, pickle
 from tqdm import tqdm
-import pickle
 from time import time
 from docopt import docopt
 import numpy as np
@@ -38,6 +38,28 @@ def generate_caption(
     wordtoidx,
     idxtoword
 ):
+    """
+    Generates a caption
+
+    Parameters:
+    -----------
+    model: CaptionModel
+        a CaptionModel instance
+    img_features: numpy.ndarray
+        the image features
+    max_length: int
+        the maximum length of the generated caption
+    wordtoidx: dict
+        the dict to get word index
+    idxtoword: dict
+        the dict to get word
+
+    Return:
+    --------
+    str
+        the generated caption
+    """ 
+        
     in_text = START
 
     for i in range(max_length):
@@ -72,15 +94,21 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    with open( f"{root_path}/results/model_info.json", 'r') as f:
-        model_info = json.load(f)
+    try:
+        with open( f"{root_path}/results/model_info.json", 'r') as f:
+            model_info = json.load(f)
 
-    with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
-        img_features = pickle.load(f)
-    with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
-        img_paths = pickle.load(f)
+        caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)  
+    except:
+        raise('Please train the model first.')
 
-    caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)  
+    try:
+        with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
+            img_features = pickle.load(f)
+        with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
+            img_paths = pickle.load(f)
+    except:
+        raise('Process the data with extract_features.py first.')
 
     # generate results
     results = {}
@@ -105,6 +133,9 @@ if __name__ == "__main__":
         with open(f"{root_path}/json/{output}_model_caption.json", 'w') as fp:
             json.dump(results, fp)
 
+        assert os.path.isfile(f'{root_path}/json/{output}_model_caption.json'),\
+        "Captions are not saved."
+
     else:
         try:
             with open(f"{root_path}/json/upload_model_caption.json", 'r') as fp:
@@ -115,5 +146,8 @@ if __name__ == "__main__":
             
         with open(f"{root_path}/json/upload_model_caption.json", 'w') as fp:
             json.dump(single_captions, fp)
+        
+        assert os.path.isfile(f'{root_path}/json/upload_model_caption.json'),\
+        "Captions are not saved."
 
     print(f"Generating captions took: {hms_string(time()-start)}")

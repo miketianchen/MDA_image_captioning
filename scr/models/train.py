@@ -1,7 +1,7 @@
 # Author: Fanli Zhou
 # Date: 2020-06-09
 
-'''This script 
+'''This script trains the caption model.
 
 Usage: scr/models/train.py --root_path=<root_path> --output=<output>
 
@@ -10,9 +10,8 @@ Options:
 --output=<output>         The output trained caption model name without the filename extension.
 '''
 
-import json
+import json, os, pickle
 from tqdm import tqdm
-import pickle
 from time import time
 from docopt import docopt
 from itertools import chain
@@ -31,6 +30,25 @@ torch.manual_seed(123)
 np.random.seed(123)
 
 def get_embeddings(root_path, vocab_size, embedding_dim, wordtoidx):
+    """
+    Get the pre-trained word embeddings matrix
+
+    Parameters:
+    -----------
+    root_path: str
+        the path to the data folder which contains the raw folder
+    vocab_size: int
+        the vocabulary size
+    embedding_dim: int
+        the word embeddings matrix size 
+    wordtoidx: dict
+        the dict to get word index 
+
+    Return:
+    --------
+    np.ndarray
+        the pre-trained word embeddings matrix
+    """
 
     embeddings_index = {} 
     
@@ -63,7 +81,7 @@ def get_embeddings(root_path, vocab_size, embedding_dim, wordtoidx):
 
 def train(model, iterator, optimizer, criterion, clip, vocab_size):
     """
-    train the CaptionModel
+    Train the CaptionModel
 
     Parameters:
     -----------
@@ -75,6 +93,10 @@ def train(model, iterator, optimizer, criterion, clip, vocab_size):
         a PyTorch optimizer 
     criterion: nn.CrossEntropyLoss
         a PyTorch criterion 
+    clip: int
+        max norm of the gradients
+    vocab_size: int
+        the vocabulary size
 
     Return:
     --------
@@ -176,10 +198,9 @@ class SampleDataset(Dataset):
 
         Return:
         --------
-        list, list, list
+        list, list
             [5 x image feature matrix],
             [five padded captions for this image]
-            [the length of each caption]
         """
 
         img = self.imgs[idx]
@@ -213,7 +234,7 @@ def my_collate(batch):
     Return:
     --------
     list
-        [image feature matrix, captions, the length of each caption]
+        [image feature matrix, captions]
     """  
 
     img_features = [item[0] for item in batch]
@@ -236,9 +257,19 @@ if __name__ == "__main__":
     hidden_size = 256
     embedding_dim = 200
     
-    with open( f"{root_path}/results/model_info.json", 'r') as f:
-        model_info = json.load(f)
-        
+    try:
+        with open( f"{root_path}/results/model_info.json", 'r') as f:
+            model_info = json.load(f)
+
+        with open(f"{root_path}/results/train_descriptions.pkl", 'rb') as f:
+            train_descriptions = pickle.load(f)
+            
+        with open(f"{root_path}/results/train.pkl", 'rb') as f:
+            train_img_features = pickle.load(f)   
+    except:
+        raise('Process the train data with generate_data.py and extract_features.py',
+        'first to get "model_info.json", "train_descriptions.pkl" and "train.pkl".')
+
     embedding_matrix = get_embeddings(
         root_path,
         model_info['vocab_size'],
@@ -246,11 +277,7 @@ if __name__ == "__main__":
         model_info['wordtoidx']
     ) 
         
-    with open(f"{root_path}/results/train_descriptions.pkl", 'rb') as f:
-        train_descriptions = pickle.load(f)
-        
-    with open(f"{root_path}/results/train.pkl", 'rb') as f:
-        train_img_features = pickle.load(f)    
+ 
 
     train_dataset = SampleDataset(
         train_descriptions,
@@ -321,3 +348,6 @@ if __name__ == "__main__":
 
     torch.save(caption_model, f"{root_path}/results/{output}.hdf5")
     print(f"\Training took: {hms_string(time()-start)}")
+
+    assert os.path.isfile(f'{root_path}/results/{output}.hdf5'),\
+        "Train model is not saved."
