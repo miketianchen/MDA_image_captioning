@@ -43,11 +43,11 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 
 folder_name = str(int(time.time()))
 IMAGE_FOLDER_PATH = os.path.join(RAW_PATH, folder_name)
-JSON_FOLDER_PATH = os.path.join(JSON_PATH, folder_name)
+# JSON_FOLDER_PATH = os.path.join(JSON_PATH, folder_name)
 if not os.path.exists(IMAGE_FOLDER_PATH):
     os.makedirs(IMAGE_FOLDER_PATH, exist_ok=True)
-if not os.path.exists(JSON_FOLDER_PATH):
-    os.makedirs(JSON_FOLDER_PATH, exist_ok=True)
+# if not os.path.exists(JSON_FOLDER_PATH):
+#     os.makedirs(JSON_FOLDER_PATH, exist_ok=True)
 
 bucket_name = 'mds-capstone-mda'
 
@@ -69,7 +69,9 @@ for filename in os.listdir(DATABASE_IMAGES_DIR):
         s3_file_name = 'database_captions_upload/' + filename
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
-        shutil.move(file_path, os.path.join(JSON_FOLDER_PATH, filename))
+
+        json_file_name = folder_name + ".json"
+        shutil.move(file_path, os.path.join(JSON_PATH, json_file_name))
     # try:
     #     if os.path.isfile(file_path) or os.path.islink(file_path):
     #         os.unlink(file_path)
