@@ -24,7 +24,7 @@ SECRET_KEY = '1ef3il_l8aji_22u8qen+xcco^v^rcrm-u88$vyb_0kx%o(h2*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ec2-15-222-241-208.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -127,4 +127,5 @@ STATIC_PATH = os.path.join(BASE_DIR, "mda_mds/static")
 STATICFILES_DIRS = [
     # '/Users/apple/Documents/Web_dev/django-mda/mda_mds/mda_mds/static',
     STATIC_PATH,
+    f'{os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR)))}/data'
 ]
