@@ -90,17 +90,18 @@
                                 <img src="{% static 'frontend_images/'|add:image_one_name %}" alt="Snow" style="width:100%">
                               </div>
                               <div class="post-content">
-                                <p><em>Original Caption:</em> {{og_caption_1}}</p>
-                                <p><em>Generated Caption:</em>
+                                <p><em>Generated Caption:</em> <br>
                                   {{generated_caption_1}}</p>
-                                <!-- <ul>
-                                  <li><em>Bleu_1: </em>{{bleu_1_1}}</li>
-                                  <li><em>METEOR: </em>{{meteor_1}}</li>
-                                  <li><em>ROUGE_L: </em>{{rouge_l_1}}</li>
-                                  <li><em>CIDEr: </em>{{cider_1}}</li>
-                                  <li><em>SPICE: </em>{{spice_1}}</li>
-                                  <li><em>USC: </em>{{usc_1}}</li>
-                                </ul> -->
+
+                                <p style="margin-bottom: 0px;"><em>Original Caption:</em></p>
+                                <ul>
+                                  <li><em>First: </em> {{og_caption_1_1}}</li>
+                                  <li><em>Second: </em> {{og_caption_1_2}}</li>
+                                  <li><em>Third: </em> {{og_caption_1_3}}</li>
+                                  <li><em>Fourth: </em> {{og_caption_1_4}}</li>
+                                  <li><em>Fifth: </em> {{og_caption_1_5}}</li>
+                                </ul>
+
                                 <table class="table">
                                   <tr>
                                     <td><em>Bleu_1: </em>{{bleu_1_1}}</td>
@@ -131,16 +132,18 @@
                                 <img src="{% static 'frontend_images/'|add:image_two_name %}" alt="Rain" style="width:100%">
                               </div>
                               <div class="post-content">
-                                <p><em>Original Caption:</em> {{og_caption_2}}</p>
-                                <p><em>Generated Caption:</em> {{generated_caption_2}}</p>
-                                <!-- <ul>
-                                  <li><em>Bleu_1: </em>{{bleu_1_2}}</li>
-                                  <li><em>METEOR: </em>{{meteor_2}}</li>
-                                  <li><em>ROUGE_L: </em>{{rouge_l_2}}</li>
-                                  <li><em>CIDEr: </em>{{cider_2}}</li>
-                                  <li><em>SPICE: </em>{{spice_2}}</li>
-                                  <li><em>USC: </em>{{usc_2}}</li>
-                                </ul> -->
+                                <p><em>Generated Caption: </em> <br>
+                                  {{generated_caption_2}}</p>
+                                <p style="margin-bottom: 0px;"><em>Original Caption:</em></p>
+                                <ul>
+                                  <li><em>First: </em> {{og_caption_2_1}}</li>
+                                  <li><em>Second: </em> {{og_caption_2_2}}</li>
+                                  <li><em>Third: </em> {{og_caption_2_3}}</li>
+                                  <li><em>Fourth: </em> {{og_caption_2_4}}</li>
+                                  <li><em>Fifth: </em> {{og_caption_2_5}}</li>
+                                </ul>
+
+
                                 <table class="table">
                                   <tr>
                                     <td><em>Bleu_1: </em>{{bleu_1_2}}</td>
