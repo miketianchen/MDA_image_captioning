@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
 
 # PATH TO ALL THE IMAGES IN THE TEST FOLDER
-IMAGES_PATH = os.path.join(BASE_DIR, 'mda_mds/static/frontend_images/')
+IMAGES_PATH = os.path.join(DATA_PATH, 'test/')
 
 # PATH TO THE EVALUATION SCORES FILE FOR THE TEST IMAGES
 TEST_IMG_SCORE_JSON = os.path.join(DATA_PATH, 'score/test_img_score.json')
