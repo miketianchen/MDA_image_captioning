@@ -73,7 +73,7 @@ def tests(root_path):
     Parameters:
     -----------
     root_path: str
-        root path of the json folder
+        the path to the data folder which contains the raw folder
     
     Returns:
     -------

@@ -1,7 +1,7 @@
 # Author: Fanli Zhou
 # Date: 2020-06-09
 
-'''This script 
+'''This script prepares data for training.
 
 Usage: scr/models/prepare_data.py --root_path=<root_path> INPUTS ...
 
@@ -12,7 +12,7 @@ Options:
 --root_path=<root_path>  The path to the data folder which contains the raw folder.
 '''
 
-import json, os, pickle
+import os, json, pickle
 from tqdm import tqdm
 from time import time
 import numpy as np
@@ -30,6 +30,8 @@ def get_img_info(root_path, name, num=np.inf):
 
     Parameters:
     -----------
+    root_path: str
+        the path to the data folder which contains the raw folder
     name: str
         the json file name
     num: int (default: np.inf)
@@ -61,6 +63,21 @@ def get_img_info(root_path, name, num=np.inf):
     return img_path, caption, max_length            
 
 def get_vocab(descriptions, word_count_threshold=10):
+    """
+    Get the vocabulary
+
+    Parameters:
+    -----------
+    descriptions: list
+        a list of captions
+    word_count_threshold: int (default: 10)
+        the threshold to keep words in the vocabulary
+
+    Return:
+    --------
+    list
+        the vocabulary
+    """
 
     captions = []
     for val in descriptions:
@@ -81,7 +98,20 @@ def get_vocab(descriptions, word_count_threshold=10):
     return vocab
 
 def get_word_dict(vocab):
-    
+    """
+    Get the dict to get word and the dict to get word index
+
+    Parameters:
+    -----------
+    vocab: list
+        the vocabulary
+
+    Return:
+    --------
+    dict, dict
+        the dict to get word, the dict to get word index
+    """
+
     idxtoword = {}
     wordtoidx = {}
 
@@ -92,8 +122,6 @@ def get_word_dict(vocab):
         ix += 1
 
     return idxtoword, wordtoidx
-
-
 
 if __name__ == "__main__":
 
@@ -140,3 +168,9 @@ if __name__ == "__main__":
     with open(f"{root_path}/results/train_descriptions.pkl", 'wb') as f:
         pickle.dump(train_descriptions, f)
 
+    assert os.path.isfile(f'{root_path}/results/model_info.json'),\
+        "Model information is not saved."
+    assert os.path.isfile(f'{root_path}/results/train_paths.pkl'),\
+        "Train paths are not saved."
+    assert os.path.isfile(f'{root_path}/results/train_descriptions.pkl'),\
+        "Train descriptions are not saved."

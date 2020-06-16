@@ -25,31 +25,35 @@ import os
 
 opt = docopt(__doc__)
 
-def eval_model(inputs, root_path):
+def eval_model(root_path, inputs):
     """
     Computes evaluation metrics of the model results against the human annotated captions
     
     Parameters:
     ------------
-    ref_path: str
-        a path to the folder containing the human annotated json files
-    
-    result_path: str
-        a path to the folder containing the model generated json files
-    
-    output_path:
-        a path to save the score files
+    root_path: str
+        the path to the data folder which contains the raw folder
+    inputs: str
+        the name of the caption file to process
         
     Returns:
     ------------
     None, it saves the overall score and individual score files under output path
     """
     # load data
-    with open(f'{root_path}/json/{inputs}.json', 'r') as data:
-        ref_data = json.load(data)
-    with open(f'{root_path}/json/{inputs}_model_caption.json', 'r') as data:
-        results = json.load(data)
+    try :
+        with open(f'{root_path}/json/{inputs}.json', 'r') as data:
+            ref_data = json.load(data)
+    except:
+        raise(f'Make sure that human-annotated captions are store in',
+        f'{root_path}/json/{inputs}.json.')
     
+    try :
+        with open(f'{root_path}/json/{inputs}_model_caption.json', 'r') as data:
+            results = json.load(data)
+    except:
+        raise('Please call generate_captions.py to generate captions first.')
+
     # download stanford nlp library
     subprocess.call(['scr/evaluation/get_stanford_models.sh'])
     
@@ -126,5 +130,10 @@ def eval_model(inputs, root_path):
     with open(f'{output_path}/{inputs}_img_score.json', 'w') as file:
         json.dump(img_score_dict, file)
 
+    assert os.path.isfile(f'{output_path}/{inputs}_score.json'),\
+    "Average scores are not saved."
+    assert os.path.isfile(f'{output_path}/{inputs}_img_score.json'),\
+    "Individual scores are not saved."
+
 if __name__ == "__main__":
-    eval_model(opt["--inputs"], opt["--root_path"])
+    eval_model(opt["--root_path"], opt["--inputs"])

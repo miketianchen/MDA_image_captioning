@@ -1,7 +1,7 @@
 # Author: Fanli Zhou
 # Date: 2020-06-09
 
-'''This script 
+'''This script extracts image features from input images.
 
 Usage: scr/models/extract_features.py --root_path=<root_path> --output=<output> [--inputs=<inputs>]
 
@@ -110,14 +110,21 @@ if __name__ == "__main__":
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
        
-    with open( f"{root_path}/results/model_info.json", 'r') as f:
-        model_info = json.load(f)
-    
+    try:
+        with open( f"{root_path}/results/model_info.json", 'r') as f:
+            model_info = json.load(f)
+    except:
+        raise('Process the data with generate_data.py first to get "model_info.json".')
+
     img_paths = []
 
     if inputs is None:
-        with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
-            img_paths = pickle.load(f)
+        try:
+            with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
+                img_paths = pickle.load(f)
+        except:
+            raise('Process the train data with generate_data.py first to get',
+            '"train_paths.pkl".')
 
     else:
         path = f"{root_path}/{inputs}"
@@ -130,7 +137,10 @@ if __name__ == "__main__":
             
         with open(f"{root_path}/results/{output}_paths.pkl", "wb") as f:
             pickle.dump(img_paths, f)
-        
+
+        assert os.path.isfile(f'{root_path}/results/{output}_paths.pkl'),\
+            "Image paths are not saved."
+
     encoder = CNNModel(pretrained=True)
     encoder.to(device)
     
@@ -140,4 +150,5 @@ if __name__ == "__main__":
     )
     with open(f"{root_path}/results/{output}.pkl", "wb") as f:
         pickle.dump(img_features, f)
-
+    assert os.path.isfile(f'{root_path}/results/{output}.pkl'),\
+        "Image features are not saved."
