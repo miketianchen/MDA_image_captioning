@@ -8,9 +8,8 @@ import shutil
 from botocore.exceptions import NoCredentialsError
 from PIL import Image
 
-# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
-ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
-SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+
+
 
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +25,17 @@ RESULTS_PATH = os.path.join(DATA_PATH, 'results')
 
 # PATH FOR MODEL GENENERATED CAPTIONS JSON
 JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
+
+# STATIC VARIABLES
+STATIC_VARIABLES_PATH = os.path.join(BASE_DIR, 'mda_mds/STATIC_VARIABLES.json')
+with open(STATIC_VARIABLES_PATH) as json_file:
+    STATIC_VARIABLES = json.load(json_file)
+
+# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
+# ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
+# SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+ACCESS_KEY = STATIC_VARIABLES['AWS_ACCESS_KEY']
+SECRET_KEY = STATIC_VARIABLES['AWS_SECRET_ACCESS_KEY']
 
 
 # Upload data to AWS S3
@@ -117,7 +127,7 @@ if upload_mode == "image":
         image_name = image_name[:-4]
         image_name = image_name + '.jpg'
 
-    bucket_name = 'mds-capstone-mda'
+    bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     s3_images_file_name = 'upload/images/' + image_name
 
     s3_upload_model_caption_name = 'upload/model_generated_captions/upload_model_caption.json'
@@ -219,7 +229,7 @@ elif upload_mode == "caption":
     with open(JSON_CAPTION_PATH, 'w') as outfile:
         json.dump(caption, outfile)
 
-    bucket_name = 'mds-capstone-mda'
+    bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
     s3_captions_file_name = 'upload/captions/upload.json'
 
