@@ -32,49 +32,60 @@ def generate(request):
     # IMAGE ONE DATA
     image_one_data = output_list[0]
     image_one_list = image_one_data.split("%")
-    image_one_name = image_one_list[0]
-    image_one_bleu_1 = image_one_list[1]
-    image_one_meteor = image_one_list[2]
-    image_one_rouge_l = image_one_list[3]
-    image_one_cider = image_one_list[4]
-    image_one_spice = image_one_list[5]
-    image_one_usc = image_one_list[6]
-    image_one_caption = image_one_list[7]
-    image_one_og_captions = image_one_list[8]
-    image_one_bleu_2 = image_one_list[9]
-    image_one_bleu_3 = image_one_list[10]
-    image_one_bleu_4 = image_one_list[11]
+    image_one_generated_cap = image_one_list[0]
+    image_one_input_sen_1 = image_one_list[1]
+    image_one_input_sen_2 = image_one_list[2]
+    image_one_input_sen_3 = image_one_list[3]
+    image_one_input_sen_4 = image_one_list[4]
+    image_one_input_sen_5 = image_one_list[5]
+    image_one_bleu_1 = image_one_list[6]
+    image_one_bleu_2 = image_one_list[7]
+    image_one_bleu_3 = image_one_list[8]
+    image_one_bleu_4 = image_one_list[9]
+    image_one_meteor = image_one_list[10]
+    image_one_rouge_l = image_one_list[11]
+    image_one_cider = image_one_list[12]
+    image_one_spice = image_one_list[13]
+    image_one_usc = image_one_list[14]
+    image_one_name = image_one_list[15]
     # IMAGE TWO DATA
     image_two_data = output_list[1]
     image_two_list = image_two_data.split("%")
+    image_two_generated_cap = image_two_list[15]
+    image_two_input_sen_1 = image_two_list[1]
+    image_two_input_sen_2 = image_two_list[2]
+    image_two_input_sen_3 = image_two_list[3]
+    image_two_input_sen_4 = image_two_list[4]
+    image_two_input_sen_5 = image_two_list[5]
+    image_two_bleu_1 = image_two_list[6]
+    image_two_bleu_2 = image_two_list[7]
+    image_two_bleu_3 = image_two_list[8]
+    image_two_bleu_4 = image_two_list[9]
+    image_two_meteor = image_two_list[10]
+    image_two_rouge_l = image_two_list[11]
+    image_two_cider = image_two_list[12]
+    image_two_spice = image_two_list[13]
+    image_two_usc = image_two_list[14]
     image_two_name = image_two_list[0]
-    image_two_bleu_1 = image_two_list[1]
-    image_two_meteor = image_two_list[2]
-    image_two_rouge_l = image_two_list[3]
-    image_two_cider = image_two_list[4]
-    image_two_spice = image_two_list[5]
-    image_two_usc = image_two_list[6]
-    image_two_caption = image_two_list[7]
-    image_two_og_captions = image_two_list[8]
-    image_two_bleu_2 = image_one_list[9]
-    image_two_bleu_3 = image_one_list[10]
-    image_two_bleu_4 = image_one_list[11]
 
     #print(str(out.stdout))
-    return render(request, 'index.html', {'generated_caption_1':image_one_caption,
-                'bleu_1_1':image_one_bleu_1, 'meteor_1':image_one_meteor,
+    return render(request, 'index.html', {'og_caption_1_1':image_one_input_sen_1,
+                'og_caption_1_2':image_one_input_sen_2, 'og_caption_1_3':image_one_input_sen_3,
+                'og_caption_1_4':image_one_input_sen_4, 'og_caption_1_5':image_one_input_sen_5,
+                'generated_caption_1':image_one_generated_cap, 'image_one_name':image_one_name,
+                'bleu_1_1':image_one_bleu_1, 'bleu_2_1':image_one_bleu_2,
+                'bleu_3_1':image_one_bleu_3, 'bleu_4_1':image_one_bleu_4,
                 'rouge_l_1':image_one_rouge_l, 'cider_1':image_one_cider,
-                'spice_1':image_one_spice, 'image_one_name':image_one_name,
-                'usc_1':image_one_usc, 'og_caption_1':image_one_og_captions,
-                'bleu_2_1':image_one_bleu_2, 'bleu_3_1':image_one_bleu_3,
-                'bleu_4_1':image_one_bleu_4,
-                'generated_caption_2':image_two_caption,
-                'bleu_1_2':image_two_bleu_1, 'meteor_2':image_two_meteor,
-                'rouge_l_2':image_two_rouge_l, 'cider_2':image_two_cider,
-                'spice_2':image_two_spice, 'image_two_name':image_two_name,
-                'usc_2':image_two_usc, 'og_caption_2':image_two_og_captions,
+                'spice_1':image_one_spice, 'usc_1':image_one_usc,
+                'meteor_1':image_one_meteor, 'meteor_2':image_two_meteor,
+                'og_caption_2_1':image_two_input_sen_1, 'og_caption_2_2':image_two_input_sen_2,
+                'og_caption_2_3':image_two_input_sen_3, 'og_caption_2_4':image_two_input_sen_4,
+                'og_caption_2_5':image_two_input_sen_5, 'generated_caption_2':image_two_generated_cap,
+                'image_two_name':image_two_name, 'bleu_1_2':image_two_bleu_1,
                 'bleu_2_2':image_two_bleu_2, 'bleu_3_2':image_two_bleu_3,
-                'bleu_4_2':image_two_bleu_4, 'active_tab':'demo_tab'})
+                'bleu_4_2':image_two_bleu_4, 'rouge_l_2':image_two_rouge_l,
+                'cider_2':image_two_cider,
+                'spice_2':image_two_spice, 'usc_2':image_two_usc,'active_tab':'demo_tab'})
 
 def external(request):
     if 'upload_image_input' in request.POST:

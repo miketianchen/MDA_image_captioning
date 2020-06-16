@@ -6,10 +6,6 @@ from botocore.exceptions import NoCredentialsError
 
 import os
 
-# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
-ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
-SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
-
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,6 +15,18 @@ DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DI
 
 RAW_PATH = os.path.join(DATA_PATH, 'raw')
 JSON_PATH = os.path.join(DATA_PATH, 'json')
+
+
+# STATIC VARIABLES
+STATIC_VARIABLES_PATH = os.path.join(BASE_DIR, 'mda_mds/STATIC_VARIABLES.json')
+with open(STATIC_VARIABLES_PATH) as json_file:
+    STATIC_VARIABLES = json.load(json_file)
+
+# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
+# ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
+# SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+ACCESS_KEY = STATIC_VARIABLES['AWS_ACCESS_KEY']
+SECRET_KEY = STATIC_VARIABLES['AWS_SECRET_ACCESS_KEY']
 
 # Upload data to AWS S3
 def upload_to_aws(local_file, bucket, s3_file = None):
@@ -43,13 +51,13 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 
 folder_name = str(int(time.time()))
 IMAGE_FOLDER_PATH = os.path.join(RAW_PATH, folder_name)
-JSON_FOLDER_PATH = os.path.join(JSON_PATH, folder_name)
+# JSON_FOLDER_PATH = os.path.join(JSON_PATH, folder_name)
 if not os.path.exists(IMAGE_FOLDER_PATH):
     os.makedirs(IMAGE_FOLDER_PATH, exist_ok=True)
-if not os.path.exists(JSON_FOLDER_PATH):
-    os.makedirs(JSON_FOLDER_PATH, exist_ok=True)
+# if not os.path.exists(JSON_FOLDER_PATH):
+#     os.makedirs(JSON_FOLDER_PATH, exist_ok=True)
 
-bucket_name = 'mds-capstone-mda'
+bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
 
 
 # UPLOAD THE IMAGES TO THE DATABASE
@@ -59,17 +67,21 @@ for filename in os.listdir(DATABASE_IMAGES_DIR):
     if filename.endswith(".jpg"):
         print(filename)
         # print(file_path)
-        s3_file_name = 'database_images_upload/' + filename
+        s3_file_name = 'database_images_upload/' + folder_name + '/' + filename
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
         shutil.move(file_path, os.path.join(IMAGE_FOLDER_PATH, filename))
 
          # print(os.path.join(directory, filename))
     elif filename.endswith(".json"):
-        s3_file_name = 'database_captions_upload/' + filename
+        json_file_name = folder_name + ".json"
+
+        s3_file_name = 'database_captions_upload/' + json_file_name
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
-        shutil.move(file_path, os.path.join(JSON_FOLDER_PATH, filename))
+
+
+        shutil.move(file_path, os.path.join(JSON_PATH, json_file_name))
     # try:
     #     if os.path.isfile(file_path) or os.path.islink(file_path):
     #         os.unlink(file_path)
