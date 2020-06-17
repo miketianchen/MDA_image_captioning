@@ -1,0 +1,151 @@
+---
+title: "Proposal: Image Captioning of Earth Observation Imagery"
+author: "Dora Qian, Fanli Zhou, James Huang and Mike Chen"
+output:
+        pdf_document: default
+bibliography: image_captioning_refs.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rjson)
+library(knitr)
+library(tidyverse)
+library(ggthemes)
+library(cowplot)
+#theme_set(theme_cowplot())
+```
+
+```{r load data, echo=FALSE, message=FALSE}
+baseline <- fromJSON(file = "../models/final_results_n9.1.3.2.json") %>%
+  as.data.frame()
+attention <- fromJSON(file = "../models/final_results_n16.2.json") %>%
+  as.data.frame()
+multi_attention <- fromJSON(file = "../models/final_results_n19.2.json") %>%
+  as.data.frame()
+
+test <- rbind(baseline[1:9], attention[1:9], multi_attention[1:9])
+colnames(test) <- c("BLEU 1", "BLEU 2", "BLEU 3", "BLEU 4", "Meteor", "ROUGE L", "CIDEr", "SPICE", "USC Similarity")
+rownames(test) <- c("Baseline", "Attention", "Multi-Attention")
+test <- round(test, 3)
+
+sydney <- rbind(baseline[10:18], attention[10:18], multi_attention[10:18])
+colnames(sydney) <- colnames(test)
+rownames(sydney) <- rownames(test)
+sydney <- round(sydney, 3)
+```
+
+*MDS Mentor: Varada Kolhatkar*
+
+*MDA Partners: Andrew Westwell-Roper, Shun Chi*
+
+
+
+## Data Science Method 
+
+### Model
+
+We focused on the encoder-decoder model as it is the most common method for images captioning. Here are the three encoder-decoder structures we tried:
+
+1. Our baseline model is a CNN + LSTM encoder-decoder model (Figure 3). At each time step during generation, we combine the LSTM output with the image feature vector and pass the result through a dense layer and an output layer to generate the next word, which is fed back as input to the LSTM layer in the next time step. 
+
+This model structure is relatively simple and hyperparameters are easier to optimize compared to models with attention layers. But the model extracts image features from the CNN output and CNN output is a high-level image summary, which does not carry enough information for a detailed caption.
+
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('../imgs/model_1.png')
+```
+
+Figure 3. The baseline model architecture and example outputs. A is adapted from [@Lu_2018].
+
+2. The second model structure has an attention layer on top of the baseline model (Figure 4). The attention structure takes image features from the CNN convolutional layer and assigns weights to those features. Overall, it could act as moving the focus across the image so that the model can capture more features or objects and produce a better caption [@xu2015attend; @zhang_2019].
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('../imgs/model_2.png')
+```
+
+Figure 4. The second model architecture (adapted from [@zhang_2019]).
+
+3. As an extension of the second model, the third model structure contains three attention structures on top of the baseline model (Figure 5). This multi-level attention model better mimics human attention mechanisms and act as moving the focus between the image and the word context to help generate better captions [@li_2020]. 
+
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('../imgs/model_3.png')
+```
+
+Figure 5. The third model architecture (adapted from [@li_2020]).
+
+However, models with attention structures are more complicated and more difficult to optimize.
+
+### Transfer Learning
+
+For each model structure, we use heavy transfer learning. Given an image, we extracted a feature vector from the pre-trained [`InceptionV3` or `vgg16` model](https://pytorch.org/docs/stable/torchvision/models.html), a CNN trained on `ImageNet`. For LSTM, we used an embedding layer and initialized embedding weights with pre-trained `GloVe` ([`glove.6B.200d`](https://nlp.stanford.edu/projects/glove/)) or `Wikipedia2Vec` ([`enwiki_20180420_500d`](https://wikipedia2vec.github.io/wikipedia2vec/)) embeddings. Pre-trained models or embedding weights were trained on a large dataset and achieved good performance. Incorporating pre-trained models or embedding weights is simple and can reduce training time. The caveat is that the performance depends on task similarity.
+
+Besides, we tried to train our own CNN classifier based on labeled satellite images but the performance could not beat the pre-trained CNN models. We also tried to train embedding weights using our training captions and then tested the embedding weights weights by predicting cosine similarity between words. Again, we found that pre-trained embedding weights perform better than our embedding weights. So we decided to use pre-trained CNN models and embedding weights.
+
+### Evaluation
+
+To assess those models, we used `USC Similarity` and `SPICE` to evaluate semantic similarity and some other metrics to evaluate syntactic similarity based on `n-gram` comparison, including `BLEU 1`, `BLEU 2`, `BLEU 3`, `BLEU 4`, `Meteor`, `ROUGE_L`, and `CIDEr` [@li_2020]. All scores range from zero to one, except the `CIDEr` score, which ranges from zero to ten.
+
+As shown in Table 1, the baseline model achieves better scores than other models when testing on a dataset similar to the training data. We also compared the model performance on the `Sydney` dataset, which is a dataset different from the training data, to test the model generalization. As shown in Table 2, the baseline model has the best scores, but all scores are lower than the test results in Table 1. Those scores are comparable to scores in papers [@li_2020]. The final model used in our data product is the best baseline model.
+
+```{r test scores, echo=FALSE}
+kable(test, 
+      caption = "Table 1. Evaluation scores from the best model of each structure on the test dataset (Combined RSICD and UCM datasets).")
+```
+
+```{r test plots, echo=FALSE}
+test %>% 
+  select(`BLEU 1`, `ROUGE L`, SPICE, `USC Similarity`) %>%
+  mutate(model = factor(rownames(.), levels = rownames(.))) %>% 
+  gather("metrics", "value", - model) %>%
+  ggplot(aes(model, value, color = metrics, group = metrics)) + 
+  geom_point() +
+  geom_line() +
+#  geom_text(aes(label = value), hjust=0, vjust=0) +
+  labs(x = "Model Architecture",
+       y = "Scores",
+       color = "Metrics",
+       title = "Model evaluation scores on a similar dataset") +
+  ylim(0, 1) +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14),
+        text = element_text(size = 16),
+        plot.title = element_text(face = "plain"))
+       
+```
+
+```{r sydney scores, echo=FALSE}
+kable(sydney, 
+      caption = "Table 2. Evaluation scores from the best model of each structure on the Sydney dataset.")
+```
+
+```{r sydney plots, echo=FALSE}
+sydney %>% 
+  select(`BLEU 1`, `ROUGE L`, SPICE, `USC Similarity`) %>%
+  mutate(model = factor(rownames(.), levels = rownames(.))) %>% 
+  gather("metrics", "value", - model) %>%
+  ggplot(aes(model, value, color = metrics, group = metrics)) + 
+  geom_point() +
+  geom_line() +
+#  geom_text(aes(label = value), hjust=0, vjust=0) +
+  labs(x = "Model Architecture",
+       y = "Scores",
+       color = "Metrics",
+       title = "Model evaluation scores on a different dataset") +
+  ylim(0, 1) +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14),
+        text = element_text(size = 16),
+        plot.title = element_text(face = "plain"))
+       
+```
+
+### Future Improvements
+
+If we have time, we could improve the model by optimizing hyperparameters, fine tuning the pre-trained CNN, trying extracting features from different convolutional layers, and improving attention structures. 
+
+
+## References
+
+
