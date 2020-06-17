@@ -104,9 +104,9 @@ test %>%
   geom_line() +
 #  geom_text(aes(label = value), hjust=0, vjust=0) +
   labs(x = "Model Architecture",
-       y = "Value",
+       y = "Scores",
        color = "Metrics",
-       title = "Model evaluation scores on the test dataset") +
+       title = "Model evaluation scores on a similar dataset") +
   ylim(0, 1) +
   theme_classic() +
   theme(axis.text = element_text(size = 14),
@@ -130,9 +130,9 @@ sydney %>%
   geom_line() +
 #  geom_text(aes(label = value), hjust=0, vjust=0) +
   labs(x = "Model Architecture",
-       y = "Value",
+       y = "Scores",
        color = "Metrics",
-       title = "Model evaluation scores on the Sydney dataset") +
+       title = "Model evaluation scores on a different dataset") +
   ylim(0, 1) +
   theme_classic() +
   theme(axis.text = element_text(size = 14),
