@@ -108,6 +108,7 @@ test %>%
        color = "Metrics",
        title = "Model evaluation scores on the test dataset") +
   ylim(0, 1) +
+  theme_classic() +
   theme(axis.text = element_text(size = 14),
         text = element_text(size = 16),
         plot.title = element_text(face = "plain"))
@@ -133,6 +134,7 @@ sydney %>%
        color = "Metrics",
        title = "Model evaluation scores on the Sydney dataset") +
   ylim(0, 1) +
+  theme_classic() +
   theme(axis.text = element_text(size = 14),
         text = element_text(size = 16),
         plot.title = element_text(face = "plain"))
