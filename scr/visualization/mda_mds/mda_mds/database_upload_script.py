@@ -67,7 +67,7 @@ for filename in os.listdir(DATABASE_IMAGES_DIR):
     if filename.endswith(".jpg"):
         print(filename)
         # print(file_path)
-        s3_file_name = 'database_images_upload/' + folder_name + '/' + filename
+        s3_file_name = 'raw/' + folder_name + '/' + filename
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
         shutil.move(file_path, os.path.join(IMAGE_FOLDER_PATH, filename))
@@ -76,7 +76,7 @@ for filename in os.listdir(DATABASE_IMAGES_DIR):
     elif filename.endswith(".json"):
         json_file_name = folder_name + ".json"
 
-        s3_file_name = 'database_captions_upload/' + json_file_name
+        s3_file_name = 'json/' + json_file_name
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
 

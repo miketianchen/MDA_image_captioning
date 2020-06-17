@@ -128,7 +128,7 @@ if upload_mode == "image":
         image_name = image_name + '.jpg'
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
-    s3_images_file_name = 'upload/images/' + image_name
+    s3_images_file_name = 'raw/upload/' + image_name
 
     s3_upload_model_caption_name = 'upload/model_generated_captions/upload_model_caption.json'
 
@@ -231,7 +231,7 @@ elif upload_mode == "caption":
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
-    s3_captions_file_name = 'upload/captions/upload.json'
+    s3_captions_file_name = 'upload/user_entered_captions/upload.json'
 
     if user_caption_input != "":
 
