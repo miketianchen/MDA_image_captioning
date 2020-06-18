@@ -115,6 +115,27 @@ test %>%
        
 ```
 
+```{r test bars, echo=FALSE}
+test %>% 
+  round(2) %>% 
+  select(`BLEU 1`, `ROUGE L`, SPICE, `USC Similarity`) %>%
+  mutate(model = factor(rownames(.), levels = rownames(.))) %>% 
+  gather("metrics", "value", - model) %>%
+  ggplot(aes(model, value, fill = metrics)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = value, group = metrics), hjust=0.4, vjust=-0.3, position = position_dodge(width = 0.9)) +
+  labs(x = "Model Architecture",
+       y = "Scores",
+       fill = "Metrics",
+       title = "Model evaluation scores on a similar dataset") +
+  ylim(0, 1) +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14),
+        text = element_text(size = 16),
+        plot.title = element_text(face = "plain"))
+       
+```
+
 ```{r sydney scores, echo=FALSE}
 kable(sydney, 
       caption = "Table 2. Evaluation scores from the best model of each structure on the Sydney dataset.")
@@ -132,6 +153,27 @@ sydney %>%
   labs(x = "Model Architecture",
        y = "Scores",
        color = "Metrics",
+       title = "Model evaluation scores on a different dataset") +
+  ylim(0, 1) +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14),
+        text = element_text(size = 16),
+        plot.title = element_text(face = "plain"))
+       
+```
+
+```{r sydney bars, echo=FALSE}
+sydney %>% 
+  round(2) %>% 
+  select(`BLEU 1`, `ROUGE L`, SPICE, `USC Similarity`) %>%
+  mutate(model = factor(rownames(.), levels = rownames(.))) %>% 
+  gather("metrics", "value", - model) %>%
+  ggplot(aes(model, value, fill = metrics)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = value, group = metrics), hjust=0.4, vjust=-0.3, position = position_dodge(width = 0.9)) +
+  labs(x = "Model Architecture",
+       y = "Scores",
+       fill = "Metrics",
        title = "Model evaluation scores on a different dataset") +
   ylim(0, 1) +
   theme_classic() +
