@@ -24,12 +24,7 @@ The following pipeline chart displays the workflow used in our pipeline.
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
   - You can run the visualization tool locally with the following dependencies installed on your machine. 
-```
-python 
-add dependencies here
-
-django
-```
+  - You need have the same packages installed on your machine as the ones in our AWS installation instruction [here](docs/ec2_installation_steps.md)
 
 ## Preparing the database
 
