@@ -42,7 +42,7 @@ We have prepared two google drive links for users to download the data. Please f
 aws s3 sync data s3://{bucket_name}
 ```
 4. Launch your AWS EC2 P3 instance 
-5. Download this github repository to root directory of your gpu machine by typing the following script in terminal.
+5. Download this github repository to root directory of your gpu machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
 
 ```
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
@@ -63,13 +63,13 @@ aws s3 sync s3://{bucket_name} data
 # make sure you replace {bucket_name} with your S3 bucket name
 aws s3 sync data s3://{bucket_name}
 ```
-4. Download this github repository to your local machine by typing the following script in terminal.
+4. Download this github repository to your local machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
 
 ```
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 ```
 
-6. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
+5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
 
 ```
 cd 591_capstone_2020-mda-mds
@@ -79,24 +79,17 @@ aws s3 sync s3://{bucket_name} data
 ## Runnning the pipeline
 
 **Make**
+We need GNU Make to run the makefile and it should be already installed on your GPU. Type `make -v` in your terminal to ake sure if you have it installed.
 
-You will need “GNU Make” installed on your gpu to run Make. To see if you already have it installed, type make -v into your terminal (Linux/Mac) or make --version (Windows). The version will display if you have Make installed. If you need to install it, please see the instruction [here]().  ??? is make installed on gpu? 
-
-To clean up all the intermediate and results files, and prepare a clean environment to run the pipeline, please type the following command in terminal.
+**Steps**
+1. To clean up all the intermediate and results files, and prepare a clean environment to run the pipeline, please type the following command in terminal. The whole process will run approximately from 1 to 1.5 hours.
 ```
 make clean
 ```
-
-To run the whole pipeline, please type the following command in terminal.
+2. To run the whole pipeline, please type the following command in terminal.
 ```
 make all
 ```
-
-Sync the updated data folder with s3 bucket using the command below.
-```
-aws s3 sync s3://{bucket_name} data
-```
-
 The following usage are allowed to run any speicific part of pipeline:
 ```
 # To prepare the data for model training
@@ -105,9 +98,15 @@ make data
 # To train the model 
 make train
 
-# To generate captions for the test dataset 
+# To generate captions
 make caption
-make caption
+
+# To evaluate the results and get scores
+make score
+```
+3. After the pipeline is finished, please sync the data folder back to your S3 bucket using the following script.
+```
+aws s3 sync data s3://{bucket_name}
 ```
 
 ## Running the Visualization Tool
