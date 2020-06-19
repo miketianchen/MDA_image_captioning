@@ -30,12 +30,12 @@ The following pipeline chart displays the workflow used in our pipeline.
 We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
 
 **Option 1: Running the whole pipeline** 
-1. Download the data [here](https://drive.google.com/file/d/1JAP8iDO1xyIQIbzj9mVIxKuMKE-XZlqG/view?usp=sharing), only raw data is included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1ejD8fNDgdfm6GLrpRm-O889Y2r3L3Sz4/view?usp=sharing), only raw data is included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
 # make sure you replace {bucket_name} with your S3 bucket name
-aws s3 sync data1 s3://{bucket_name}
+aws s3 sync data s3://{bucket_name}
 ```
 4. Launch your AWS EC2 P3 instance 
 5. Download this github repository to root directory of your gpu machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
@@ -57,7 +57,7 @@ aws s3 sync s3://{bucket_name} data
 3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
 # make sure you replace {bucket_name} with your S3 bucket name
-aws s3 sync data2 s3://{bucket_name}
+aws s3 sync data s3://{bucket_name}
 ```
 4. Download this github repository to your local machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
 
