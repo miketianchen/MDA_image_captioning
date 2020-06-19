@@ -35,7 +35,7 @@ We have prepared two google drive links for users to download the data. Please f
 3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
 # make sure you replace {bucket_name} with your S3 bucket name
-aws s3 sync data s3://{bucket_name}
+aws s3 sync data1 s3://{bucket_name}
 ```
 4. Launch your AWS EC2 P3 instance 
 5. Download this github repository to root directory of your gpu machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
@@ -52,12 +52,12 @@ aws s3 sync s3://{bucket_name} data
 ```
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
-1. Download the data [here](), all the raw data, trained model, model results and scores are included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1pIT84CMI0kQIByoGJplwVnzXK9MM6A05/view?usp=sharing), all the raw data, trained model, model results and scores are included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
 # make sure you replace {bucket_name} with your S3 bucket name
-aws s3 sync data s3://{bucket_name}
+aws s3 sync data2 s3://{bucket_name}
 ```
 4. Download this github repository to your local machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
 
@@ -86,7 +86,7 @@ make clean
 ```
 make all
 ```
-The following usage are allowed to run any speicific part of pipeline:
+The following usages are allowed to run any speicific part of pipeline:
 ```
 # To prepare the data for model training
 make data
