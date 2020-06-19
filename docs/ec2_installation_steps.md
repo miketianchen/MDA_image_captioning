@@ -88,7 +88,7 @@ python
 
 To run the visualization tool on the EC2 instance:
 
-1. From the root of the repo, navigate to `scr/visualization/mda_mds`, open `settings.py`
+1. From the root of the repo, open `scr/visualization/mda_mds/mda_mds/settings.py`.
 
 2. Add `[public domain name].ca-central-1.compute.amazonaws.com` to `ALLOWED_HOSTS`
 
@@ -98,7 +98,7 @@ For example:
 ALLOWED_HOSTS = ['ec2-3-96-51-16.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 ```
 
-3. Save and exit, call
+3. Save and exit, navigate to `scr/visualization/mda_mds/` and call
 
 ```
 python manage.py runserver [public domain name].ca-central-1.compute.amazonaws.com:[port]
