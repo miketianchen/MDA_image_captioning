@@ -114,7 +114,9 @@ aws s3 sync data s3://{bucket_name}
 ## Running the Visualization Tool
 
 **Option 1: Running the whole pipeline** 
+
 After you updates all your results and scores in S3 bucket, you can continue to run the visualization tool on your AWS EC2 instance.
+
 1. From the root of the repo, navigate to `scr/visualization/mda_mds`, open `settings.py`
 2. Add `[public domain name].ca-central-1.compute.amazonaws.com` to `ALLOWED_HOSTS`
 For example:
@@ -130,11 +132,15 @@ For example:
 python manage.py runserver ec2-3-951-16.ca-central-1.compute.amazonaws.com:8443
 ```
 You can define the port number when you launch the EC2 instance when setting the `Security Groups` by adding `Custom TCP Rule` and setting the `Port Range` to the port number. If you launched an instance in the `sg-4a03c42a` group, then the port number is `8443`.
+
 4. Open `http://[public domain name].ca-central-1.compute.amazonaws.com:[port]` in Chrome.
+
 For example: `http://ec2-3-96-51-16.ca-central-1.compute.amazonaws.com:8443`
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
+
 To run the visulaization tool locally with our pre-trained model and results, please using the following scripts in your terminal:
+
 ```
 cd ./591_capstone_2020-mda-mds/scr/visualization/mda_mds
 python manage.py runserver
