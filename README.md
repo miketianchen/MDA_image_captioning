@@ -12,11 +12,18 @@ MDA is a Canadian aerospace company, manufacturing equipment for space applicati
 
 ![](imgs/dataproduct.png)
 
+The following pipeline chart displays the workflow used in our pipeline.
+![](imgs/pipeline.jpg)
+
 ## Installation instructions
 
-**Option 1:** To run the complete pipeline, we recommend setting up a new AWS S3 bucket as database and AWS EC2 P3 gpu instance to trian the model. Please follow the aws instructions [here](docs/ec2_installation_steps.md)
+**Option 1: Running the whole pipeline** 
+  - An AWS S3 bucket needs to be set up as the database 
+  - An AWS EC2 P3 instance needs to be set up to run the pipeline. 
+  - Please follow the AWS installation instructions [here](docs/ec2_installation_steps.md)
 
-**Option 2:** To use the visualization tool only, you can use local machine with the following dependencies installed.
+**Option 2: Using the visualization tool with our pre-trained model and results** 
+  - You can run the visualization tool locally with the following dependencies installed on your machine. 
 ```
 python 
 add dependencies here
