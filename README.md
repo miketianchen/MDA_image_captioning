@@ -29,11 +29,24 @@ python
 add dependencies here
 ```
 
-## Input Data
+## Preparing the database
 
-1. We have prepared two google drive links for users to download the data.
+We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
 
-**Option 1:** To run the complete pipeline, only raw data are needed. Please download the data [here]().
+**Option 1: Running the whole pipeline** 
+1. Download the data [here](), only raw data is included in the zip file. 
+2. Unzip the downloaded file
+3. Upload the raw data to your S3 bucket, you can either do it manually on S3 website or use the following script in your command line.
+```
+# make sure you replace {bucket_name} with your S3 bucket name
+aws s3 sync s3://{bucket_name} data
+```
+4. Launch your AWS EC2 P3 instance 
+5. Download this github repository by typing the following script in terminal.
+```
+git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
+``` on your terminal.
+6. Sync your S3 bucket as data folder under this repository by typing
 
 **Option 2:** To use the visualization tool only, both the raw data and final model are needed. Please download the data [here]().
 
