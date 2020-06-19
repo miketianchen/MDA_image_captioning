@@ -12,54 +12,81 @@ MDA is a Canadian aerospace company, manufacturing equipment for space applicati
 
 ![](imgs/dataproduct.png)
 
+The following pipeline chart displays the workflow used in our pipeline.
+![](imgs/pipeline.jpg)
+
 ## Installation instructions
 
-**Option 1:** To run the complete pipeline, we recommend setting up a new AWS S3 bucket as database and AWS EC2 P3 gpu instance to trian the model. Please follow the aws instructions [here](docs/ec2_installation_steps.md)
+**Option 1: Running the whole pipeline** 
+  - An AWS S3 bucket needs to be set up as the database 
+  - An AWS EC2 P3 instance needs to be set up to run the pipeline. 
+  - Please follow the AWS installation instructions [here](docs/ec2_installation_steps.md)
 
-**Option 2:** To use the visualization tool only, you can use local machine with the following dependencies installed.
+**Option 2: Using the visualization tool with our pre-trained model and results** 
+  - You can run the visualization tool locally with the following dependencies installed on your machine. 
+  - You need have the same packages installed on your machine as the ones in our AWS installation instruction [here](docs/ec2_installation_steps.md)
+
+## Preparing the database
+
+We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
+
+**Option 1: Running the whole pipeline** 
+1. Download the data [here](https://drive.google.com/file/d/1JAP8iDO1xyIQIbzj9mVIxKuMKE-XZlqG/view?usp=sharing), only raw data is included in the zip file. 
+2. Unzip the downloaded file
+3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
-python 
-add dependencies here
+# make sure you replace {bucket_name} with your S3 bucket name
+aws s3 sync data s3://{bucket_name}
+```
+4. Launch your AWS EC2 P3 instance 
+5. Download this github repository to root directory of your gpu machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
+
+```
+git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 ```
 
-## Input Data
+6. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
 
-1. We have prepared two google drive links for users to download the data.
-
-**Option 1:** To run the complete pipeline, only raw data are needed. Please download the data [here]().
-
-**Option 2:** To use the visualization tool only, both the raw data and final model are needed. Please download the data [here]().
-
-2. After downloading the data, please unzip it and upload to S3 bucket.
-
-3. Download this github repository.
-
-4. Sync the s3 bucket with data folder under this repo usinh the command below.
 ```
-aws s3 sync data  s3://{bucket_name}
+cd 591_capstone_2020-mda-mds
+aws s3 sync s3://{bucket_name} data
+```
+
+**Option 2: Using the visualization tool with our pre-trained model and results** 
+1. Download the data [here](), all the raw data, trained model, model results and scores are included in the zip file. 
+2. Unzip the downloaded file
+3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
+```
+# make sure you replace {bucket_name} with your S3 bucket name
+aws s3 sync data s3://{bucket_name}
+```
+4. Download this github repository to your local machine by typing the following script in terminal. You will be asked to provide your github account and password to access our repository.
+
+```
+git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
+```
+
+5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
+
+```
+cd 591_capstone_2020-mda-mds
+aws s3 sync s3://{bucket_name} data
 ```
 
 ## Runnning the pipeline
 
 **Make**
+We need GNU Make to run the makefile and it should be already installed on your GPU. Type `make -v` in your terminal to ake sure if you have it installed.
 
-You will need “GNU Make” installed on your gpu to run Make. To see if you already have it installed, type make -v into your terminal (Linux/Mac) or make --version (Windows). The version will display if you have Make installed. If you need to install it, please see the instruction [here]().  ??? is make installed on gpu? 
-
-To clean up all the intermediate and results files, and prepare a clean environment to run the pipeline, please type the following command in terminal.
+**Steps**
+1. To clean up all the intermediate and results files, and prepare a clean environment to run the pipeline, please type the following command in terminal. The whole process will run approximately from 1 to 1.5 hours.
 ```
 make clean
 ```
-
-To run the whole pipeline, please type the following command in terminal.
+2. To run the whole pipeline, please type the following command in terminal.
 ```
 make all
 ```
-
-Sync the updated data folder with s3 bucket using the command below.
-```
-aws s3 sync s3://{bucket_name} data
-```
-
 The following usage are allowed to run any speicific part of pipeline:
 ```
 # To prepare the data for model training
@@ -68,41 +95,48 @@ make data
 # To train the model 
 make train
 
-# To generate captions for the test dataset 
+# To generate captions
 make caption
-make caption
+
+# To evaluate the results and get scores
+make score
+```
+3. After the pipeline is finished, please sync the data folder back to your S3 bucket using the following script.
+```
+aws s3 sync data s3://{bucket_name}
 ```
 
 ## Running the Visualization Tool
 
-To run the visualization tool on the EC2 instance:
+**Option 1: Running the whole pipeline** 
+
+After you updates all your results and scores in S3 bucket, you can continue to run the visualization tool on your AWS EC2 instance.
 
 1. From the root of the repo, navigate to `scr/visualization/mda_mds`, open `settings.py`
-
 2. Add `[public domain name].ca-central-1.compute.amazonaws.com` to `ALLOWED_HOSTS`
-
 For example:
-
 ```
 ALLOWED_HOSTS = ['ec2-3-96-51-16.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 ```
-
 3. Save and exit, call
-
 ```
 python manage.py runserver [public domain name].ca-central-1.compute.amazonaws.com:[port]
 ```
-
 For example:
-
 ```
 python manage.py runserver ec2-3-951-16.ca-central-1.compute.amazonaws.com:8443
 ```
-
-You can define the port number when you launch the EC2 instance when setting the `Security Groups` by adding `Custom TCP Rule` and setting the `Port Range` to the port number.
-
-If you launched an instance in the `sg-4a03c42a` group, then the port number is `8443`.
+You can define the port number when you launch the EC2 instance when setting the `Security Groups` by adding `Custom TCP Rule` and setting the `Port Range` to the port number. If you launched an instance in the `sg-4a03c42a` group, then the port number is `8443`.
 
 4. Open `http://[public domain name].ca-central-1.compute.amazonaws.com:[port]` in Chrome.
 
 For example: `http://ec2-3-96-51-16.ca-central-1.compute.amazonaws.com:8443`
+
+**Option 2: Using the visualization tool with our pre-trained model and results** 
+
+To run the visulaization tool locally with our pre-trained model and results, please using the following scripts in your terminal:
+
+```
+cd ./591_capstone_2020-mda-mds/scr/visualization/mda_mds
+python manage.py runserver
+```
