@@ -34,29 +34,46 @@ add dependencies here
 We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
 
 **Option 1: Running the whole pipeline** 
-1. Download the data [here](), only raw data is included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1JAP8iDO1xyIQIbzj9mVIxKuMKE-XZlqG/view?usp=sharing), only raw data is included in the zip file. 
 2. Unzip the downloaded file
-3. Upload the raw data to your S3 bucket, you can either do it manually on S3 website or use the following script in your command line.
+3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
 # make sure you replace {bucket_name} with your S3 bucket name
-aws s3 sync s3://{bucket_name} data
+aws s3 sync data s3://{bucket_name}
 ```
 4. Launch your AWS EC2 P3 instance 
-5. Download this github repository by typing the following script in terminal.
+5. Download this github repository to root directory of your gpu machine by typing the following script in terminal.
+
 ```
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
-``` on your terminal.
-6. Sync your S3 bucket as data folder under this repository by typing
-
-**Option 2:** To use the visualization tool only, both the raw data and final model are needed. Please download the data [here]().
-
-2. After downloading the data, please unzip it and upload to S3 bucket.
-
-3. Download this github repository.
-
-4. Sync the s3 bucket with data folder under this repo usinh the command below.
 ```
-aws s3 sync data  s3://{bucket_name}
+
+6. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
+
+```
+cd 591_capstone_2020-mda-mds
+aws s3 sync s3://{bucket_name} data
+```
+
+**Option 2: Using the visualization tool with our pre-trained model and results** 
+1. Download the data [here](), all the raw data, trained model, model results and scores are included in the zip file. 
+2. Unzip the downloaded file
+3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
+```
+# make sure you replace {bucket_name} with your S3 bucket name
+aws s3 sync data s3://{bucket_name}
+```
+4. Download this github repository to your local machine by typing the following script in terminal.
+
+```
+git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
+```
+
+6. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
+
+```
+cd 591_capstone_2020-mda-mds
+aws s3 sync s3://{bucket_name} data
 ```
 
 ## Runnning the pipeline
