@@ -1,60 +1,58 @@
+# Creating AWS EC2 instance/AMI
 
-The `mds-capstone-mda-gpu` AMI is prepared with the following commands:
+Please follow the steps in this file to create your AMI/instance.
 
-Launch an EC2 instance with the `Deep Learning Base AMI (Ubuntu 16.04)` AMI
+1. Launch an EC2 instance with the `Deep Learning Base AMI (Ubuntu 16.04)` AMI
 
-Run the following command in your local terminal to connect with the EC2 instance
+2. Run the following command in your local terminal to connect with the EC2 instance
 
 ```
 ssh -i [key.pem] -L 8888:localhost:8888 ubuntu@[public domain name].ca-central-1.compute.amazonaws.com
 ```
 
-Prepare the EC2 instance:
+3. Prepare the EC2 instance:
 
 ```
-# update ubuntu
+# Update ubuntu
 sudo apt-get update
 sudo apt-get upgrade
 
-# install pip
+# Install pip
 sudo apt install python3-pip
 
-# install miniconda instead of Anaconda to save space and time
+# Install miniconda instead of Anaconda to save space and time
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 export PATH="/home/ubuntu/miniconda3/bin:$PATH"
 
-
-# install
+# OPTIONAL: install jupyter lab 
+# We used jupyter lab to develop our model and perform analysis, all our works can be found under notebooks folder of this repo
 conda install -c conda-forge jupyterlab
-# set notebook password to 123
+# Set notebook password to 123
 jupyter notebook password
 
-# set up AWS CLI
+# Set up AWS CLI
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 aws configure
 
-# set up aws configure
+# Set up aws configure, please replace with your own information
 AWS Access Key ID [None]: AKIATB63UHM3KTWNDPFG
 AWS Secret Access Key [None]: 7TarprC5CWlTHdOcNJ1LwmV80d/spZV5ShbMhRCO
 Default region name [None]: ca-central-1
 Default output format [None]: json
 
-# download data
-aws s3 sync s3://mds-capstone-mda s3
-
-# update git
+# Update git
 sudo add-apt-repository ppa:git-core/ppa 
 sudo apt update
 sudo apt install git
 
-# handle trash
+# Handle trash
 sudo apt install trash-cli
 trash-empty
 
-# install extra packages
+# Install extra packages
 pip install matplotlib
 pip install nltk
 pip install sklearn
@@ -66,27 +64,24 @@ conda install pytorch torchvision cudatoolkit -c pytorch
 pip install torchsummary
 pip install ipywidgets
 jupyter nbextension enable --py --sys-prefix widgetsnbextension
-```
-
-Additional packages to install (not in the AMI)
-
-```
-pip install tensorflow
 pip install tensorflow_hub
 pip install tensorflow_text
 pip install docopt
 pip install django
-```
 
-Download nltk_data (not in the AMI)
-
-```
+# Download nltk_data
 python
 >>> import nltk
 >>> nltk.download('punkt')
 ```
+4. After configuring your instance, you can choose to save this instance as AMI so that you do not need to configure another instance from scratching again. Please follow the instruction [here](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html).
 
-To run the visualization tool on the EC2 instance:
+5. Before launching jupyter lab or visualization tool from instance, you need to configure chrome on your machine.
+  - Open google chrome and go to: chrome://flags/#allow-insecure-localhost
+  - Enable the first flag, then relaunch the browser as prompted
+
+
+# Running visualization tool on the EC2 instance
 
 1. From the root of the repo, open `scr/visualization/mda_mds/mda_mds/settings.py`.
 

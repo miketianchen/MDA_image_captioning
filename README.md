@@ -18,9 +18,8 @@ The following pipeline chart displays the workflow used in our pipeline.
 ## Installation instructions
 
 **Option 1: Running the whole pipeline** 
-  - An AWS S3 bucket needs to be set up as the database 
-  - An AWS EC2 P3 instance needs to be set up to run the pipeline. 
-  - Please follow the AWS installation instructions [here](docs/ec2_installation_steps.md)
+  - An AWS S3 bucket needs to be set up as the database, please follow the instruction [here](https://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html) to create a S3 bucekt.
+  - An AWS EC2 P3 instance needs to be set up to run the pipeline, please follow the EC2 installation instructions [here](docs/ec2_installation_steps.md).
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
   - You can run the visualization tool locally with the following dependencies installed on your machine. 
@@ -31,7 +30,7 @@ The following pipeline chart displays the workflow used in our pipeline.
 We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
 
 **Option 1: Running the whole pipeline** 
-1. Download the data [here](https://drive.google.com/file/d/1JAP8iDO1xyIQIbzj9mVIxKuMKE-XZlqG/view?usp=sharing), only raw data is included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1ejD8fNDgdfm6GLrpRm-O889Y2r3L3Sz4/view?usp=sharing), only raw data is included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
@@ -53,7 +52,7 @@ aws s3 sync s3://{bucket_name} data
 ```
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
-1. Download the data [here](), all the raw data, trained model, model results and scores are included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1pIT84CMI0kQIByoGJplwVnzXK9MM6A05/view?usp=sharing), all the raw data, trained model, model results and scores are included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
@@ -87,7 +86,7 @@ make clean
 ```
 make all
 ```
-The following usage are allowed to run any speicific part of pipeline:
+The following usages are allowed to run any speicific part of pipeline:
 ```
 # To prepare the data for model training
 make data
