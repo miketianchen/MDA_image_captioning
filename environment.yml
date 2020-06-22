@@ -1,8 +1,4 @@
 name: mds
-channels:
-  - pytorch
-  - conda-forge
-  - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
   - altair=3.2.0=py37_0
