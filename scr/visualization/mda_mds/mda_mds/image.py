@@ -24,7 +24,7 @@ DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DI
 RESULTS_PATH = os.path.join(DATA_PATH, 'results')
 
 # PATH FOR MODEL GENENERATED CAPTIONS JSON
-JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
+JSON_PATH = os.path.join(DATA_PATH, 'raw/upload_model_caption.json')
 
 # STATIC VARIABLES
 STATIC_VARIABLES_PATH = os.path.join(BASE_DIR, 'mda_mds/STATIC_VARIABLES.json')
@@ -130,7 +130,7 @@ if upload_mode == "image":
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     s3_images_file_name = 'raw/upload/' + image_name
 
-    s3_upload_model_caption_name = 'upload/model_generated_captions/upload_model_caption.json'
+    s3_upload_model_caption_name = 'raw/upload_model_caption.json'
 
     preprocess_image()
 
@@ -231,13 +231,13 @@ elif upload_mode == "caption":
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
-    s3_captions_file_name = 'upload/user_entered_captions/upload.json'
+    s3_captions_file_name = 'raw/upload.json'
 
     if user_caption_input != "":
 
 
 
-        USER_JSON_PATH = os.path.join(DATA_PATH, 'json/upload.json')
+        USER_JSON_PATH = os.path.join(DATA_PATH, 'raw/upload.json')
 
         try:
             with open(USER_JSON_PATH, 'r') as json_file:

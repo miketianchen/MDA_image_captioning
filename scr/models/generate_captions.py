@@ -138,16 +138,16 @@ if __name__ == "__main__":
 
     else:
         try:
-            with open(f"{root_path}/json/upload_model_caption.json", 'r') as fp:
+            with open(f"{root_path}/raw/upload_model_caption.json", 'r') as fp:
                 single_captions = json.load(fp)
             single_captions.update(results)
         except:
             single_captions = results
             
-        with open(f"{root_path}/json/upload_model_caption.json", 'w') as fp:
+        with open(f"{root_path}/raw/upload_model_caption.json", 'w') as fp:
             json.dump(single_captions, fp)
         
-        assert os.path.isfile(f'{root_path}/json/upload_model_caption.json'),\
+        assert os.path.isfile(f'{root_path}/raw/upload_model_caption.json'),\
         "Captions are not saved."
 
     print(f"Generating captions took: {hms_string(time()-start)}")

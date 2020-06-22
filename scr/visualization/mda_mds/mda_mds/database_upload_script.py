@@ -14,7 +14,7 @@ DATABASE_IMAGES_DIR = os.path.join(BASE_DIR, 'media/database_images')
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
 
 RAW_PATH = os.path.join(DATA_PATH, 'raw')
-JSON_PATH = os.path.join(DATA_PATH, 'json')
+# JSON_PATH = os.path.join(DATA_PATH, 'json')
 
 
 # STATIC VARIABLES
@@ -76,12 +76,12 @@ for filename in os.listdir(DATABASE_IMAGES_DIR):
     elif filename.endswith(".json"):
         json_file_name = folder_name + ".json"
 
-        s3_file_name = 'json/' + json_file_name
+        s3_file_name = 'raw/' + json_file_name
         upload_to_aws(file_path, bucket_name, s3_file_name)
 
 
 
-        shutil.move(file_path, os.path.join(JSON_PATH, json_file_name))
+        shutil.move(file_path, os.path.join(RAW_PATH, json_file_name))
     # try:
     #     if os.path.isfile(file_path) or os.path.islink(file_path):
     #         os.unlink(file_path)
