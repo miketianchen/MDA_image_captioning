@@ -2,7 +2,7 @@
 
 Please follow the steps in this file to create your AMI/instance.
 
-1. Launch an EC2 instance with the `Deep Learning Base AMI (Ubuntu 16.04)` AMI
+1. Launch an EC2 instance with the `Deep Learning Base AMI (Ubuntu 18.04)` AMI
 
 2. Run the following command in your local terminal to connect with the EC2 instance
 
