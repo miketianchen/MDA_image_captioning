@@ -32,9 +32,6 @@ conda install -c conda-forge jupyterlab
 jupyter notebook password
 
 # Set up AWS CLI
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
 aws configure
 
 # Set up aws configure, please replace with your own information
@@ -52,7 +49,24 @@ sudo apt install git
 sudo apt install trash-cli
 trash-empty
 
+####################################################
 # Install extra packages
+####################################################
+
+####################################################
+# Option 1
+
+# Clone the repo 
+git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
+cd 591_capstone_2020-mda-mds
+
+pip install requirements.txt
+
+####################################################
+
+####################################################
+# Option 2
+
 pip install matplotlib
 pip install nltk
 pip install sklearn
@@ -63,11 +77,14 @@ conda install -c conda-forge pyldavis
 conda install pytorch torchvision cudatoolkit -c pytorch
 pip install torchsummary
 pip install ipywidgets
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
 pip install tensorflow_hub
 pip install tensorflow_text
 pip install docopt
 pip install django
+
+####################################################
+
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 # Download nltk_data
 python
