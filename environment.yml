@@ -1,4 +1,4 @@
-name: mds
+name: mda
 dependencies:
   - _libgcc_mutex=0.1=main
   - altair=3.2.0=py37_0
@@ -181,5 +181,4 @@ dependencies:
     - threadpoolctl==2.1.0
     - werkzeug==1.0.1
     - wrapt==1.12.1
-prefix: /home/ubuntu/miniconda3/envs/mds
 
