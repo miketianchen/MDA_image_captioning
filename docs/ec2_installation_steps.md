@@ -21,12 +21,13 @@ sudo apt-get upgrade
 sudo apt install python3-pip
 
 # Install miniconda instead of Anaconda to save space and time
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh
+wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh
+bash Miniconda3-py37_4.8.3-Linux-x86_64.sh
 export PATH="/home/ubuntu/miniconda3/bin:$PATH"
 
 # OPTIONAL: install jupyter lab 
-# We used jupyter lab to develop our model and perform analysis, all our works can be found under notebooks folder of this repo
+# We used jupyter lab to develop our model and perform analysis
+# all our works can be found under notebooks folder of this repo
 conda install -c conda-forge jupyterlab
 # Set notebook password to 123
 jupyter notebook password
@@ -50,7 +51,7 @@ sudo apt install trash-cli
 trash-empty
 
 ####################################################
-# Install extra packages
+# Install extra packages 
 ####################################################
 
 ####################################################
@@ -60,27 +61,27 @@ trash-empty
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 cd 591_capstone_2020-mda-mds
 
-pip install requirements.txt
+pip install -r requirements.txt
 
 ####################################################
 
 ####################################################
 # Option 2
 
-pip install matplotlib
-pip install nltk
-pip install sklearn
-pip install wordcloud
-pip install altair
-pip install gensim
-conda install -c conda-forge pyldavis
-conda install pytorch torchvision cudatoolkit -c pytorch
-pip install torchsummary
-pip install ipywidgets
-pip install tensorflow_hub
-pip install tensorflow_text
-pip install docopt
-pip install django
+pip install matplotlib==3.2.2
+pip install nltk==3.5
+pip install sklearn==0.0
+pip install wordcloud==1.7.0
+pip install altair==3.2.0
+pip install gensim==3.8.0
+conda install -c conda-forge pyldavis=2.1.2
+conda install pytorch=1.5.1 torchvision=0.6.1 cudatoolkit=10.2 -c pytorch
+pip install torchsummary==1.5.1
+pip install ipywidgets==7.5.1
+pip install tensorflow_hub==0.8.0
+pip install tensorflow_text==2.2.1
+pip install docopt==0.6.2
+pip install django==3.0.3
 
 ####################################################
 
