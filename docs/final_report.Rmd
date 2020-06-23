@@ -164,7 +164,7 @@ The second module is a deep learning model. The final model we used in data prod
 
 ### Visualization Tool 
 
-For the visualization tool, MDA had a few required functionalities, such as the ability to upload images outside the database and have a machine learning model to produce captions for the uploaded image. Another functionality is the ability to view the training captions, the generated captions and the evaluation scores for those captions on different images in the test set. The visualization tool should also be able to allow the user to upload multiple images and their JSON caption file to S3 database. Overall, it should be a user-friendly way to interact with the model. 
+For the visualization tool, MDA had a few required functionalities, such as the ability to upload images outside the database and have a machine learning model to produce captions for the uploaded image. Another functionality is the ability to view the training captions, the generated captions and the evaluation scores for those captions on different images in the test set. The visualization tool should also be able to allow the user to upload multiple images and their JSON caption file to S3 database. Overall it should be a user-friendly way to interact with the model. 
 
 The frontend of the visualization tool is made using HTML, CSS and Javascript. The backend is made using Django, which is a python-based framework for web development. And we are using AWS S3 as our database to save all the images and caption files. 
 
