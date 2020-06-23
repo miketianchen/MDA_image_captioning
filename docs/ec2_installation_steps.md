@@ -71,7 +71,7 @@ jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 ####################################################
 # Option 2
-
+pip install boto3==1.14.9
 pip install pandas==1.0.5
 pip install nltk==3.5
 pip install sklearn==0.0

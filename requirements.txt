@@ -1,3 +1,4 @@
+boto3==1.14.9
 django==3.0.3
 docopt==0.6.2
 nltk==3.5
