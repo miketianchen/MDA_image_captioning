@@ -63,6 +63,10 @@ cd 591_capstone_2020-mda-mds
 
 pip install -r requirements.txt
 
+# OPTIONAL
+pip install -r optional.txt
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
+
 ####################################################
 
 ####################################################
@@ -85,10 +89,9 @@ pip install wordcloud==1.7.0
 pip install tensorflow_hub==0.8.0
 pip install tensorflow_text==2.2.1
 conda install -c conda-forge pyldavis=2.1.2
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 ####################################################
-
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 # Download nltk_data
 python
