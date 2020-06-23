@@ -63,7 +63,7 @@ cd 591_capstone_2020-mda-mds
 
 pip install -r requirements.txt
 
-# OPTIONAL
+# OPTIONAL: packages to run notebooks
 pip install -r optional.txt
 jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
@@ -81,7 +81,7 @@ pip install tensorflow_hub==0.8.0
 pip install tensorflow_text==2.2.1
 conda install pytorch=1.5.1 torchvision=0.6.1 cudatoolkit=10.2 -c pytorch
 
-# OPTIONAL
+# OPTIONAL: packages to run notebooks
 pip install matplotlib==3.2.2
 pip install altair==3.2.0
 pip install torchsummary==1.5.1
