@@ -77,6 +77,8 @@ pip install nltk==3.5
 pip install sklearn==0.0
 pip install docopt==0.6.2
 pip install django==3.0.3
+pip install tensorflow_hub==0.8.0
+pip install tensorflow_text==2.2.1
 conda install pytorch=1.5.1 torchvision=0.6.1 cudatoolkit=10.2 -c pytorch
 
 # OPTIONAL
@@ -86,8 +88,6 @@ pip install torchsummary==1.5.1
 pip install ipywidgets==7.5.1
 pip install gensim==3.8.0
 pip install wordcloud==1.7.0
-pip install tensorflow_hub==0.8.0
-pip install tensorflow_text==2.2.1
 conda install -c conda-forge pyldavis=2.1.2
 jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
