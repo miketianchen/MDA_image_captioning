@@ -43,8 +43,30 @@ visualization tool: we would allow the user to generate captions for new
 images, view model generated captions with evaluation scores for testing
 images in the database, and upload image-caption pairs to the database.
 
-Given that MDA’s images are uncaptioned, we used public datasets of
-satellite image-caption pairs to train our model. ? data description?
+### Data Description
+
+Given that MDA’s images are uncaptioned, we used 3 labelled public
+datasets of satellite image-caption pairs to train our model:
+UCM-captions (Qu et al. 2016), RSICD (Lu et al. 2018) and
+Sydney-captions (Qu et al. 2016). There are 13,634 images in total with
+up to 5 captions describing each image in these datasets.
+
+The UCM-captions dataset is based on the “University of California
+Merced’s Land Use Dataset”. It contains land-uses satellite images and
+has 21 different classes of images (i.e. 2100 images). The
+Sydney-captions dataset is extracted from a large 18000 X 14000-pixel
+image of Sydney taken from Google Earth and it has 7 different classes
+of images (i.e. 613 images). The RSICD dataset is the state of the art
+dataset. Its images are sourced from BaiduMaps, GoogleMaps and Tianditu,
+and the captions are sourced from different volunteers to ensure
+diversity of the caption (i.e. 10,922 images).
+
+We combined UCM-captions and RSICD datasets and split the combined
+dataset into training (64%), validation (16%), and test (20%) sets. The
+Sydney-captions dataset is set aside for testing model generalization
+ability. We trained and tuned our models using the training and
+validation set, and tested our final model with test set and
+Sydney-captions dataset.
 
 ## Data Science Methods
 
@@ -69,7 +91,7 @@ may not carry enough information for a good caption. Based on
 literature, adding attention layers can improve image captioning. So, we
 tried two model architectures with attention layers.
 
-<img src="../imgs/model_1.png" width="100%" />
+<img src="../imgs/model_1.png" width="80%" />
 
 Figure 1. The baseline model architecture (adapted from (Lu et al.
 2018)).
@@ -83,7 +105,7 @@ Figure 1. The baseline model architecture (adapted from (Lu et al.
     input image and align image features with words (Xu et al. 2015;
     Zhang 2019).
 
-<img src="../imgs/model_2.png" width="100%" />
+<img src="../imgs/model_2.png" width="80%" />
 
 Figure 2. The second model architecture (adapted from (Zhang 2019)).
 
@@ -95,7 +117,7 @@ Figure 2. The second model architecture (adapted from (Zhang 2019)).
     mechanisms and act as moving the focus between the image and the
     word context to help generate better captions (Li 2020).
 
-<img src="../imgs/model_3.png" width="100%" />
+<img src="../imgs/model_3.png" width="80%" />
 
 Figure 3. The third model architecture (adapted from (Li 2020)).
 
@@ -153,7 +175,7 @@ graph, the captions with similar semantic meanings will have a much more
 reasonable score compared with using n-gram based metrics.
 
 By incorporating both n-gram and semantic-based metrics, we have a more
-comprehensive view of model performances. All scores range from 0 t 1 ,
+comprehensive view of model performances. All scores range from 0 t 1,
 except `CIDEr` score, which ranges from 0 to 10.
 
 ### Results
@@ -178,12 +200,13 @@ product.
 | Multi-Attention |  0.593 |  0.463 |  0.380 |  0.321 |  0.271 |   0.498 | 1.738 | 0.345 |          0.583 |
 
 Table 1. Evaluation scores from the best model of each structure on the
-test dataset split from the combined `RSICD` and `UCM` datasets.
+test dataset split from the combined `RSICD` and `UCM-captions`
+datasets.
 
 To test the model generalization capability, we tested our models on the
-`Sydney` dataset that is different to the training data. As shown in
-Table 2, the baseline model has the best scores, but all scores are
-lower than scores in Table 1. It indicates that the models have poor
+`Sydney-captions` dataset that is different to the training data. As
+shown in Table 2, the baseline model has the best scores, but all scores
+are lower than scores in Table 1. It indicates that the models have poor
 generalization capabilities. Those scores are comparable to scores in
 literature (Lu et al. 2018).
 
@@ -194,7 +217,7 @@ literature (Lu et al. 2018).
 | Multi-Attention |  0.431 |  0.194 |  0.078 |  0.034 |  0.133 |    0.27 | 0.144 | 0.097 |          0.450 |
 
 Table 2. Evaluation scores from the best model of each structure on the
-`Sydney` dataset.
+`Sydney-captions` dataset.
 
 ### Other Considerations
 
@@ -203,10 +226,11 @@ images but the performance of those models could not beat the
 pre-trained CNN models ([related
 notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/jh-cnn_models)).
 We also trained embeddings from scratch using our training captions and
-then tested the embeddings by predicting cosine similarity between
-words. Again, we found that pre-trained embeddings perform better than
-embeddings learned from scratch. So we decided to use pre-trained CNN
-models and embeddings.
+then tested the embeddings by predicting cosine similarity between words
+([related
+notebook](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)).
+Again, we found that embeddings learned from scratch didn’t improve the
+performace. So we decided to use pre-trained CNN models and embeddings.
 
 ### Future Improvements
 
@@ -223,16 +247,18 @@ consisting of 3 independent modules: a database, a deep learning model
 and a visualization tool. When designing our product pipeline, we have
 separated the visualization tool from the other two because it can be
 run without GPU. The flowchart describing the whole workflow can be
-found [here](../imgs/pipeline.jpg). For the main pipeline, we use Make
-file to create the whole workflow. The process starts with loading raw
-data and preprocessing them, to model generating and evaluating. All the
-steps can be executed by using `make all` command in the terminal. We
-also allow users to call any specific part of the workflow. For example,
-`make data` to prepare the data for training and testing. The
-visualization tool workflow is implemented using Django. it can interact
-with our database and model in 3 different ways.
+found
+[here](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/imgs/pipeline.jpg).
+For the main pipeline, we used Make file to create the whole workflow.
+The process starts with loading raw data and preprocessing them, to
+model generating and evaluating. All the steps can be executed by using
+`make all` command in the terminal. We also allow users to call any
+specific part of the workflow. For example, `make data` to prepare the
+data for training and testing. The visualization tool workflow is
+implemented using Django. it can interact with our database and model in
+3 different ways.
 
-<img src="../imgs/dataproduct.png" width="100%" />
+<img src="../imgs/dataproduct.png" width="60%" />
 
 Figure 4. The final data product
 
@@ -249,6 +275,10 @@ bucket as the starting files. After running the whole pipeline, the
 users should have the database structure as shown below. They will have
 8 folders containing raw, preprocessed image and JSON files, as well as
 model results and scores.
+
+<img src="../imgs/databasestructure.png" width="60%" />
+
+Figure 5. The final database structure
 
 ### Deep Learning Model
 
@@ -269,61 +299,66 @@ functionality is the ability to view the training captions, the
 generated captions and the evaluation scores for those captions on
 different images in the test set. The visualization tool should also be
 able to allow the user to upload multiple images and their JSON caption
-file to S3 database. Overall it should be a user-friendly way to
+file to S3 database. Overall, it should be a user-friendly way to
 interact with the model.
 
 The frontend of the visualization tool is made using HTML, CSS and
 Javascript. The backend is made using Django, which is a python-based
-framework for web development. And we’re using AWS S3 as our database to
-save all the images and caption files.
+framework for web development. And we are using AWS S3 as our database
+to save all the images and caption files.
 
-We have three tabs for the three required features. (“User Image” tab
-for generating captions, “Demo Example” to view results, and “Database
-Upload” for multiple images uploads). The user would click on the
-relevant tab for the task they want to do. The pros of making a web app
-instead of a dash app or shiny app are the fact that the technology used
-to make web apps are more ubiquitous and common in the industry, which
-means it is easy for other developers to add upon the existing app. In
-addition, web apps utilizing native tech such as HTML, CSS, etc are
-faster compared to using a Dash framework.
+We have three tabs for the three required features. (i.e. “User Image”
+tab for generating captions, “Demo Example” to view results, and
+“Database Upload” for multiple images uploads). See the screenshot of
+our visualization tool below (i.e. Figure 6). The user would click on
+the relevant tab for the task they want to do. The pros of making a web
+app instead of a dash app or shiny app are the fact that the technology
+used to make web apps are more ubiquitous and common in the industry,
+which means it is easy for other developers to add upon the existing
+app. In addition, web apps utilizing native tech such as HTML, CSS, etc
+are faster compared to using a Dash framework.
+
+<img src="../imgs/viz_screenshot.png" width="80%" />
+
+Figure 6. The visualization tool screenshots
 
 Numerous improvements can be implemented in the visualization tool.
 Security features should be implemented to ensure that the user uploads
 the correct files or file types. For example, when uploading multiple
 images, a good security check should be used to check if the image
-content is legitimate (e.g. the user didn’t accidentally upload an image
-of themselves with their satellite images).
+content is legitimate (e.g. the user does not accidentally upload any
+non-satellite images).
 
 ## Conclusion and Recommendations
 
-We have delivered a product complete with all the features that were
-proposed. The performance on the test portion is fair. However, the
-generalizability of the model may be poor as shown by the performance on
-the unseen dataset. We hope that MDA can iterate and improve upon our
-work.
+We have successfully developed a complete image captioning pipeline with
+all the features proposed in the [proposal
+report](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/docs/proposal.pdf).
+The performance of our deep learning model on the test dataset is fair.
+However, the generalization ability of this model is poor as shown by
+the performance on the unseen `Sydney-captions` dataset.
 
-Due to the short time of this project we have had a few limitations. The
-datasets we worked with are fairly small compared to other available
-datasets, which inhibited our ability to train a CNN model from scratch.
-When this was attempted, the model trained from scratch performed poorly
-compared to utilizing transfer learning from a model trained on ImageNet
-type images. Our attention layer didn’t perform as expected. In the
-later stages of the project we had to prioritize the pipeline structure
-and making sure we had a well documented and iterable product over
-refining the model.
+Due to the short time of this project, there are some limitations we
+faced. First, the satellite image datasets we worked with are fairly
+small compared to other image datasets, which inhibited our ability to
+train our own CNN classifier. Second, our attention models did not
+perform as expected. In the later stages of the project, we had to
+prioritize the pipeline structure over finetuning the models.
 
-Our project has much room to be improved and expanded upon. Utilizing
-larger datasets, a CNN model tailored to satellite images can be trained
-that potentially outperforms transfer learning. We believe an attention
-model has great potential and could be further experimented on. The
-model can also be refined by adding or tuning model layers. Cross
-dataset performance should be more rigorously tested, since we
-ultimately are interested in performance on the MDA dataset, while the
-model will have to be trained on other datasets.
+Our product has room for improvement and below are our recommendations.
+First, a CNN classifier tailored to satellite images could be trained by
+utilizing larger datasets and this could potentially outperform our
+transfer learning. Second, we believe our third model with multi
+attention layers has great potentials and could be further experimented
+on. This model could be improved by optimizing hyperparameter, improving
+the attention structure or extracting image features from different
+convolutional layers of pre-trained CNN models. Last, the model’s
+generalization ability could be further tested by using the MDA’s own
+satellite images.
 
 ## References
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-spice2016">
 
@@ -368,6 +403,14 @@ Generation.” *IEEE Transactions on Geoscience and Remote Sensing* 56
 
 </div>
 
+<div id="ref-xu2018">
+
+Lu, X., B. Wang, X. Zheng, and X. Li. 2018. “Exploring Models and Data
+for Remote Sensing Image Caption Generation.” *IEEE Transactions on
+Geoscience and Remote Sensing* 56 (4): 2183–95.
+
+</div>
+
 <div id="ref-papineni-etal-2002-bleu">
 
 Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -376,6 +419,14 @@ Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
 Computational Linguistics*, 311–18. Philadelphia, Pennsylvania, USA:
 Association for Computational Linguistics.
 <https://doi.org/10.3115/1073083.1073135>.
+
+</div>
+
+<div id="ref-Qu_2016">
+
+Qu, B., X. Li, D. Tao, and X. Lu. 2016. “Deep Semantic Understanding of
+High Resolution Remote Sensing Image.” In *2016 International Conference
+on Computer, Information and Telecommunication Systems (Cits)*, 1–5.
 
 </div>
 
