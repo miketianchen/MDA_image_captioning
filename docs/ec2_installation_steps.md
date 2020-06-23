@@ -25,13 +25,6 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh
 bash Miniconda3-py37_4.8.3-Linux-x86_64.sh
 export PATH="/home/ubuntu/miniconda3/bin:$PATH"
 
-# OPTIONAL: install jupyter lab 
-# We used jupyter lab to develop our model and perform analysis
-# all our works can be found under notebooks folder of this repo
-conda install -c conda-forge jupyterlab
-# Set notebook password to 123
-jupyter notebook password
-
 # Set up AWS CLI
 aws configure
 
@@ -41,12 +34,19 @@ AWS Secret Access Key [None]: 7TarprC5CWlTHdOcNJ1LwmV80d/spZV5ShbMhRCO
 Default region name [None]: ca-central-1
 Default output format [None]: json
 
-# Update git
+# OPTIONAL: install jupyter lab 
+# We used jupyter lab to develop our model and perform analysis
+# all our works can be found under notebooks folder of this repo
+conda install -c conda-forge jupyterlab
+# Set notebook password to 123
+jupyter notebook password
+
+# OPTIONAL: update git
 sudo add-apt-repository ppa:git-core/ppa 
 sudo apt update
 sudo apt install git
 
-# Handle trash
+# OPTIONAL: handle trash
 sudo apt install trash-cli
 trash-empty
 
@@ -63,29 +63,35 @@ cd 591_capstone_2020-mda-mds
 
 pip install -r requirements.txt
 
+# OPTIONAL
+pip install -r optional.txt
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
+
 ####################################################
 
 ####################################################
 # Option 2
-
-pip install matplotlib==3.2.2
+pip install boto3==1.14.9
+pip install pandas==1.0.5
 pip install nltk==3.5
 pip install sklearn==0.0
-pip install wordcloud==1.7.0
-pip install altair==3.2.0
-pip install gensim==3.8.0
-conda install -c conda-forge pyldavis=2.1.2
-conda install pytorch=1.5.1 torchvision=0.6.1 cudatoolkit=10.2 -c pytorch
-pip install torchsummary==1.5.1
-pip install ipywidgets==7.5.1
-pip install tensorflow_hub==0.8.0
-pip install tensorflow_text==2.2.1
 pip install docopt==0.6.2
 pip install django==3.0.3
+pip install tensorflow_hub==0.8.0
+pip install tensorflow_text==2.2.1
+conda install pytorch=1.5.1 torchvision=0.6.1 cudatoolkit=10.2 -c pytorch
+
+# OPTIONAL
+pip install matplotlib==3.2.2
+pip install altair==3.2.0
+pip install torchsummary==1.5.1
+pip install ipywidgets==7.5.1
+pip install gensim==3.8.0
+pip install wordcloud==1.7.0
+conda install -c conda-forge pyldavis=2.1.2
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 ####################################################
-
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 # Download nltk_data
 python
