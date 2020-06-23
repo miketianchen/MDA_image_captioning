@@ -123,7 +123,7 @@ Table 2. Evaluation scores from the best model of each structure on the `Sydney`
 
 ### Other Considerations
 
-Besides, we trained our own CNN classifiers based on labeled satellite images but the performance of those models could not beat the pre-trained CNN models ([related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/jh-cnn_models)). We also trained embeddings from scratch using our training captions and then tested the embeddings by predicting cosine similarity between words. Again, we found that pre-trained embeddings perform better than embeddings learned from scratch. So we decided to use pre-trained CNN models and embeddings.
+Besides, we trained our own CNN classifiers based on labeled satellite images but the performance of those models could not beat the pre-trained CNN models ([related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/jh-cnn_models)). We also trained embeddings from scratch using our training captions and then tested the embeddings by predicting cosine similarity between words ([related notebook](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)). Again, we found that embeddings learned from scratch didn't improve the performace. So we decided to use pre-trained CNN models and embeddings.
 
 ### Future Improvements
 
@@ -141,14 +141,17 @@ knitr::include_graphics('../imgs/dataproduct.png')
 Figure 4. The final data product
 
 ### Database
+
 The first module is a database. AWS S3 bucket is chosen to be used as our database mainly because it can integrate well with AWS GPU instance that we used for training the model. Other advantage includes great scalability and ease of use. 
 
 In order to use this database, we will provide a private link on google drive for users to download raw data and upload them to their own S3 bucket as the starting files. After running the whole pipeline, the users should have the database structure as shown below. They will have 8 folders containing raw, preprocessed image and JSON files, as well as model results and scores.
 
 ### Deep Learning Model
+
 The second module is a deep learning model. The final model we used in data product is the baseline model with VGG 16 as pre-trained CNN and Glove embedding as the pre-trained word embedding. The model is written in Pytorch and AWS GPU instance is required to train the model. In this module, We allow users to train the model, generate caption and evaluate the results. After running the pipeline, all the trained model, model results and scores will be saved back to the S3 database.
 
 ### Visualization Tool 
+
 For the visualization tool, MDA had a few required functionalities, such as the ability to upload images outside the database and have a machine learning model to produce captions for the uploaded image. Another functionality is the ability to view the training captions, the generated captions and the evaluation scores for those captions on different images in the test set. The visualization tool should also be able to allow the user to upload multiple images and their JSON caption file to S3 database. Overall it should be a user-friendly way to interact with the model. 
 
 The frontend of the visualization tool is made using HTML, CSS and Javascript. The backend is made using Django, which is a python-based framework for web development. And we’re using AWS S3 as our database to save all the images and caption files. 
