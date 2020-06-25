@@ -10,7 +10,7 @@ from torchvision import models
 
 class CNNModel(nn.Module):
 
-    def __init__(self, pretrained=True):
+    def __init__(self, pretrained=True, path='data/vgg16.hdf5'):
         """
         Initializes a CNNModel
 
@@ -18,16 +18,19 @@ class CNNModel(nn.Module):
         -----------
         pretrained: bool (default: True)
             use pretrained model if True
-
+        path: str (default: 'data/vgg16.hdf5')
+            the path to load the pre-trained model
         """
 
         super(CNNModel, self).__init__()
         
         print(f'Loading pre-trained vgg16 CNN model...')
         
+        try:
+            self.model = torch.load(path)
+        except:
+            self.model = models.vgg16(pretrained=pretrained)
             
-        self.model = models.vgg16(pretrained=pretrained)
-
         # remove the last two layers in classifier
         self.model.classifier = nn.Sequential(
           *list(self.model.classifier.children())[:-2]

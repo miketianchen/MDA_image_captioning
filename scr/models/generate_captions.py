@@ -50,7 +50,8 @@ def generate_caption(
     max_length,
     vocab_size,
     wordtoidx,
-    idxtoword
+    idxtoword, 
+    device
 ):
     """
     Generates a caption
@@ -67,6 +68,8 @@ def generate_caption(
         the dict to get word index
     idxtoword: dict
         the dict to get word
+    device: torch.device
+        indicates whether cuda or cpu is used
 
     Return:
     --------
@@ -138,7 +141,8 @@ if __name__ == "__main__":
             model_info['max_length'],
             model_info['vocab_size'],
             model_info['wordtoidx'],
-            model_info['idxtoword']
+            model_info['idxtoword'], 
+            device
         )
     
     if opt['--single'] == 'False':
