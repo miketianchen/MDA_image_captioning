@@ -14,11 +14,15 @@ robotics, and satellite systems. The company has a vast database of
 uncaptioned overhead satellite images and wants to caption these images
 for indexing and detecting events of interest. In this project, we
 created a pipeline that processes raw satellite image-caption pairs and
-trains a deep learning model for image captions generation. To better
-organize the data, we bulit a non-relational database that stores the
-raw data and model results on an AWS S3 bucket. We also developed an
-interactive visualization tool that allows the user to examine model
-generated captions and upload image-caption pairs to the database.
+trains a deep learning model for image captions generation, and creates
+a natural language descriptive caption given an image. We evaluated our
+models using several n-gram based and semantic similarity metrics. Our
+evaluation results show that our model is able to achieve 0.648 `Bleu-1`
+score and 0.612 `USC_Similarity` score. To better organize the data, we
+bulit a non-relational database that stores the raw data and model
+results on an AWS S3 bucket. We also developed an interactive
+visualization tool that allows the user to examine model generated
+captions and upload image-caption pairs to the database.
 
 ## Introduction
 
@@ -29,19 +33,22 @@ can be used for indexing to query images and evaluate image similarity,
 and describing images to the visually impaired. Currently, most
 available image captioning models are trained on the `ImageNet` dataset.
 Different to images from the `ImageNet` dataset, satellite images
-usually have strange views and many components. So transfer learning
-will be less effective as we are working on a different domain. In this
-project, we produced a data product to help MDA solve this problem.
+usually have strange views and many components. So those available image
+captioning models may be less effective as we are working on a different
+domain. In this project, we produced a data product to help MDA solve
+this problem.
 
 We broke down the problem into three parts. First, designing a database
 structure: we need to organize the raw data and model results and
 standardize the JSON structure to store captions for reproduciblility.
-Second, developing a deep learning model for image captioning: we should
-train the model with image-caption pairs and evaluate the model with
-metrics that measure the sentence similarity. Third, developing a
-visualization tool: we would allow the user to generate captions for new
-images, view model generated captions with evaluation scores for testing
-images in the database, and upload image-caption pairs to the database.
+Second, developing a deep learning model for image captioning: we train
+the model with image-caption pairs and evaluate the model with metrics
+that measure the sentence similarity. Third, developing a visualization
+tool, which allows the user to generate captions for new images,
+optionally enter better captions if they are not satisfied with the
+predicted caption, view model generated captions with evaluation scores
+for sample images from our test set, and upload image-caption pairs to
+the database.
 
 ### Data Description
 
@@ -78,7 +85,7 @@ literature for this problem. In this project, we focused on the
 encoder-decoder model as it is the most common method for image
 captioning. Here are the three model architectures we tried:
 
-1.  Our baseline architecture combines CNN and LSTM (Figure 1, [related
+1.  Our first architecture combines CNN and LSTM (Figure 1, [related
     notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-baseline_models)).
     At each step during generation, we combine the LSTM output with the
     image feature vector and pass the result through a dense layer and
@@ -86,18 +93,18 @@ captioning. Here are the three model architectures we tried:
     input to the LSTM layer in the next step.
 
 This model architecture is relatively simple and easy to optimize. But
-the image features used in this model is a high-level image summary and
-may not carry enough information for a good caption. Based on
-literature, adding attention layers can improve image captioning. So, we
-tried two model architectures with attention layers.
+the image features used in this model only represent a high-level image
+summary and may not carry enough information for a good caption. Based
+on literature, adding attention layers can improve image captioning. So,
+we tried two model architectures with attention layers.
 
 <img src="../imgs/model_1.png" width="80%" />
 
-Figure 1. The baseline model architecture (adapted from (Lu et al.
+Figure 1. The CNN + LSTM model architecture (adapted from (Lu et al.
 2018)).
 
 2.  Our second model architecture has an attention layer on top of the
-    baseline model (Figure 2, [related
+    CNN + LSTM model (Figure 2, [related
     notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-attention_models)).
     Attention is an interface between the CNN and LSTM that provides the
     LSTM with weighted image features from the CNN convolutional layer.
@@ -110,7 +117,7 @@ Figure 1. The baseline model architecture (adapted from (Lu et al.
 Figure 2. The second model architecture (adapted from (Zhang 2019)).
 
 3.  As an extension of the second model, the third model architecture
-    contains three attention structures on top of the baseline model
+    contains three attention structures on top of the CNN + LSTM model
     (Figure 3, [related
     notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-multi-attention_models)).
     This multi-level attention model better mimics human attention
@@ -181,43 +188,42 @@ except `CIDEr` score, which ranges from 0 to 10.
 ### Results
 
 Table 1 shows all metrics scores for the best model of each model
-architecture (the complete model comparison results is
+architecture (the complete model comparison results are
 [here](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/notebooks/compare_models/18-fz-compare_models.ipynb)).
-When testing on a dataset like the training data, the baseline model
+When testing on a dataset like the training data, the CNN + LSTM model
 achieves better scores than other models. Those scores are comparable to
 scores in literature (Li 2020). But models with attention layers did not
-improve the performance. It could be that we didn’t spend enough time
+improve the performance. It could be that we did not spend enough time
 fine tuning those models. But MDA is more interested in building a
 working end-to-end pipeline than getting the state-of-the-art results.
 So instead of further optimizing the models, we decided to spend more
-time on the pipeline and just used this baseline model in our final data
-product.
+time on the pipeline and just used this CNN + LSTM model in our final
+data product.
 
-|                 | BLEU 1 | BLEU 2 | BLEU 3 | BLEU 4 | Meteor | ROUGE L | CIDEr | SPICE | USC Similarity |
-| --------------- | -----: | -----: | -----: | -----: | -----: | ------: | ----: | ----: | -------------: |
-| Baseline        |  0.648 |  0.523 |  0.440 |  0.381 |  0.300 |   0.553 | 2.125 | 0.400 |          0.612 |
-| Attention       |  0.572 |  0.435 |  0.351 |  0.294 |  0.256 |   0.473 | 1.540 | 0.324 |          0.550 |
-| Multi-Attention |  0.593 |  0.463 |  0.380 |  0.321 |  0.271 |   0.498 | 1.738 | 0.345 |          0.583 |
+|                 | Bleu-1 | Bleu-2 | Bleu-3 | Bleu-4 | Meteor | Rouge\_L | CIDEr | SPICE | USC\_Similarity |
+| --------------- | -----: | -----: | -----: | -----: | -----: | -------: | ----: | ----: | --------------: |
+| CNN + LSTM      |  0.648 |  0.523 |  0.440 |  0.381 |  0.300 |    0.553 | 2.125 | 0.400 |           0.612 |
+| Attention       |  0.572 |  0.435 |  0.351 |  0.294 |  0.256 |    0.473 | 1.540 | 0.324 |           0.550 |
+| Multi-Attention |  0.593 |  0.463 |  0.380 |  0.321 |  0.271 |    0.498 | 1.738 | 0.345 |           0.583 |
 
 Table 1. Evaluation scores from the best model of each structure on the
-test dataset split from the combined `RSICD` and `UCM-captions`
-datasets.
+test dataset split from the combined RSICD and UCM-captions datasets.
 
 To test the model generalization capability, we tested our models on the
-`Sydney-captions` dataset that is different to the training data. As
-shown in Table 2, the baseline model has the best scores, but all scores
-are lower than scores in Table 1. It indicates that the models have poor
+Sydney-captions dataset that is different to the training data. As shown
+in Table 2, the CNN + LSTM model has the best scores, but all scores are
+lower than scores in Table 1. It indicates that the models have poor
 generalization capabilities. Those scores are comparable to scores in
 literature (Lu et al. 2018).
 
-|                 | BLEU 1 | BLEU 2 | BLEU 3 | BLEU 4 | Meteor | ROUGE L | CIDEr | SPICE | USC Similarity |
-| --------------- | -----: | -----: | -----: | -----: | -----: | ------: | ----: | ----: | -------------: |
-| Baseline        |  0.453 |  0.220 |  0.117 |  0.072 |  0.145 |    0.29 | 0.210 | 0.119 |          0.458 |
-| Attention       |  0.431 |  0.209 |  0.108 |  0.069 |  0.140 |    0.28 | 0.146 | 0.114 |          0.449 |
-| Multi-Attention |  0.431 |  0.194 |  0.078 |  0.034 |  0.133 |    0.27 | 0.144 | 0.097 |          0.450 |
+|                 | Bleu-1 | Bleu-2 | Bleu-3 | Bleu-4 | Meteor | Rouge\_L | CIDEr | SPICE | USC\_Similarity |
+| --------------- | -----: | -----: | -----: | -----: | -----: | -------: | ----: | ----: | --------------: |
+| CNN + LSTM      |  0.453 |  0.220 |  0.117 |  0.072 |  0.145 |     0.29 | 0.210 | 0.119 |           0.458 |
+| Attention       |  0.431 |  0.209 |  0.108 |  0.069 |  0.140 |     0.28 | 0.146 | 0.114 |           0.449 |
+| Multi-Attention |  0.431 |  0.194 |  0.078 |  0.034 |  0.133 |     0.27 | 0.144 | 0.097 |           0.450 |
 
 Table 2. Evaluation scores from the best model of each structure on the
-`Sydney-captions` dataset.
+Sydney-captions dataset.
 
 ### Other Considerations
 
@@ -283,7 +289,7 @@ Figure 5. The final database structure
 ### Deep Learning Model
 
 The second module is a deep learning model. The final model we used in
-data product is the baseline model with VGG 16 as pre-trained CNN and
+data product is the CNN + LSTM model with VGG 16 as pre-trained CNN and
 Glove embedding as the pre-trained word embedding. The model is written
 in Pytorch and AWS GPU instance is required to train the model. In this
 module, We allow users to train the model, generate caption and evaluate
@@ -299,7 +305,7 @@ functionality is the ability to view the training captions, the
 generated captions and the evaluation scores for those captions on
 different images in the test set. The visualization tool should also be
 able to allow the user to upload multiple images and their JSON caption
-file to S3 database. Overall, it should be a user-friendly way to
+file to S3 database. Overall it should be a user-friendly way to
 interact with the model.
 
 The frontend of the visualization tool is made using HTML, CSS and
@@ -358,7 +364,7 @@ satellite images.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-spice2016">
 
