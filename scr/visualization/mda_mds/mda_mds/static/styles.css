@@ -112,9 +112,6 @@ ul{
 }
 
 
-/* #multiple_images_upload_input{
-  padding-top: 16px;
-} */
 
 textarea {
     padding: 5px;
@@ -172,6 +169,4 @@ p{
   position:fixed;
   margin-top: 30%;
   right:0;
-  /* margin-left: 900px;
-  margin-top:375px; */
 }
