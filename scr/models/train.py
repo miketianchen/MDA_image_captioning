@@ -8,6 +8,12 @@ Usage: scr/models/train.py --root_path=<root_path> --output=<output>
 Options:
 --root_path=<root_path>   The path to the data folder which contains the raw folder.
 --output=<output>         The output trained caption model name without the filename extension.
+
+Example:
+python scr/models/train.py --root_path=data --output=final_model
+
+Takes prepared data from `data/results` to train a caption model, and
+save the model to `data/results/final_model.hdf5`.
 '''
 
 import json, os, pickle

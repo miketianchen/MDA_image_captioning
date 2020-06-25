@@ -9,6 +9,19 @@ Options:
 --root_path=<root_path>     The path to the data folder which contains the raw folder.
 --output=<output>           The output file name  (no extension, e.g. test).
 --inputs=<inputs>           The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
+
+Examples:
+Case 1:
+python scr/models/extract_features.py --root_path=data --output=train
+
+Extract feature vectors from images under the `data/train` folder,
+and save outputs to `data/results/train.pkl`.
+
+Case 2:
+python scr/models/extract_features.py --root_path=data --output=rsicd_airport_55 --inputs=test/rsicd_airport_55.jpg
+
+Extract a feature vector from the image `rsicd_airport_55.jpg` under the `data/test` folder,
+and save outputs to `data/results/rsicd_airport_55.pkl`.
 '''
 
 import os, json, pickle

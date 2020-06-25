@@ -69,7 +69,7 @@ def model():
     output_json_name = image_name.split(".")[0]+'_captions'
     generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
     # Example call:
-    # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
+    # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --single=True'
     os.system(generate_captions_cli_call)
 
     captions = read_results(output_json_name, RESULTS_PATH)
