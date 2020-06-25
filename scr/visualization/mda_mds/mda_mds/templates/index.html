@@ -21,7 +21,6 @@
           <!-- NAV BAR -->
           <div class="container-fluid">
             <nav class="navbar navbar-expand-md navbar-dark">
-              <!-- <a class="navbar-brand" href="#">MDA</a> -->
               <a class="navbar-brand" href="https://mdacorporation.com/corporate/" target="_blank" style="position:fixed;">
                 <img src="{% static 'image/mda_logo.png' %}" width="" height="30" alt="">
               </a>
@@ -189,11 +188,7 @@
 
                       <input type="file" name="image_upload" id="image_upload">
 
-                      <!-- <label class="btn btn-outline-dark" for="my-file-selector">
-                          <input id="my-file-selector" type="file" style="display:none" name="image_upload"
-                          onchange="$('#upload-file-info').html(this.files[0].name)" required>
-                          Upload New Image File Here
-                      </label> -->
+
                       <br><br>
                       <input type="submit" class="btn btn-secondary" name="upload_image_input" value="Submit Image">
                       <br>
@@ -206,7 +201,6 @@
 
                         {% if data %}
                           <div class="post-content">
-                            <!-- <p><em>Evaluation Score:</em> {{score}}</p> -->
                             <p><em>Generated Caption:</em> <strong>{{model_caption}}</strong></p>
                          </div>
                         {% endif %}
@@ -235,22 +229,7 @@
 
                       <span class='label label-info' id="upload-file-info"></span>
                     </form>
-                    <!-- <div class="post-container">
-                      {% if raw_url or edit_url %}
-                        <div class="post-thumb">
-                          <img src="{{raw_url}}" alt="raw_image" align="left" class="upload_image" style="padding-bottom:20px; margin-right:10px; margin-top:10px;">
-                        </div>
-                      {% endif %}
 
-                      {% if data %}
-                        <div class="post-content">
-                          <p><em>Evaluation Score:</em> {{score}}</p>
-                          <p><em>Generated Caption:</em> {{model_caption}}</p><br>
-                          <p><em>Inputted Caption:</em> {{user_caption}}</p><br>
-                       </div>
-                      {% endif %}
-
-                    </div> -->
 
 
 
@@ -265,7 +244,6 @@
           </div>
 
         </div>
-      <!-- </div> -->
 
     </div>
 

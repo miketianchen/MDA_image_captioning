@@ -31,9 +31,7 @@ STATIC_VARIABLES_PATH = os.path.join(BASE_DIR, 'mda_mds/STATIC_VARIABLES.json')
 with open(STATIC_VARIABLES_PATH) as json_file:
     STATIC_VARIABLES = json.load(json_file)
 
-# NOTE!!! REPLACE THIS WITH ENVIRONMENT VARIABLES WHEN YOU PUSH TO GITHUB
-# ACCESS_KEY = 'AKIATB63UHM3M3LZZH5L'
-# SECRET_KEY = 'VDmCpB8e5HEjpQa8PKZlLpmulkQbjjMetTq2IFON'
+# AWS ACCESS KEY AND SECRET KEY, LOCATED IN scr/visualization/mda_mds/mda_mds
 ACCESS_KEY = STATIC_VARIABLES['AWS_ACCESS_KEY']
 SECRET_KEY = STATIC_VARIABLES['AWS_SECRET_ACCESS_KEY']
 
@@ -69,7 +67,6 @@ def model():
     os.system(extract_features_cli_call)
 
     output_json_name = image_name.split(".")[0]+'_captions'
-    # generate_captions_cli_call = 'python {' + str(GENERATE_CAPTIONS_PATH) + '} --root_path={' + DATA_PATH + '} --inputs={' + image_name.split(".")[0] + '} --model=final_model --single=True'
     generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
     # Example call:
     # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --output=test_rsicd_00030'
@@ -81,7 +78,6 @@ def model():
 
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
-    # JSON_PATH = os.path.join(DATA_PATH, 'json/upload_model_caption.json')
     with open(JSON_PATH) as f:
         caption_dict = json.load(f)
 
@@ -168,7 +164,6 @@ elif upload_mode == "caption":
         image_name = image_name[:-4]
         image_name = image_name + '.jpg'
 
-    # relocate_image_path(image_name)
 
 
 
@@ -230,7 +225,6 @@ elif upload_mode == "caption":
         json.dump(caption, outfile)
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
-    # s3_captions_file_name = 'upload/captions/' + image_name.split(".")[0] + '.json'
     s3_captions_file_name = 'raw/upload.json'
 
     if user_caption_input != "":

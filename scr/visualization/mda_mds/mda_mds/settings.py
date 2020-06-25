@@ -125,7 +125,6 @@ STATIC_URL = '/static/'
 STATIC_PATH = os.path.join(BASE_DIR, "mda_mds/static")
 
 STATICFILES_DIRS = [
-    # '/Users/apple/Documents/Web_dev/django-mda/mda_mds/mda_mds/static',
     STATIC_PATH,
     f'{os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR)))}/data'
 ]

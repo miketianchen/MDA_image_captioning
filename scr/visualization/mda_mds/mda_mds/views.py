@@ -15,16 +15,13 @@ def button(request):
      return render(request, 'index.html')
 
 def output(request):
-    #### TO BE COMPLETED IDK WHEN
     score = 666
     data = str(score)
-    #print("the score is " + data)
     return render(request, 'index.html', {'data':data})
 
 def generate(request):
     # path for the generate script
     generate_script_path = os.path.join(BASE_DIR, 'mda_mds/generate_image.py')
-    #print("THE BASE DIR IS " + str(generate_script_path))
     out= run([sys.executable,generate_script_path],
                         shell=False, stdout=PIPE, universal_newlines=True)
     output = str(out.stdout)
@@ -108,26 +105,8 @@ def external(request):
         # absolute image path
         fileurl = fs.open(filename)
 
-        #print(os.path.dirname(str(fileurl)))
-
         # relative image path
         templateurl = fs.url(filename)
-
-        # SCR_PATH = os.path.dirname(os.path.dirname(BASE_DIR))
-        # PREPROCESS_IMAGE_PY_PATH = os.path.join(SCR_PATH, 'data/preprocess_image.py')
-        # MEDIA_PATH = os.path.join(BASE_DIR, 'media')
-        # example call: python scr/data/preprocess_image.py --input_path=<input_path>
-
-        # preprocess_script_cli = 'python ' + str(PREPROCESS_IMAGE_PY_PATH) + ' --input_path=' + MEDIA_PATH
-        #
-        # os.system(preprocess_script_cli)
-        #
-        # if templateurl.endswith('.png'):
-        #     fileurl = str(fileurl)
-        #     fileurl = fileurl[:-4] + '.jpg'
-
-        #print(raw_url)
-        #output = run([sys.executable,'//Users//apple//Documents//Web_dev//django-mda//mda_mds//mda_mds//test.py', input], shell=False, stdout=PIPE)
 
         image = run([sys.executable,image_script_path,
                                 str(upload_mode), str(fileurl), str(filename)], shell=False, stdout=PIPE, universal_newlines=True)
@@ -136,7 +115,6 @@ def external(request):
         score = output[0]
         model_caption = output[1]
         print("SYSTEM OUT IS "+ templateurl)
-        #print("IMAGE STD OUT, NEW RELATIVE PATH FOR IMAGE"+str(image.stdout).replace('Upload Successful',''))
         return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
                                 'edit_url':image.stdout, 'score':score, 'model_caption':model_caption})
     elif 'upload_caption_input' in request.POST:
@@ -157,46 +135,6 @@ def external(request):
         return render(request, 'index.html')
 
 
-    # # path for the image script
-    # image_script_path = os.path.join(BASE_DIR, 'mda_mds/image.py')
-    #
-    # user_caption_input = request.POST.get('param')
-    # optional_caption_2 = request.POST.get('param_2')
-    # optional_caption_3 = request.POST.get('param_3')
-    # optional_caption_4 = request.POST.get('param_4')
-    # optional_caption_5 = request.POST.get('param_5')
-    #
-    # image = request.FILES['image_upload']
-    # #print("image is ", image)
-    # fs = FileSystemStorage()
-    #
-    # # current image name
-    # filename = fs.save(image.name, image)
-    #
-    # # absolute image path
-    # fileurl = fs.open(filename)
-    #
-    # #print(os.path.dirname(str(fileurl)))
-    #
-    # # relative image path
-    # templateurl = fs.url(filename)
-    #
-    #
-    #
-    # #print(raw_url)
-    # #output = run([sys.executable,'//Users//apple//Documents//Web_dev//django-mda//mda_mds//mda_mds//test.py', input], shell=False, stdout=PIPE)
-    # image = run([sys.executable,image_script_path,
-    #                         str(fileurl), str(filename), str(user_caption_input), str(optional_caption_2), str(optional_caption_3), str(optional_caption_4), str(optional_caption_5)]
-    #                         , shell=False, stdout=PIPE, universal_newlines=True)
-    # sys_out = str(image.stdout).replace('Upload Successful','')
-    # output = sys_out.split('_')
-    # score = output[0]
-    # model_caption = output[1]
-    # print("SYSTEM OUT IS "+sys_out)
-    # #print("IMAGE STD OUT, NEW RELATIVE PATH FOR IMAGE"+str(image.stdout).replace('Upload Successful',''))
-    # return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
-    #                         'edit_url':image.stdout, 'score':score, 'user_caption':user_caption_input, 'model_caption':model_caption})
-
 def database(request):
     # PATH to LOCAL DIRECTORY which temporary houses the images the user uploaded
     image_temp_save_dir = os.path.join(BASE_DIR, 'media/database_images')
@@ -211,15 +149,6 @@ def database(request):
     #       DELETE the images from local directory
     database_upload_script_path = os.path.join(BASE_DIR, 'mda_mds/database_upload_script.py')
 
-    # def handle_uploaded_file(f):
-    #     with open(image_temp_save_dir + '/file_' + str(count) + '.jpg', 'wb+') as destination:
-    #         for chunk in f.chunks():
-    #             destination.write(chunk)
-    #
-    # def handle_json_file(f):
-    #     with open(json_temp_save_dir + '/captions_' + str(count) + '.json', 'wb+') as destination:
-    #         for chunk in f.chunks():
-    #             destination.write(chunk)
 
     def handle_file(f, type):
         # type = '.json' or = '.jpg'
@@ -234,11 +163,9 @@ def database(request):
             handle_file(x, '.jpg')
         else:
             print("WRONG FILE TYPE, CHECK YOUR UPLOAD")
-    # return HttpResponse("Files Successfully Uploaded!")
 
     out = run([sys.executable,database_upload_script_path],
                         shell=False, stdout=PIPE, universal_newlines=True)
 
-    # print(out.stdout)
 
     return render(request, 'index.html')
