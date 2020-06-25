@@ -11,7 +11,21 @@ Options:
 --inputs=<inputs>          The input image feature file name (no extension).
 --model=<model>            The trained caption model name (no extension).
 --output=<output>          The output file name (no extension).
---single=<single>          Save the caption to `imgs_no_human_caption.json` or not [default: False].
+--single=<single>          Save the caption to `raw/upload_model_caption.json` or not [default: False].
+
+
+Examples:
+Case 1:
+python scr/models/generate_captions.py --root_path=data --inputs=test --model=final_model --output=test
+
+Take feature vectors from `data/results/test.pkl` to generate captions with the model saved in 
+`data/results/final_model.hdf5`, and save outputs to `data/json/test_model_caption.json`.
+
+Case 2:
+python scr/models/generate_captions.py --root_path=data --inputs=single_feature_vector --model=final_model --single=True
+
+Take the feature vector from `data/results/single_feature_vector.pkl` to generate captions with the model saved in 
+`data/results/final_model.hdf5`, and save outputs in `data/raw/upload_model_caption.json`.
 '''
 
 import os, json, pickle

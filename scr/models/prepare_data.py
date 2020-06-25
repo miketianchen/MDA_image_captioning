@@ -10,6 +10,12 @@ INPUTS                   One or more json file names.
 
 Options:
 --root_path=<root_path>  The path to the data folder which contains the raw folder.
+
+Example:
+python scr/models/prepare_data.py --root_path=data train
+
+Extract image paths info and related captions from `data/json/train.json`,
+and save results to `data/results/train_paths.pkl` and `data/results/train_descriptions.pkl`.
 '''
 
 import os, json, pickle
