@@ -40,6 +40,7 @@ data/score/sydney_score.json data/score/sydney_img_score.json
 
 # set root path to the data folder which contains the raw folder
 root_path := data
+final_model := final_model
 
 # process the json file for rsicd, ucm, and sydney datasets
 data/json/rsicd.json data/json/ucm.json data/json/sydney.json : \
@@ -93,7 +94,7 @@ scr/models/train.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
 data/results/train_descriptions.pkl data/results/train.pkl 
 
-	python scr/models/train.py --root_path=$(root_path) --output=final_model
+	python scr/models/train.py --root_path=$(root_path) --output=$(final_model)
 
 # extract image features from test images
 data/results/test.pkl data/results/test_paths.pkl : \
@@ -111,7 +112,7 @@ data/results/test.pkl data/results/test_paths.pkl \
 data/results/final_model.hdf5
 
 	python scr/models/generate_captions.py --root_path=$(root_path) \
-    --inputs=test --model=final_model --output=test
+    --inputs=test --model=$(final_model) --output=test
 
 # extract imgae features from the sydney images
 data/results/sydney.pkl data/results/sydney_paths.pkl : \
@@ -129,7 +130,7 @@ data/results/sydney.pkl data/results/sydney_paths.pkl \
 data/results/final_model.hdf5
 
 	python scr/models/generate_captions.py --root_path=$(root_path) \
-    --inputs=sydney --model=final_model --output=sydney
+    --inputs=sydney --model=$(final_model) --output=sydney
     
 # evaluate the model generated captions for test images
 data/score/test_score.json data/score/test_img_score.json : \
