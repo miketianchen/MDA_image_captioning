@@ -151,9 +151,7 @@ data/json/sydney_model_caption.json data/json/sydney.json scr/evaluation/eval_mo
 # Clean up intermediate and results files
 clean : 
 	rm -rf $(root_path)/json
-	rm -rf $(root_path)/preprocessed_sydney
-	rm -rf $(root_path)/preprocessed_ucm
-	rm -rf $(root_path)/preprocessed_rsicd
+	rm -rf $(root_path)/preprocessed_*
 	rm -rf $(root_path)/test
 	rm -rf $(root_path)/train
 	rm -rf $(root_path)/valid
