@@ -8,8 +8,11 @@ import shutil
 from botocore.exceptions import NoCredentialsError
 from PIL import Image
 
-
-
+import torch
+sys.path.append('../../models/')
+from extract_features import extract_img_features
+from model import CNNModel
+from generate_captions import generate_caption
 
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,25 +60,55 @@ def upload_to_aws(local_file, bucket, s3_file = None):
         return False
 
 # Function to take the user uploaded image and run the model on it
-def model():
-    # currently the picture file is saved in temp media directory, need to copy picture to data/results folder
-    # copyfile(image_fullpath, os.path.join(DATA_PATH, image_name))
+# def model():
+#     # currently the picture file is saved in temp media directory, need to copy picture to data/results folder
+#     # copyfile(image_fullpath, os.path.join(DATA_PATH, image_name))
 
-    extract_features_cli_call = 'python ' + str(EXTRACT_FEATURES_PATH) + ' --root_path=' + DATA_PATH + ' --output=' + image_name.split(".")[0] + ' --inputs=' + image_name
-    # Example call:
-    # 'python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg'
-    os.system(extract_features_cli_call)
+#     extract_features_cli_call = 'python ' + str(EXTRACT_FEATURES_PATH) + ' --root_path=' + DATA_PATH + ' --output=' + image_name.split(".")[0] + ' --inputs=' + image_name
+#     # Example call:
+#     # 'python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg'
+#     os.system(extract_features_cli_call)
 
-    output_json_name = image_name.split(".")[0]+'_captions'
-    generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
-    # Example call:
-    # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --single=True'
-    os.system(generate_captions_cli_call)
+#     output_json_name = image_name.split(".")[0]+'_captions'
+#     generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
+#     # Example call:
+#     # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --single=True'
+#     os.system(generate_captions_cli_call)
 
-    captions = read_results(output_json_name, RESULTS_PATH)
+#     captions = read_results(output_json_name, RESULTS_PATH)
 
-    return ['NA', captions]
+#     return ['NA', captions]
 
+# Function to take the user uploaded image and run the model on it
+def get_caption(encoder, caption_model, img_path, model_info, device):
+    
+    img_feature = extract_img_features(
+        img_path,
+        encoder,
+        device
+    )
+    
+    results = generate_caption(
+        caption_model,
+        img_feature,
+        model_info['max_length'],
+        model_info['vocab_size'],
+        model_info['wordtoidx'],
+        model_info['idxtoword'],
+        device
+    )    
+    try:
+        with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'r') as fp:
+            single_captions = json.load(fp)
+        single_captions.update(results)
+    except:
+        single_captions = results
+
+    with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'w') as fp:
+        json.dump(single_captions, fp)
+    
+    return ['NA', results]
+    
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
     with open(JSON_PATH) as f:
@@ -114,6 +147,20 @@ def merge_two_dicts(x, y):
 #              if upload mode is 'caption' then captions will be created and uploaded
 upload_mode = sys.argv[1]
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# load encoder
+try:
+    encoder = CNNModel(pretrained=True, path=f'{DATA_PATH}/vgg16.hdf5')
+except:
+    encoder = CNNModel(pretrained=True)
+encoder.to(device)
+
+# load the trained caption model
+model = 'final_model'
+with open(f"{DATA_PATH}/results/model_info.json", 'r') as f:
+         model_info = json.load(f)
+caption_model = torch.load(f"{DATA_PATH}/results/{model}.hdf5", map_location=device) 
+
 if upload_mode == "image":
     # get our data as an array from sys
     image_fullpath = sys.argv[2]
@@ -131,10 +178,10 @@ if upload_mode == "image":
     preprocess_image()
 
     # Return the score from the model
-    output = model()
+#     output = model()
+    output = get_caption(encoder, caption_model, [f'{DATA_PATH}/{image_name}'], model_info, device)
     score = output[0]
     model_caption = output[1]
-
     model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
 
     uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
