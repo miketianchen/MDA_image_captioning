@@ -12,6 +12,14 @@ INPUTS                     Datasets to process (e.g. rsicd, ucm, sydney, ...).
 
 Options:
 --root_path=<root_path>    The path to the data folder which contains the raw folder.
+
+Example:
+
+python scr/data/preprocess_json.py --root_path=data ucm rsicd sydney
+
+Preprocesses file information for all 3 of our datasets, which should be in raw/dataset_NAME folders respectively, 
+and outputs a json file to the specified root_path
+
 '''
 
 import json

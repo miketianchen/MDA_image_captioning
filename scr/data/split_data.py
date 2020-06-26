@@ -11,6 +11,13 @@ INPUTS                       Datasets to process (e.g. rsicd, ucm, sydney).
 
 Options:
 --root_path=<root_path>      The path to the data folder which contains the raw folder.
+
+Example:
+
+python scr/data/split_data.py --root_path=data ucm rsicd
+
+Splits the preprocessed file information for our training datasets,
+and outputs json files to the specified root_path
 '''
 
 import json
