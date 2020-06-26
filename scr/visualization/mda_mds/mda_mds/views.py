@@ -34,6 +34,25 @@ def output(request):
     return render(request, 'index.html', {'data':data})
 
 def generate(request):
+    """
+    This is for the "Demo Example" tab.
+
+    This will be called when the user presses the 'Generate' button in the "Demo Example" tab
+
+    This will call the 'mda_mds/generate_image.py' script
+        - Send : Nothing
+        - Recieve : Will recieve
+                        * the two image names
+                        * evaluation metrics for both images
+                        * 5 original captions for both images
+                        * model generated captions for both images
+
+                            All of which are in a single string.
+                            '@' delimits the two images
+                            '%' delimits each individual data
+
+    """
+
     # path for the generate script
     generate_script_path = os.path.join(BASE_DIR, 'mda_mds/generate_image.py')
     out= run([sys.executable,generate_script_path],
@@ -99,6 +118,13 @@ def generate(request):
                 'spice_2':image_two_spice, 'usc_2':image_two_usc,'active_tab':'demo_tab'})
 
 def external(request):
+    """
+    This is for the "User Image" tab.
+
+    ...
+
+    """
+
     if 'upload_image_input' in request.POST:
         upload_mode = "image"
         # path for the image script
@@ -150,6 +176,12 @@ def external(request):
 
 
 def database(request):
+    """
+    This is for the "Database Upload" tab.
+
+    ...
+
+    """
     # PATH to LOCAL DIRECTORY which temporary houses the images the user uploaded
     image_temp_save_dir = os.path.join(BASE_DIR, 'media/database_images')
 
