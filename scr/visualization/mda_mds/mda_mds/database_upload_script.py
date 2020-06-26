@@ -4,7 +4,7 @@ Script part of the visualization module, not intended to be run separately
 Script for 'Database Upload' tab's functionality.
     The route (url) is /database
 
-This script will be called from `views.py`'s database function
+This script will be called from `views.py`'s `database` function
 
 This script is used to upload multiple files (images and json caption file) to AWS S3
 
