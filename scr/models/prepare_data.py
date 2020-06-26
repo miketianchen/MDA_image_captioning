@@ -15,7 +15,8 @@ Example:
 python scr/models/prepare_data.py --root_path=data train
 
 Extract image paths info and related captions from `data/json/train.json`,
-and save results to `data/results/train_paths.pkl` and `data/results/train_descriptions.pkl`.
+and save train image paths in `data/results/train_paths.pkl` and train captions 
+in `data/results/train_descriptions.pkl`.
 '''
 
 import os, json, pickle
@@ -30,7 +31,7 @@ STOP = "endseq"
 
 np.random.seed(123)
 
-def get_img_info(root_path, name, num=np.inf):
+def get_img_info(root_path, name):
     """
     Returns img paths and captions
 
@@ -40,8 +41,6 @@ def get_img_info(root_path, name, num=np.inf):
         the path to the data folder which contains the raw folder
     name: str
         the json file name
-    num: int (default: np.inf)
-        the number of observations to get
 
     Return:
     --------
@@ -51,14 +50,18 @@ def get_img_info(root_path, name, num=np.inf):
     img_path = []
     caption = [] 
     max_length = 0
+    img_dir = f'{root_path}/{name}'
+    if not os.path.exists(img_dir):
+        img_dir = f'{root_path}/preprocessed_{name}'
+        
     with open(f'{root_path}/json/{name}.json', 'r') as json_data:
         data = json.load(json_data)
         for filename in data.keys():
-            if num is not None and len(caption) == num:
-                break
+                
             img_path.append(
-                f'{root_path}/{name}/{filename}'
+                f'{img_dir}/{filename}'
             )
+                
             sen_list = []
             for sentence in data[filename]['sentences']:
                 max_length = max(max_length, len(sentence['tokens']))

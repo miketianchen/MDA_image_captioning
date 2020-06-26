@@ -19,7 +19,7 @@ Case 1:
 
 python scr/data/preprocess_image.py --root_path=data raw/ucm raw/rsicd --train=True
 
-Preprocesses the images in `data/raw/ucm` and `data/raw/rsicd`, and sorts the
+Preprocess the images in `data/raw/ucm` and `data/raw/rsicd`, and sort the
 preprocessed images into `data/train` `data/valid` and `data/test` folders
 based on `data/json/train.json` `data/json/valid.json` and `data/json/test.json`. 
 
@@ -27,7 +27,7 @@ Case 2:
 
 python scr/data/preprocess_image.py --root_path=data raw/sydney
 
-Preprocesses the images in `data/raw/sydney`, and saves the preprcessed images in
+Preprocess the images in `data/raw/sydney`, and save the preprcessed images in
 `data/preprocessed_sydney`.
 '''
 

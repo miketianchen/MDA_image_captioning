@@ -17,8 +17,9 @@ Example:
 
 python scr/data/preprocess_json.py --root_path=data ucm rsicd sydney
 
-Preprocesses file information for all 3 of our datasets, which should be in raw/dataset_NAME folders respectively, 
-and outputs a json file to the specified root_path
+Preprocess `data/raw/dataset_ucm_modified.json`, `data/raw/dataset_rsicd_modified.json`,
+and `data/raw/dataset_sydney_modified.json` to standardize json format, and save outputs as
+`data/json/ucm.json`, `data/json/rsicd.json`, and `data/json/sydney.json`
 
 '''
 

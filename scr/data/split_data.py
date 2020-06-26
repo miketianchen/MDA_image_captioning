@@ -16,8 +16,9 @@ Example:
 
 python scr/data/split_data.py --root_path=data ucm rsicd
 
-Splits the preprocessed file information for our training datasets,
-and outputs json files to the specified root_path
+Combine `data/json/ucm.json` and `data/json/rsicd.json`, split the combined dataset into
+train, valid, test datasets, and save results in `data/json/train.json`, `data/json/valid.json`, 
+and `data/json/test.json`
 '''
 
 import json

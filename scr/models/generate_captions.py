@@ -4,25 +4,26 @@
 
 '''This script generates captions for input images.
 
-Usage: scr/models/generate_captions.py --root_path=<root_path> --inputs=<inputs> --model=<model> [--output=<output>] [--single=<single>]
+Usage: scr/models/generate_captions.py --root_path=<root_path> INPUTS ... --model=<model> [--single=<single>]
+
+Arguments:
+INPUTS                     The input image feature file names (no extension).
 
 Options:
 --root_path=<root_path>    The path to the data folder which contains the raw folder.
---inputs=<inputs>          The input image feature file name (no extension).
---model=<model>            The trained caption model name (no extension).
---output=<output>          The output file name (no extension).
+--model=<model>            The trained caption model names (no extension).
 --single=<single>          Save the caption to `raw/upload_model_caption.json` or not [default: False].
 
 
 Examples:
 Case 1:
-python scr/models/generate_captions.py --root_path=data --inputs=test --model=final_model --output=test
+python scr/models/generate_captions.py --root_path=data test --model=final_model
 
 Take feature vectors from `data/results/test.pkl` to generate captions with the model saved in 
 `data/results/final_model.hdf5`, and save outputs to `data/json/test_model_caption.json`.
 
 Case 2:
-python scr/models/generate_captions.py --root_path=data --inputs=single_feature_vector --model=final_model --single=True
+python scr/models/generate_captions.py --root_path=data single_feature_vector --model=final_model --single=True
 
 Take the feature vector from `data/results/single_feature_vector.pkl` to generate captions with the model saved in 
 `data/results/final_model.hdf5`, and save outputs in `data/raw/upload_model_caption.json`.
@@ -103,11 +104,9 @@ def generate_caption(
 
 if __name__ == "__main__":
 
-    opt = docopt(__doc__)
-    root_path = opt['--root_path']
-    inputs = opt['--inputs']
-    model = opt['--model']
-    output = opt['--output']
+    args = docopt(__doc__)
+    root_path = args['--root_path']
+    model = args['--model']
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -118,54 +117,55 @@ if __name__ == "__main__":
         caption_model = torch.load(f"{root_path}/results/{model}.hdf5", map_location=device)  
     except:
         raise('Please train the model first.')
-
-    try:
-        with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
-            img_features = pickle.load(f)
-        with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
-            img_paths = pickle.load(f)
-    except:
-        raise('Process the data with extract_features.py first.')
-
-    # generate results
-    results = {}
-    print(f'Generating captions...')
-    start = time()
-
-    for n in tqdm(range(len(img_paths))):
-        # note the filename splitting depends on path
-        filename = img_paths[n].split('/')[-1]
-        results[filename] = generate_caption(
-            caption_model,
-            img_features[n],
-            model_info['max_length'],
-            model_info['vocab_size'],
-            model_info['wordtoidx'],
-            model_info['idxtoword'], 
-            device
-        )
     
-    if opt['--single'] == 'False':
+    for inputs in args['INPUTS']:
 
-        assert output is not None, 'output is not defined'
-        with open(f"{root_path}/json/{output}_model_caption.json", 'w') as fp:
-            json.dump(results, fp)
-
-        assert os.path.isfile(f'{root_path}/json/{output}_model_caption.json'),\
-        "Captions are not saved."
-
-    else:
         try:
-            with open(f"{root_path}/raw/upload_model_caption.json", 'r') as fp:
-                single_captions = json.load(fp)
-            single_captions.update(results)
+            with open(f"{root_path}/results/{inputs}.pkl", 'rb') as f:
+                img_features = pickle.load(f)
+            with open(f"{root_path}/results/{inputs}_paths.pkl", 'rb') as f:
+                img_paths = pickle.load(f)
         except:
-            single_captions = results
-            
-        with open(f"{root_path}/raw/upload_model_caption.json", 'w') as fp:
-            json.dump(single_captions, fp)
-        
-        assert os.path.isfile(f'{root_path}/raw/upload_model_caption.json'),\
-        "Captions are not saved."
+            raise('Process the data with extract_features.py first.')
 
-    print(f"Generating captions took: {hms_string(time()-start)}")
+        # generate results
+        results = {}
+        print(f'Generating captions for {inputs}...')
+        start = time()
+
+        for n in tqdm(range(len(img_paths))):
+            # note the filename splitting depends on path
+            filename = img_paths[n].split('/')[-1]
+            results[filename] = generate_caption(
+                caption_model,
+                img_features[n],
+                model_info['max_length'],
+                model_info['vocab_size'],
+                model_info['wordtoidx'],
+                model_info['idxtoword'], 
+                device
+            )
+
+        if args['--single'] == 'False':
+
+            with open(f"{root_path}/json/{inputs}_model_caption.json", 'w') as fp:
+                json.dump(results, fp)
+
+            assert os.path.isfile(f'{root_path}/json/{inputs}_model_caption.json'),\
+            "Captions are not saved."
+
+        else:
+            try:
+                with open(f"{root_path}/raw/upload_model_caption.json", 'r') as fp:
+                    single_captions = json.load(fp)
+                single_captions.update(results)
+            except:
+                single_captions = results
+
+            with open(f"{root_path}/raw/upload_model_caption.json", 'w') as fp:
+                json.dump(single_captions, fp)
+
+            assert os.path.isfile(f'{root_path}/raw/upload_model_caption.json'),\
+            "Captions are not saved."
+
+        print(f"Generating captions took: {hms_string(time()-start)}")

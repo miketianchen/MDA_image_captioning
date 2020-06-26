@@ -3,25 +3,27 @@
 
 '''This script extracts image features from input images.
 
-Usage: scr/models/extract_features.py --root_path=<root_path> --output=<output> [--inputs=<inputs>]
+Usage: scr/models/extract_features.py --root_path=<root_path> INPUTS ...
+
+Arguments:
+INPUTS                     The image folder names (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
 
 Options:
---root_path=<root_path>     The path to the data folder which contains the raw folder.
---output=<output>           The output file name  (no extension, e.g. test).
---inputs=<inputs>           The image folder name (e.g. test) or image path under the ROOT_PATH (test/rsicd_00030.jpg). The training data will be processed if this is not given.
+--root_path=<root_path>    The path to the data folder which contains the raw folder.
 
 Examples:
 Case 1:
-python scr/models/extract_features.py --root_path=data --output=train
+python scr/models/extract_features.py --root_path=data train
 
 Extract feature vectors from images under the `data/train` folder,
 and save outputs to `data/results/train.pkl`.
 
 Case 2:
-python scr/models/extract_features.py --root_path=data --output=rsicd_airport_55 --inputs=test/rsicd_airport_55.jpg
+python scr/models/extract_features.py --root_path=data test/rsicd_00030.jpg
 
-Extract a feature vector from the image `rsicd_airport_55.jpg` under the `data/test` folder,
-and save outputs to `data/results/rsicd_airport_55.pkl`.
+Extract a feature vector from the image `rsicd_00030.jpg` under the `data/test` folder,
+save the feature vector to `data/results/rsicd_00030.pkl` and the image path to 
+`results/rsicd_00030_paths.pkl.
 '''
 
 import os, json, pickle
@@ -105,7 +107,6 @@ def extract_img_features(img_paths, model, device):
     numpy.ndarray
         the extracted image feature matrix from CNNModel
     """ 
-    print(f'Extracting image features ...')
     start = time()
     img_features = []
 
@@ -120,59 +121,63 @@ def extract_img_features(img_paths, model, device):
 
 if __name__ == "__main__":
 
-    opt = docopt(__doc__)
-    root_path = opt['--root_path']
-    output = opt['--output']
-    inputs = opt['--inputs']
+    args = docopt(__doc__)
+    root_path = args['--root_path']
     
-    assert output is not None, 'Please name the output file.'
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-       
-    try:
-        with open( f"{root_path}/results/model_info.json", 'r') as f:
-            model_info = json.load(f)
-    except:
-        raise('Process the data with generate_data.py first to get "model_info.json".')
-
-    img_paths = []
-
-    if inputs is None:
-        try:
-            with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
-                img_paths = pickle.load(f)
-        except:
-            raise('Process the train data with generate_data.py first to get',
-            '"train_paths.pkl".')
-
-    else:
-        path = f"{root_path}/{inputs}"
-        try:            
-            for filename in os.listdir(path):
-                if filename.endswith('.jpg'):
-                    img_paths.append(path + f'/{filename}')
-        except:
-            img_paths.append(path)
-            
-        with open(f"{root_path}/results/{output}_paths.pkl", "wb") as f:
-            pickle.dump(img_paths, f)
-
-        assert os.path.isfile(f'{root_path}/results/{output}_paths.pkl'),\
-            "Image paths are not saved."
-
-    try:
-        encoder = CNNModel(pretrained=True, path=f'{root_path}/vgg16.hdf5')
-    except:
-        encoder = CNNModel(pretrained=True)
-
-    encoder.to(device)
+    encoder = CNNModel(pretrained=True, path=f'{root_path}/vgg16.hdf5')
+    encoder.to(device)    
     
-    img_features = extract_img_features(
-        img_paths,
-        encoder,
-        device
-    )
+    for inputs in args['INPUTS']:
 
-    with open(f"{root_path}/results/{output}.pkl", "wb") as f:
-        pickle.dump(img_features, f)
-    assert os.path.isfile(f'{root_path}/results/{output}.pkl'),\
-        "Image features are not saved."
+        output = os.path.splitext(inputs)[0].split('/')[-1]
+
+        try:
+            with open( f"{root_path}/results/model_info.json", 'r') as f:
+                model_info = json.load(f)
+        except:
+            raise('Process the data with generate_data.py first to get "model_info.json".')
+
+        img_paths = []
+
+        if inputs == 'train':
+
+            try:
+                with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
+                    img_paths = pickle.load(f)
+            except:
+                raise('Process the train data with generate_data.py first to get',
+                '"train_paths.pkl".')
+
+        else:
+
+            try:            
+
+                if inputs in ['train', 'valid', 'test']:
+                    path = f"{root_path}/{inputs}"
+                else:
+                    path = f"{root_path}/preprocessed_{inputs}"
+                for filename in os.listdir(path):
+                    if filename.endswith('.jpg'):
+                        img_paths.append(f'{path}/{filename}')
+            except:
+                img_paths.append(f"{root_path}/{inputs}")
+
+            with open(f"{root_path}/results/{output}_paths.pkl", "wb") as f:
+                pickle.dump(img_paths, f)
+
+            assert os.path.isfile(f'{root_path}/results/{output}_paths.pkl'),\
+                "Image paths are not saved."
+
+        print(f'Extracting image features for {inputs} ...')
+        
+        img_features = extract_img_features(
+            img_paths,
+            encoder,
+            device
+        )
+
+        with open(f"{root_path}/results/{output}.pkl", "wb") as f:
+            pickle.dump(img_features, f)
+        assert os.path.isfile(f'{root_path}/results/{output}.pkl'),\
+            "Image features are not saved."
