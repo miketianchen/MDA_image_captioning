@@ -257,16 +257,14 @@ consisting of 3 independent modules: a database, a deep learning model
 and a visualization tool. When designing our product pipeline, we have
 separated the visualization tool from the other two because it can be
 run without GPU. The flowchart describing the whole workflow can be
-found
-[here](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/imgs/pipeline.jpg).
-For the main pipeline, we used Make file to create the whole workflow.
-The process starts with loading raw data and preprocessing them, to
-model generating and evaluating. All the steps can be executed by using
-`make all` command in the terminal. We also allow users to call any
-specific part of the workflow. For example, `make data` to prepare the
-data for training and testing. The visualization tool workflow is
-implemented using Django. it can interact with our database and model in
-3 different ways.
+found [here](../imgs/pipeline.jpg). For the main pipeline, we used Make
+file to create the whole workflow. The process starts with loading raw
+data and preprocessing them, to model generating and evaluating. All the
+steps can be executed by using `make all` command in the terminal. We
+also allow users to call any specific part of the workflow. For example,
+`make data` to prepare the data for training and testing. The
+visualization tool workflow is implemented using Django. it can interact
+with our database and model in 3 different ways.
 
 <img src="../imgs/dataproduct.png" width="60%" />
 
@@ -369,7 +367,7 @@ satellite images.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-spice2016">
 
