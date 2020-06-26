@@ -64,7 +64,7 @@ We combined UCM-captions and RSICD datasets and split the combined dataset into 
 
 Image captioning has been a popular problem in recent years and several state-of-the-art deep learning models have been proposed in the literature for this problem. In this project, we focused on the encoder-decoder model as it is the most common method for image captioning. Here are the three model architectures we tried:
 
-1. Our first architecture combines CNN and LSTM (Figure 1, [related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-baseline_models)). At each step during generation, we combine the LSTM output with the image feature vector and pass the result through a dense layer and an output layer to generate the next word, which is fed back as input to the LSTM layer in the next step.
+1. Our first architecture combines CNN and LSTM (Figure 1, [related notebooks](../notebooks/fz-baseline_models)). At each step during generation, we combine the LSTM output with the image feature vector and pass the result through a dense layer and an output layer to generate the next word, which is fed back as input to the LSTM layer in the next step.
 
 This model architecture is relatively simple and easy to optimize. But the image features used in this model only represent a high-level image summary and may not carry enough information for a good caption. Based on literature, adding attention layers can improve image captioning. So, we tried two model architectures with attention layers.
 
@@ -75,7 +75,7 @@ knitr::include_graphics('../imgs/model_1.png')
 Figure 1. The CNN + LSTM model architecture (adapted from [@Lu_2018]).
 
 
-2. Our second model architecture has an attention layer on top of the CNN + LSTM model (Figure 2, [related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-attention_models)). Attention is an interface between the CNN and LSTM that provides the LSTM with weighted image features from the CNN convolutional layer. Overall, the model can selectively focus on useful parts of the input image and align image features with words [@xu2015attend; @zhang_2019].
+2. Our second model architecture has an attention layer on top of the CNN + LSTM model (Figure 2, [related notebooks](../notebooks/fz-attention_models)). Attention is an interface between the CNN and LSTM that provides the LSTM with weighted image features from the CNN convolutional layer. Overall, the model can selectively focus on useful parts of the input image and align image features with words [@xu2015attend; @zhang_2019].
 
 ```{r echo=FALSE, out.width='80%'}
 knitr::include_graphics('../imgs/model_2.png')
@@ -83,7 +83,7 @@ knitr::include_graphics('../imgs/model_2.png')
 
 Figure 2. The second model architecture (adapted from [@zhang_2019]).
 
-3. As an extension of the second model, the third model architecture contains three attention structures on top of the CNN + LSTM model (Figure 3, [related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-multi-attention_models)). This multi-level attention model better mimics human attention mechanisms and act as moving the focus between the image and the word context to help generate better captions [@li_2020]. 
+3. As an extension of the second model, the third model architecture contains three attention structures on top of the CNN + LSTM model (Figure 3, [related notebooks](../notebooks/fz-multi-attention_models)). This multi-level attention model better mimics human attention mechanisms and act as moving the focus between the image and the word context to help generate better captions [@li_2020]. 
 
 
 ```{r echo=FALSE, out.width='80%'}
@@ -111,7 +111,7 @@ By incorporating both n-gram and semantic-based metrics, we have a more comprehe
 
 ### Results
 
-Table 1 shows all metrics scores for the best model of each model architecture (the complete model comparison results are [here](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/notebooks/compare_models/18-fz-compare_models.ipynb)). When testing on a dataset like the training data, the CNN + LSTM model achieves better scores than other models. Those scores are comparable to scores in literature [@li_2020]. But models with attention layers did not improve the performance. It could be that we did not spend enough time fine tuning those models. But MDA is more interested in building a working end-to-end pipeline than getting the state-of-the-art results. So instead of further optimizing the models, we decided to spend more time on the pipeline and just used this CNN + LSTM model in our final data product.
+Table 1 shows all metrics scores for the best model of each model architecture (the complete model comparison results are [here](../notebooks/compare_models/18-fz-compare_models.ipynb)). When testing on a dataset like the training data, the CNN + LSTM model achieves better scores than other models. Those scores are comparable to scores in literature [@li_2020]. But models with attention layers did not improve the performance. It could be that we did not spend enough time fine tuning those models. But MDA is more interested in building a working end-to-end pipeline than getting the state-of-the-art results. So instead of further optimizing the models, we decided to spend more time on the pipeline and just used this CNN + LSTM model in our final data product.
 
 ```{r test scores, echo=FALSE}
 kable(test)
@@ -129,7 +129,7 @@ Table 2. Evaluation scores from the best model of each structure on the Sydney-c
 
 ### Other Considerations
 
-Besides, we trained our own CNN classifiers based on labeled satellite images but the performance of those models could not beat the pre-trained CNN models ([related notebooks](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/jh-cnn_models)). We also trained embeddings from scratch using our training captions and then tested the embeddings by predicting cosine similarity between words ([related notebook](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/tree/master/notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)). Again, we found that embeddings learned from scratch didn't improve the performace. So we decided to use pre-trained CNN models and embeddings.
+Besides, we trained our own CNN classifiers based on labeled satellite images but the performance of those models could not beat the pre-trained CNN models ([related notebooks](../notebooks/jh-cnn_models)). We also trained embeddings from scratch using our training captions and then tested the embeddings by predicting cosine similarity between words ([related notebook](../notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)). Again, we found that embeddings learned from scratch didn't improve the performace. So we decided to use pre-trained CNN models and embeddings.
 
 ### Future Improvements
 
@@ -180,7 +180,7 @@ Numerous improvements can be implemented in the visualization tool. Security fea
 
 ## Conclusion and Recommendations
 
-We have successfully developed a complete image captioning pipeline with all the features proposed in the [proposal report](https://github.com/UBC-MDS/591_capstone_2020-mda-mds/blob/master/docs/proposal.pdf). The performance of our deep learning model on the test dataset is comparable to the state-of-art image captioning models in this domain. However, the generalization ability of the model on the unseen `Sydney-captions` dataset is markedly lower.
+We have successfully developed a complete image captioning pipeline with all the features proposed in the [proposal report](../docs/proposal.pdf). The performance of our deep learning model on the test dataset is comparable to the state-of-art image captioning models in this domain. However, the generalization ability of the model on the unseen `Sydney-captions` dataset is markedly lower.
 
 Due to the short time of this project, there are some limitations we faced. First, the satellite image datasets we worked with are fairly small compared to other image datasets, which inhibited our ability to train our own CNN classifier. Second, our attention models did not perform as expected. In the later stages of the project, we had to prioritize the pipeline structure over finetuning the models.
 
