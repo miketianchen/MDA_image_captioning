@@ -1,3 +1,31 @@
+'''
+Script part of the visualization module, not intended to be run separately
+
+Script for 'User Image' tab's functionality
+    The route (url) is /external
+
+This script will be called from `views.py`'s `external` function
+
+This script is used to preprocess the user uploaded image, then run the machine
+learning model on the image in order to generate a caption for the image.
+
+Summary of script:
+    In `view.py`, when the `external` function is called, there will be two
+    potential "upload modes" which will be initated here, depending on what the user
+    does in `view.py`
+        "image" mode : the image that the user uploads to the app save to S3
+        "caption" mode : if the user enters the optional captions, then appropriate
+            json file will be created with the user entered captions. Saves json_file
+            to S3
+
+    This script will call the machine learning model in ./data/results
+
+Be sure to have your AWS S3 settings set up in STATIC_VARIABLES.json file at
+    './visualization/mda_mds/mda_mds/STATIC_VARIABLES.json'
+'''
+# upload mode; if upload mode is 'image' then only images will be uploaded
+#              if upload mode is 'caption' then captions will be created and uploaded
+
 import sys, json
 import boto3
 import os
@@ -41,6 +69,19 @@ SECRET_KEY = STATIC_VARIABLES['AWS_SECRET_ACCESS_KEY']
 
 # Upload data to AWS S3
 def upload_to_aws(local_file, bucket, s3_file = None):
+    """
+    Upload a singe file to the desired location in S3
+
+    Parameters:
+    _______________
+    local_file: str
+        path to the file in your local computer that you want to upload to S3
+    bucket: str
+        the name of the bucket you want to upload to. Should be set up in
+        STATIC_VARIABLES.json
+    s3_file: str
+        the path in S3 bucket
+    """
     s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
                       aws_secret_access_key=SECRET_KEY)
 
@@ -63,25 +104,39 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 # def model():
 #     # currently the picture file is saved in temp media directory, need to copy picture to data/results folder
 #     # copyfile(image_fullpath, os.path.join(DATA_PATH, image_name))
-
+#
 #     extract_features_cli_call = 'python ' + str(EXTRACT_FEATURES_PATH) + ' --root_path=' + DATA_PATH + ' --output=' + image_name.split(".")[0] + ' --inputs=' + image_name
 #     # Example call:
 #     # 'python ../../../models/extract_features.py --root_path=../../../../data --output=test_rsicd_00030 --inputs=rsicd_airport_55.jpg'
 #     os.system(extract_features_cli_call)
-
+#
 #     output_json_name = image_name.split(".")[0]+'_captions'
 #     generate_captions_cli_call = f'python {str(GENERATE_CAPTIONS_PATH)} --root_path={DATA_PATH} --inputs={os.path.splitext(image_name)[0]} --model=final_model --single=True'
 #     # Example call:
 #     # 'python ../../../models/generate_captions.py --root_path=../../../../data --inputs=test_rsicd_00030 --model=final_model --single=True'
 #     os.system(generate_captions_cli_call)
-
+#
 #     captions = read_results(output_json_name, RESULTS_PATH)
-
+#
 #     return ['NA', captions]
 
-# Function to take the user uploaded image and run the model on it
 def get_caption(encoder, caption_model, image_name, model_info, device):
-    
+    """
+    Function to take the user uploaded image and run the model on it
+
+    Parameters:
+    _______________
+    encoder: CNNModel from Model
+        the encoder
+    caption_model: torch model
+        the captioning model
+    image_name:
+        name of the image from view.py -- sys.argv[3] "third variable passed in"
+    model_info:
+        from "{DATA_PATH}/results/model_info.json"
+    device:
+        torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    """
     img_feature = extract_img_features(
         [f'{DATA_PATH}/{image_name}'],
         encoder,
@@ -96,8 +151,8 @@ def get_caption(encoder, caption_model, image_name, model_info, device):
         model_info['wordtoidx'],
         model_info['idxtoword'],
         device
-    )    
-    
+    )
+
     try:
         with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'r') as fp:
             single_captions = json.load(fp)
@@ -107,18 +162,26 @@ def get_caption(encoder, caption_model, image_name, model_info, device):
 
     with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'w') as fp:
         json.dump(single_captions, fp)
-    
-    return ['NA', results[image_name]]
-    
-def read_results(output_json_name, RESULTS_PATH):
-    output_json_name = output_json_name + '.json'
-    with open(JSON_PATH) as f:
-        caption_dict = json.load(f)
 
-    captions = caption_dict[image_name]
-    return captions
+    return ['NA', results[image_name]]
+
+# def read_results(output_json_name, RESULTS_PATH):
+#     output_json_name = output_json_name + '.json'
+#     with open(JSON_PATH) as f:
+#         caption_dict = json.load(f)
+#
+#     captions = caption_dict[image_name]
+#     return captions
 
 def preprocess_image(size = (299, 299)):
+    """
+    Preprocess the image uploaded by the user
+
+    Parameters:
+    _______________
+    size: tuple (int x, int y)
+        resize the image into x by y pixels
+    """
     im = Image.open(image_fullpath).resize(size, Image.ANTIALIAS)
     rgb_im = im.convert('RGB')
 
@@ -130,7 +193,18 @@ def preprocess_image(size = (299, 299)):
     rgb_im.save(output_path, 'JPEG', quality = 95)
 
 def relocate_image_path(image_name):
+    """
+    When the image is first uploaded, it has to be stored in a temporary folder
+    (called database_images)in the media folder (.../visualization/mda_mds/media)
 
+    This function will move the images to the proper folder under the data folder
+    (/591_capstone_2020-mda_mds/data/raw)
+
+    Parameters:
+    _______________
+    image_name: str
+        name of the image from view.py -- sys.argv[3] "third variable passed in"
+    """
     if not os.path.exists(f'{DATA_PATH}/raw/upload'):
         os.makedirs(f'{DATA_PATH}/raw/upload', exist_ok=True)
 
@@ -139,6 +213,16 @@ def relocate_image_path(image_name):
     shutil.move(CURRENT_PATH, UPLOAD_PATH)
 
 def merge_two_dicts(x, y):
+    """
+    Merge two dictionaries
+
+    Parameters:
+    _______________
+    x: dict
+        first dictionary to be merged
+    y: dict
+        second dictionary to be merged
+    """
     z = x.copy()   # start with x's keys and values
     z.update(y)    # modifies z with y's keys and values & returns None
     return z
@@ -160,7 +244,7 @@ encoder.to(device)
 model = 'final_model'
 with open(f"{DATA_PATH}/results/model_info.json", 'r') as f:
          model_info = json.load(f)
-caption_model = torch.load(f"{DATA_PATH}/results/{model}.hdf5", map_location=device) 
+caption_model = torch.load(f"{DATA_PATH}/results/{model}.hdf5", map_location=device)
 
 if upload_mode == "image":
     # get our data as an array from sys
@@ -211,9 +295,6 @@ elif upload_mode == "caption":
     if image_name.endswith('.png'):
         image_name = image_name[:-4]
         image_name = image_name + '.jpg'
-
-
-
 
     if (optional_caption_2 == ""):
         optional_caption_2 = user_caption_input
@@ -281,9 +362,6 @@ elif upload_mode == "caption":
     s3_captions_file_name = 'raw/upload.json'
 
     if user_caption_input != "":
-
-
-
         USER_JSON_PATH = os.path.join(DATA_PATH, 'raw/upload.json')
 
         try:
