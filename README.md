@@ -65,7 +65,7 @@ aws s3 sync data s3://{bucket_name}
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 ```
 
-5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
+5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
 
 ```
 cd 591_capstone_2020-mda-mds
@@ -139,3 +139,88 @@ To run the visulaization tool locally with our pre-trained model and results, pl
 cd ./591_capstone_2020-mda-mds/scr/visualization/mda_mds
 python manage.py runserver
 ```
+
+## Uploading new data
+The steps bewlow demonstrate how to upload a new dataset named "new".
+### 1. Preparing the new data image folder
+  - Place all the images into a new folder with folder name as "new"
+  - You should now have all new images under `data/raw/new`
+### 2. Preparing the new json file
+  - The human-annotated caption associating with the new images should be uploaded using the template below. 
+  - An example json file can be found [here](docs/upload_template.json)
+```
+# below is an example of json file for uploading 2 new images 
+{"new1.jpg": 
+    {"imgid": 1, 
+    "sentences": [{"raw": "caption 1.", 
+                  "tokens": ["caption", "1", "."], 
+                  "imgid": 1, "sentid": 11}, 
+                  {"raw": "caption 2.", 
+                  "tokens": ["caption", "2", "."], 
+                  "imgid": 1, "sentid": 12}, 
+                  {"raw": "caption 3.", 
+                  "tokens": ["caption", "3", "."],
+                  "imgid": 1, "sentid": 13}, 
+                  {"raw": "caption 4.", 
+                  "tokens": ["caption", "4", "."], 
+                  "imgid": 1, "sentid": 14}, 
+                  {"raw": "caption 5.", 
+                  "tokens": ["caption", "5", "."],
+                  "imgid": 1, "sentid": 15}]}, 
+"new2.jpg":
+    {"imgid": 2, 
+    "sentences": [{"raw": "caption 1.", 
+                  "tokens": ["caption", "1", "."], 
+                  "imgid": 2, "sentid": 21}, 
+                  {"raw": "caption 2.", 
+                  "tokens": ["caption", "2", "."], 
+                  "imgid": 2, "sentid": 22}, 
+                  {"raw": "caption 3.", 
+                  "tokens": ["caption", "3", "."], 
+                  "imgid": 2, "sentid": 23}, 
+                  {"raw": "caption 4.", 
+                  "tokens": ["caption", "4", "."],
+                  "imgid": 2, "sentid": 24}, 
+                  {"raw": "caption 5.", 
+                  "tokens": ["caption", "5", "."],
+                  "imgid": 2, "sentid": 25}]}}
+```
+  - After you have the json file ready, please name it with the same name as your image folder (i.e. new.json) and save it under the same folder
+  - You should now have the json as `data/raw/new.json`
+  
+### 3. Sync with S3 bucket
+- **Option 1 Manually sync**: 
+  - Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
+```
+# under root directory of this repo folder
+aws s3 sync data s3://{bucket_name}
+```
+- **Option 2 Using visualization tool**: 
+  - You can upload all the images and json file using the 3rd tab "Database Upload" on our visualization tool
+  - Make sure you select all the images and one single json with their associating human-annotated captions 
+
+### 4. Add new dataset to train/valid/test sets
+  - You can now choose to use this new dataset for training/validation/testing purpose
+  - Go to [Makefile](Makefile)
+  - You need to modify the variables `train_set` and `train_img_loc` on line 44 and 45
+  - For example, we want to use the original `ucm` and `rsicd` plus the new dataset `new` for training, the following scripts should be used on line 44 and 45
+  ```
+  train_set := rsicd ucm new
+  train_img_loc := raw/ucm raw/rsicd raw/new
+  ```
+  
+  **Dora's comments: this trainset will be split into train/valid/test , what if user want to add the new folder just to individual train/valid/test sets?**
+  
+## Building and re-training the model with new data
+- Before running pipeline, you may want to change the final model name in 
+- Go to [Makefile](Makefile)
+- On line 43, you can define any model name
+```
+final_model := final_model_new
+```
+- Then, you can run the pipeline by typing `make all` in the terminal.
+
+**Dora's comments: it seems like final model is hardcoded in our makefile? need to discuss tomorrow. Another thing is do we call make clean before make all, if thats the case ,the original final_model will be removed... "
+
+
+
