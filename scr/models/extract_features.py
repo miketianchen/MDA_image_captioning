@@ -46,7 +46,7 @@ STOP = "endseq"
 torch.manual_seed(123)
 np.random.seed(123)
 
-def encode_image(model, img_path):
+def encode_image(model, img_path, device):
     """
     Process the images to extract features
 
@@ -56,7 +56,9 @@ def encode_image(model, img_path):
       a CNNModel instance
     img_path: str
         the path of the image
- 
+    device: torch.device
+        indicates whether cuda or cpu is used
+        
     Return:
     --------
     torch.Tensor
@@ -85,7 +87,7 @@ def encode_image(model, img_path):
     return x
 
 
-def extract_img_features(img_paths, model):
+def extract_img_features(img_paths, model, device):
     """
     Extracts, stores and returns image features
 
@@ -94,8 +96,10 @@ def extract_img_features(img_paths, model):
     img_paths: list
         the paths of images
     model: CNNModel (default: None)
-      a CNNModel instance
-
+        a CNNModel instance
+    device: torch.device
+        indicates whether cuda or cpu is used
+        
     Return:
     --------
     numpy.ndarray
@@ -107,7 +111,7 @@ def extract_img_features(img_paths, model):
 
     for image_path in img_paths:
         img_features.append(
-            encode_image(model, image_path).cpu().data.numpy()
+            encode_image(model, image_path, device).cpu().data.numpy()
     )
         
     print(f"Extracting image features took: {hms_string(time()-start)}")
@@ -121,6 +125,7 @@ if __name__ == "__main__":
     output = opt['--output']
     inputs = opt['--inputs']
     
+    assert output is not None, 'Please name the output file.'
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
        
     try:
@@ -154,13 +159,19 @@ if __name__ == "__main__":
         assert os.path.isfile(f'{root_path}/results/{output}_paths.pkl'),\
             "Image paths are not saved."
 
-    encoder = CNNModel(pretrained=True)
+    try:
+        encoder = CNNModel(pretrained=True, path=f'{root_path}/vgg16.hdf5')
+    except:
+        encoder = CNNModel(pretrained=True)
+
     encoder.to(device)
     
     img_features = extract_img_features(
         img_paths,
-        encoder
+        encoder,
+        device
     )
+
     with open(f"{root_path}/results/{output}.pkl", "wb") as f:
         pickle.dump(img_features, f)
     assert os.path.isfile(f'{root_path}/results/{output}.pkl'),\

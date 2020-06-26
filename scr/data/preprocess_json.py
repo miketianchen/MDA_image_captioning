@@ -53,7 +53,7 @@ def main(root_path, inputs):
                 data_info[name][new_filename] = single_image
                 data_info[name][new_filename]['old_dataset_name'] = f'dataset_{name}_modified'
         except:
-            with open(f'{root_path}/json/{name}.json', 'r') as data:
+            with open(f'{root_path}/raw/{name}.json', 'r') as data:
                 json_data = json.load(data)
             for filename, value in json_data.items():
                 new_filename = f"{name}_{os.path.splitext(filename)[0]}.jpg"
