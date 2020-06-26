@@ -12,6 +12,22 @@ INPUTS                     Path to the folder that contains the raw images to pr
 Options:
 --root_path=<root_path>    The path to the data folder which contains the raw folder.
 --train=<train>            Sort the images if the images are for training [default: False].
+
+Examples:
+
+Case 1:
+
+python scr/data/preprocess_image.py --root_path=data raw/ucm raw/rsicd --train=True
+
+Preprocesses the images for our training datasets, and outputs the images to the 
+specified root_path.
+
+Case 2:
+
+python scr/data/preprocess_image.py --root_path=data raw/sydney
+
+Preprocesses the images for our testing dataset, and outputs the images to the 
+specified root_path.
 '''
 
 import os, json
