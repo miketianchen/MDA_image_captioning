@@ -15,10 +15,36 @@
 # usage: make clean 
 #					 to clean up all the intermediate and results files
 
+
+####################################################################################
+####################################################################################
+
+
+# set root path to the data folder which contains the raw folder
+root_path := data
+# set the name of the trained model
+final_model := final_model
+# define the json files to process 
+json_to_process := rsicd ucm sydney
+# define the json file to combine for train/valid/test split
+combine_set := rsicd ucm
+# define the image folders to combine for train/valid/test split
+combine_img := raw/ucm raw/rsicd
+# define the image folders to preprocess
+img_to_process := raw/sydney
+# define the datasets to combine for training
+train_set := train valid
+# define the datasets to test separately
+test_set := test sydney
+
+####################################################################################
+####################################################################################
+
+
 # run all the steps in pipeline
 all: data/json/train.json data/json/valid.json data/json/test.json \
 data/json/sydney.json data/train data/test data/valid \
-data/preprocessed_sydney data/results/final_model.hdf5 \
+data/preprocessed_sydney data/results/$(final_model).hdf5 \
 data/json/test_model_caption.json data/json/sydney_model_caption.json\
 data/score/test_score.json data/score/test_img_score.json \
 data/score/sydney_score.json data/score/sydney_img_score.json
@@ -29,7 +55,7 @@ data/json/train.json data/json/valid.json data/json/test.json \
 data/json/sydney.json
 
 # run all the scripts in the model training stage
-train: data/results/final_model.hdf5
+train: data/results/$(final_model).hdf5
 
 # run all the scripts in the captioning stage
 caption: data/json/test_model_caption.json data/json/sydney_model_caption.json
@@ -38,24 +64,23 @@ caption: data/json/test_model_caption.json data/json/sydney_model_caption.json
 score: data/score/test_score.json data/score/test_img_score.json \
 data/score/sydney_score.json data/score/sydney_img_score.json
 
-# set root path to the data folder which contains the raw folder
-root_path := data
-final_model := final_model
-train_set := rsicd ucm
-train_img_loc := raw/ucm raw/rsicd
+
+####################################################################################
+####################################################################################
+
 
 # process the json file for rsicd, ucm, and sydney datasets
 data/json/rsicd.json data/json/ucm.json data/json/sydney.json : \
 scr/data/preprocess_json.py
 
-	python scr/data/preprocess_json.py --root_path=$(root_path) $(train_set) sydney
+	python scr/data/preprocess_json.py --root_path=$(root_path) $(json_to_process) 
 
 # combine rsicd and ucm datasets and split into train, valid and test
 # datasets and correct the captions in train
 data/json/train.json data/json/valid.json data/json/test.json : \
 scr/data/split_data.py data/json/rsicd.json data/json/ucm.json
 
-	python scr/data/split_data.py --root_path=$(root_path) $(train_set)
+	python scr/data/split_data.py --root_path=$(root_path) $(combine_set)
 
 # preprocess and sort the images for training and save under 
 # train/valid/test folders
@@ -64,22 +89,24 @@ scr/data/preprocess_image.py data/json/train.json \
 data/json/valid.json data/json/test.json
 
 	python scr/data/preprocess_image.py --root_path=$(root_path) \
-    $(train_img_loc) --train=True
+    $(combine_img) --train=True
 
     
 # preprocess sydney images and save under the preprocessed_sydney folder
 data/preprocessed_sydney : \
 scr/data/preprocess_image.py
 
-	python scr/data/preprocess_image.py --root_path=$(root_path) raw/sydney
-    
+	python scr/data/preprocess_image.py --root_path=$(root_path) $(img_to_process)
+
+####################################################################################
+
 # combine train and valid data as the training data 
 # and prepare data for training
 data/results/train_paths.pkl data/results/train_descriptions.pkl \
 data/results/model_info.json : \
 scr/models/prepare_data.py data/json/train.json data/json/valid.json
 
-	python scr/models/prepare_data.py --root_path=$(root_path) train valid
+	python scr/models/prepare_data.py --root_path=$(root_path) $(train_set)
 
 # extract image features from training data
 data/results/train.pkl : \
@@ -91,12 +118,14 @@ data/results/train_paths.pkl data/train data/valid
     --output=train
 
 # train the caption model
-data/results/final_model.hdf5 : \
+data/results/$(final_model).hdf5 : \
 scr/models/train.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
 data/results/train_descriptions.pkl data/results/train.pkl 
 
 	python scr/models/train.py --root_path=$(root_path) --output=$(final_model)
+
+####################################################################################
 
 # extract image features from test images
 data/results/test.pkl data/results/test_paths.pkl : \
@@ -111,7 +140,7 @@ data/test
 data/json/test_model_caption.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
 data/results/test.pkl data/results/test_paths.pkl \
-data/results/final_model.hdf5
+data/results/$(final_model).hdf5
 
 	python scr/models/generate_captions.py --root_path=$(root_path) \
     --inputs=test --model=$(final_model) --output=test
@@ -129,11 +158,13 @@ data/preprocessed_sydney
 data/json/sydney_model_caption.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
 data/results/sydney.pkl data/results/sydney_paths.pkl \
-data/results/final_model.hdf5
+data/results/$(final_model).hdf5
 
 	python scr/models/generate_captions.py --root_path=$(root_path) \
     --inputs=sydney --model=$(final_model) --output=sydney
     
+####################################################################################
+
 # evaluate the model generated captions for test images
 data/score/test_score.json data/score/test_img_score.json : \
 data/json/test_model_caption.json data/json/test.json scr/evaluation/eval_model.py
@@ -147,6 +178,11 @@ data/json/sydney_model_caption.json data/json/sydney.json scr/evaluation/eval_mo
 
 	python scr/evaluation/eval_model.py --root_path=$(root_path) \
     --inputs=sydney
+
+
+####################################################################################
+####################################################################################
+
 
 # Clean up intermediate and results files
 clean : 

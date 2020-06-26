@@ -19,15 +19,16 @@ Case 1:
 
 python scr/data/preprocess_image.py --root_path=data raw/ucm raw/rsicd --train=True
 
-Preprocesses the images for our training datasets, and outputs the images to the 
-specified root_path.
+Preprocesses the images in `data/raw/ucm` and `data/raw/rsicd`, and sorts the
+preprocessed images into `data/train` `data/valid` and `data/test` folders
+based on `data/json/train.json` `data/json/valid.json` and `data/json/test.json`. 
 
 Case 2:
 
 python scr/data/preprocess_image.py --root_path=data raw/sydney
 
-Preprocesses the images for our testing dataset, and outputs the images to the 
-specified root_path.
+Preprocesses the images in `data/raw/sydney`, and saves the preprcessed images in
+`data/preprocessed_sydney`.
 '''
 
 import os, json
@@ -104,33 +105,36 @@ def preprocess(dataset_name, root_path, directory_path, output_format = '.jpg', 
 
     for filename in os.listdir(directory_path): 
         
-        im = Image.open(f'{directory_path}/{filename}').resize(size, Image.ANTIALIAS)
-        name, extension = os.path.splitext(filename)
-        name = f'{dataset_name}_{name}{output_format}'
-        output_path = f'{folder_path}/{name}'
-        
-        # convert everything in the folder that's not the 
-        # desired output_format
-        if extension != output_format:
+        try:
+            im = Image.open(f'{directory_path}/{filename}').resize(size, Image.ANTIALIAS)
+            name, extension = os.path.splitext(filename)
+            name = f'{dataset_name}_{name}{output_format}'
+            output_path = f'{folder_path}/{name}'
 
-            # PILLOW library functions 
-            rgb_im = im.convert('RGB')
+            # convert everything in the folder that's not the 
+            # desired output_format
+            if extension != output_format:
 
-            # Pillow Format Type (JPEG, PNG, TIFF)
-            if output_format == '.jpg':
-                pillow_format = 'JPEG'
-            elif output_format == '.png':
-                pillow_format = 'PNG'
-            elif output_format == '.tif':
-                pillow_format = 'TIFF'
+                # PILLOW library functions 
+                rgb_im = im.convert('RGB')
+
+                # Pillow Format Type (JPEG, PNG, TIFF)
+                if output_format == '.jpg':
+                    pillow_format = 'JPEG'
+                elif output_format == '.png':
+                    pillow_format = 'PNG'
+                elif output_format == '.tif':
+                    pillow_format = 'TIFF'
+                else:
+                    raise("The output format should be one of .jpg, .png or .tif")
+
+                # Save with Image Quality of 95% 
+                rgb_im.save(output_path, pillow_format, quality = 95)
+
             else:
-                raise("The output format should be one of .jpg, .png or .tif")
-
-            # Save with Image Quality of 95% 
-            rgb_im.save(output_path, pillow_format, quality = 95)
-
-        else:
-            im.save(output_path, quality = 95)
+                im.save(output_path, quality = 95)
+        except:
+            print(f'Found unexpect file {filename} in {directory_path}.')
 
 def sort_image(root_path):
     
