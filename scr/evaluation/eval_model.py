@@ -9,6 +9,13 @@ Usage: scr/evaluation/eval.py --root_path=<root_path> --inputs=<inputs>
 Options:
 --root_path=<root_path>      The path of the data folder.
 --inputs=<inputs>            The name of the caption file to process.
+
+Example:
+python scr/evaluation/eval.py --root_path=data --inputs=sydney
+
+Takes the path to the data/json folder containing the raw sydney json file and the model generated caption 
+json files of sydney dataset, then calculates the evaluation scores for sydney dataset and store the score in
+data/score folder。
 '''
 
 from pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
