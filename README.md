@@ -139,3 +139,10 @@ To run the visulaization tool locally with our pre-trained model and results, pl
 cd ./591_capstone_2020-mda-mds/scr/visualization/mda_mds
 python manage.py runserver
 ```
+
+## Uploading new data
+**Option 1: Manually upload**
+
+**Option 2: Upload using visualization tool**
+
+## Building and re-training the model with new data
