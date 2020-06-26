@@ -1,3 +1,13 @@
+"""
+The central script which controls the callbacks of each button/tabs in the visualization
+
+This file will control and call other scripts in order to carry out the desired
+functionality
+
+In this script, relevant parameters will be passed to each of the other scripts
+and will recieve relevant parameters from those scripts to display on the app
+"""
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
@@ -11,11 +21,15 @@ import time
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# TEST
 def button(request):
+    # TEST
      return render(request, 'index.html')
 
+# TEST
 def output(request):
-    score = 666
+    # TEST
+    score = 0
     data = str(score)
     return render(request, 'index.html', {'data':data})
 
@@ -114,7 +128,7 @@ def external(request):
         output = sys_out.split('*')
         score = output[0]
         model_caption = output[1]
-        print("SYSTEM OUT IS "+ templateurl)
+        print("SYSTEM OUT IS "+ filename)
         return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
                                 'edit_url':image.stdout, 'score':score, 'model_caption':model_caption})
     elif 'upload_caption_input' in request.POST:
