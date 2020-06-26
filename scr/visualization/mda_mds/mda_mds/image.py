@@ -242,30 +242,35 @@ elif upload_mode == "caption":
     caption[image_name]["sentences"].append({
         'raw': user_caption_input,
         'tokens': tokens_1,
+        'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(1))
     })
     tokens_2 = nltk.word_tokenize(optional_caption_2)
     caption[image_name]["sentences"].append({
         'raw': optional_caption_2,
         'tokens': tokens_2,
+        'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(2))
     })
     tokens_3 = nltk.word_tokenize(optional_caption_3)
     caption[image_name]["sentences"].append({
         'raw': optional_caption_3,
         'tokens': tokens_3,
+        'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(3))
     })
     tokens_4 = nltk.word_tokenize(optional_caption_4)
     caption[image_name]["sentences"].append({
         'raw': optional_caption_4,
         'tokens': tokens_4,
+        'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(4))
     })
     tokens_5 = nltk.word_tokenize(optional_caption_5)
     caption[image_name]["sentences"].append({
         'raw': optional_caption_5,
         'tokens': tokens_5,
+        'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(5))
     })
 
