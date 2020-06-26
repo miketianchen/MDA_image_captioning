@@ -114,8 +114,7 @@ scr/models/extract_features.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
 data/results/train_paths.pkl data/train data/valid
 
-	python scr/models/extract_features.py --root_path=$(root_path) \
-    --output=train
+	python scr/models/extract_features.py --root_path=$(root_path) train
 
 # train the caption model
 data/results/$(final_model).hdf5 : \
@@ -127,57 +126,36 @@ data/results/train_descriptions.pkl data/results/train.pkl
 
 ####################################################################################
 
-# extract image features from test images
-data/results/test.pkl data/results/test_paths.pkl : \
-scr/models/extract_features.py scr/models/model.py \
-scr/models/hms_string.py data/results/model_info.json \
-data/test
-
-	python scr/models/extract_features.py \
-    --root_path=$(root_path) --output=test --inputs=test
-
-# generate captions for the test images
-data/json/test_model_caption.json : \
-scr/models/generate_captions.py scr/models/hms_string.py \
+# extract image features from test and sydney images
 data/results/test.pkl data/results/test_paths.pkl \
-data/results/$(final_model).hdf5
-
-	python scr/models/generate_captions.py --root_path=$(root_path) \
-    --inputs=test --model=$(final_model) --output=test
-
-# extract imgae features from the sydney images
 data/results/sydney.pkl data/results/sydney_paths.pkl : \
 scr/models/extract_features.py scr/models/model.py \
 scr/models/hms_string.py data/results/model_info.json \
-data/preprocessed_sydney
+data/test data/preprocessed_sydney
 
-	python scr/models/extract_features.py --root_path=$(root_path) \
-    --output=sydney --inputs=preprocessed_sydney
+	python scr/models/extract_features.py \
+    --root_path=$(root_path) $(test_set)
 
-# generate captions for sydney images
-data/json/sydney_model_caption.json : \
+# generate captions for the test and sydney images
+data/json/test_model_caption.json data/json/sydney_model_caption.json : \
 scr/models/generate_captions.py scr/models/hms_string.py \
+data/results/test.pkl data/results/test_paths.pkl \
 data/results/sydney.pkl data/results/sydney_paths.pkl \
 data/results/$(final_model).hdf5
 
 	python scr/models/generate_captions.py --root_path=$(root_path) \
-    --inputs=sydney --model=$(final_model) --output=sydney
+    $(test_set) --model=$(final_model)
     
 ####################################################################################
 
 # evaluate the model generated captions for test images
-data/score/test_score.json data/score/test_img_score.json : \
-data/json/test_model_caption.json data/json/test.json scr/evaluation/eval_model.py
-
-	python scr/evaluation/eval_model.py --root_path=$(root_path) \
-    --inputs=test
-
-# evaluate the model generated captions for sydney images
+data/score/test_score.json data/score/test_img_score.json \
 data/score/sydney_score.json data/score/sydney_img_score.json : \
-data/json/sydney_model_caption.json data/json/sydney.json scr/evaluation/eval_model.py
+data/json/test_model_caption.json data/json/test.json \
+data/json/sydney_model_caption.json data/json/sydney.json \
+scr/evaluation/eval_model.py
 
-	python scr/evaluation/eval_model.py --root_path=$(root_path) \
-    --inputs=sydney
+	python scr/evaluation/eval_model.py --root_path=$(root_path) $(test_set)
 
 
 ####################################################################################
