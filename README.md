@@ -141,8 +141,58 @@ python manage.py runserver
 ```
 
 ## Uploading new data
-**Option 1: Manually upload**
+The steps bewlow demonstrate how to upload a new dataset named "new".
+### 1. Preparing the new data image folder
+  - Place all the images into a new folder with folder name as "new"
+  - You should now have all new images under `data/raw/new`
+### 2. Preparing the new json file
+  - The human-annotated caption associating with the new images should be uploaded using the template below. 
+  - An example json file can be found [here](docs/upload_template.json)
+```
+# below is an example of json file for uploading 2 new images 
+{"new1.jpg": 
+    {"imgid": 1, 
+    "sentences": [{"raw": "caption 1.", 
+                  "tokens": ["caption", "1", "."], 
+                  "imgid": 1, "sentid": 11}, 
+                  {"raw": "caption 2.", 
+                  "tokens": ["caption", "2", "."], 
+                  "imgid": 1, "sentid": 12}, 
+                  {"raw": "caption 3.", 
+                  "tokens": ["caption", "3", "."],
+                  "imgid": 1, "sentid": 13}, 
+                  {"raw": "caption 4.", 
+                  "tokens": ["caption", "4", "."], 
+                  "imgid": 1, "sentid": 14}, 
+                  {"raw": "caption 5.", 
+                  "tokens": ["caption", "5", "."],
+                  "imgid": 1, "sentid": 15}]}, 
+"new2.jpg":
+    {"imgid": 2, 
+    "sentences": [{"raw": "caption 1.", 
+                  "tokens": ["caption", "1", "."], 
+                  "imgid": 2, "sentid": 21}, 
+                  {"raw": "caption 2.", 
+                  "tokens": ["caption", "2", "."], 
+                  "imgid": 2, "sentid": 22}, 
+                  {"raw": "caption 3.", 
+                  "tokens": ["caption", "3", "."], 
+                  "imgid": 2, "sentid": 23}, 
+                  {"raw": "caption 4.", 
+                  "tokens": ["caption", "4", "."],
+                  "imgid": 2, "sentid": 24}, 
+                  {"raw": "caption 5.", 
+                  "tokens": ["caption", "5", "."],
+                  "imgid": 2, "sentid": 25}]}}
+```
+  - After you have the json file ready, please name it with the same name as your image folder (i.e. new.json) and save it under the same folder
+  - You should now have the json as `data/raw/new.json`
+  
+### 3. 
 
+
+**Option 1: Manually upload**
+To upload any new folder for
 **Option 2: Upload using visualization tool**
 
 ## Building and re-training the model with new data
