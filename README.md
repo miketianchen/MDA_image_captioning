@@ -65,7 +65,7 @@ aws s3 sync data s3://{bucket_name}
 git clone https://github.com/UBC-MDS/591_capstone_2020-mda-mds.git
 ```
 
-5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.、
+5. Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
 
 ```
 cd 591_capstone_2020-mda-mds
@@ -188,11 +188,39 @@ The steps bewlow demonstrate how to upload a new dataset named "new".
   - After you have the json file ready, please name it with the same name as your image folder (i.e. new.json) and save it under the same folder
   - You should now have the json as `data/raw/new.json`
   
-### 3. 
+### 3. Sync with S3 bucket
+- **Option 1 Manually sync**: 
+  - Sync your S3 bucket as data folder under this repository by typing the following scripts in terminal.
+```
+# under root directory of this repo folder
+aws s3 sync data s3://{bucket_name}
+```
+- **Option 2 Using visualization tool**: 
+  - You can upload all the images and json file using the 3rd tab "Database Upload" on our visualization tool
+  - Make sure you select all the images and one single json with their associating human-annotated captions 
 
-
-**Option 1: Manually upload**
-To upload any new folder for
-**Option 2: Upload using visualization tool**
-
+### 4. Add new dataset to train/valid/test sets
+  - You can now choose to use this new dataset for training/validation/testing purpose
+  - Go to [Makefile](Makefile)
+  - You need to modify the variables `train_set` and `train_img_loc` on line 44 and 45
+  - For example, we want to use the original `ucm` and `rsicd` plus the new dataset `new` for training, the following scripts should be used on line 44 and 45
+  ```
+  train_set := rsicd ucm new
+  train_img_loc := raw/ucm raw/rsicd raw/new
+  ```
+  
+  **Dora's comments: this trainset will be split into train/valid/test , what if user want to add the new folder just to individual train/valid/test sets?**
+  
 ## Building and re-training the model with new data
+- Before running pipeline, you may want to change the final model name in 
+- Go to [Makefile](Makefile)
+- On line 43, you can define any model name
+```
+final_model := final_model_new
+```
+- Then, you can run the pipeline by typing `make all` in the terminal.
+
+**Dora's comments: it seems like final model is hardcoded in our makefile? need to discuss tomorrow. Another thing is do we call make clean before make all, if thats the case ,the original final_model will be removed... "
+
+
+
