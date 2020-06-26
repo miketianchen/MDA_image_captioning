@@ -80,15 +80,15 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 #     return ['NA', captions]
 
 # Function to take the user uploaded image and run the model on it
-def get_caption(encoder, caption_model, img_path, model_info, device):
+def get_caption(encoder, caption_model, image_name, model_info, device):
     
     img_feature = extract_img_features(
-        img_path,
+        [f'{DATA_PATH}/{image_name}'],
         encoder,
         device
     )
-    
-    results = generate_caption(
+    results = {}
+    results[image_name] = generate_caption(
         caption_model,
         img_feature,
         model_info['max_length'],
@@ -97,6 +97,7 @@ def get_caption(encoder, caption_model, img_path, model_info, device):
         model_info['idxtoword'],
         device
     )    
+    
     try:
         with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'r') as fp:
             single_captions = json.load(fp)
@@ -107,7 +108,7 @@ def get_caption(encoder, caption_model, img_path, model_info, device):
     with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'w') as fp:
         json.dump(single_captions, fp)
     
-    return ['NA', results]
+    return ['NA', results[image_name]]
     
 def read_results(output_json_name, RESULTS_PATH):
     output_json_name = output_json_name + '.json'
@@ -179,7 +180,7 @@ if upload_mode == "image":
 
     # Return the score from the model
 #     output = model()
-    output = get_caption(encoder, caption_model, [f'{DATA_PATH}/{image_name}'], model_info, device)
+    output = get_caption(encoder, caption_model, image_name, model_info, device)
     score = output[0]
     model_caption = output[1]
     model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
