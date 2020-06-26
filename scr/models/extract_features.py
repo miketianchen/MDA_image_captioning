@@ -19,11 +19,11 @@ Extract feature vectors from images under the `data/train` folder,
 and save outputs to `data/results/train.pkl`.
 
 Case 2:
-python scr/models/extract_features.py --root_path=data test/rsicd_airport_55.jpg
+python scr/models/extract_features.py --root_path=data test/rsicd_00030.jpg
 
-Extract a feature vector from the image `rsicd_airport_55.jpg` under the `data/test` folder,
-save the feature vector to `data/results/rsicd_airport_55.pkl` and the image path to 
-`results/rsicd_airport_55_paths.pkl.
+Extract a feature vector from the image `rsicd_00030.jpg` under the `data/test` folder,
+save the feature vector to `data/results/rsicd_00030.pkl` and the image path to 
+`results/rsicd_00030_paths.pkl.
 '''
 
 import os, json, pickle
@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
         img_paths = []
 
-        if inputs[i] == 'train':
+        if inputs == 'train':
 
             try:
                 with open(f"{root_path}/results/train_paths.pkl", 'rb') as f:
@@ -151,17 +151,17 @@ if __name__ == "__main__":
 
         else:
 
-            if inputs[i] in ['train', 'valid', 'test']:
-                path = f"{root_path}/{inputs}"
-            else:
-                path = f"{root_path}/preprocessed_{inputs}"
-
             try:            
+
+                if inputs in ['train', 'valid', 'test']:
+                    path = f"{root_path}/{inputs}"
+                else:
+                    path = f"{root_path}/preprocessed_{inputs}"
                 for filename in os.listdir(path):
                     if filename.endswith('.jpg'):
                         img_paths.append(f'{path}/{filename}')
             except:
-                img_paths.append(path)
+                img_paths.append(f"{root_path}/{inputs}")
 
             with open(f"{root_path}/results/{output}_paths.pkl", "wb") as f:
                 pickle.dump(img_paths, f)

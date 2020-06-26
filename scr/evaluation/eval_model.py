@@ -4,18 +4,20 @@
 '''This script calculates evaluation scores for test results.
 This script takes the path to the data folder and the caption file name and save the scores under data/score.
 
-Usage: scr/evaluation/eval.py --root_path=<root_path> --inputs=<inputs>
+Usage: scr/evaluation/eval_model.py --root_path=<root_path> INPUTS ...
+
+Arguments:
+INPUTS                       The name of the caption file to process.
 
 Options:
 --root_path=<root_path>      The path of the data folder.
---inputs=<inputs>            The name of the caption file to process.
 
 Example:
-python scr/evaluation/eval.py --root_path=data --inputs=sydney
+python scr/evaluation/eval_model.py --root_path=data sydney
 
-Takes the path to the data/json folder containing the raw sydney json file and the model generated caption 
-json files of sydney dataset, then calculates the evaluation scores for sydney dataset and store the score in
-data/score folder。
+Take the raw sydney caption `data/raw/sydney.json` and the model generated caption 
+sydney caption `data/json/sydney.json`, then calculate the evaluation scores for sydney dataset and store average scores in
+`data/score/sydney_score.json` and individual scores in `data/score/sydney_img_score.json`.
 '''
 
 from pycocoevalcap.tokenizer.ptbtokenizer import PTBTokenizer
@@ -29,8 +31,6 @@ import subprocess
 from docopt import docopt
 import json
 import os 
-
-opt = docopt(__doc__)
 
 def eval_model(root_path, inputs):
     """
@@ -60,9 +60,6 @@ def eval_model(root_path, inputs):
             results = json.load(data)
     except:
         raise('Please call generate_captions.py to generate captions first.')
-
-    # download stanford nlp library
-    subprocess.call(['scr/evaluation/get_stanford_models.sh'])
     
     # format the inputs
     img_id_dict = {'image_id': list(ref_data.keys())}
@@ -143,4 +140,10 @@ def eval_model(root_path, inputs):
     "Individual scores are not saved."
 
 if __name__ == "__main__":
-    eval_model(opt["--root_path"], opt["--inputs"])
+
+    args = docopt(__doc__)
+
+    
+    for inputs in args["INPUTS"]:
+        print(f'Evaluating captions for {inputs} ...')
+        eval_model(args["--root_path"], inputs)
