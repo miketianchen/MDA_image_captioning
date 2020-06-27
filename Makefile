@@ -2,7 +2,7 @@
 # Dora Qian, Fanli Zhou, James Huang, Mike Chen
 # June 9, 2020
 # 
-# This driver script completes xxx, This script takes no arguments. 
+# This driver script completes the whole pipeline and takes no arguments. 
 # 
 # usage: make all  
 #					 to run all the pipeline
