@@ -87,8 +87,8 @@ def eval_model(root_path, inputs):
             lst['image_id'] = lst.pop('imgid')
             lst['id'] = lst.pop('sentid')
             caption_list_sel.append(lst)
-
         gts[imgId] = caption_list_sel
+        
         generated = [{'caption': results[imgId]}]
         res[imgId] = generated
 
@@ -164,6 +164,9 @@ def eval_model(root_path, inputs):
 if __name__ == "__main__":
     
     args = docopt(__doc__)
+    
+    # download stanford nlp library
+    subprocess.call(['scr/evaluation/get_stanford_models.sh'])    
     
     for inputs in args["INPUTS"]:
         print(f'Evaluating captions for {inputs} ...')
