@@ -203,6 +203,7 @@ aws s3 sync data s3://{bucket_name}
   - You can now choose to use this new dataset for training/validation/testing purpose
   - Go to [Makefile](Makefile)
   - You need to modify the variables in Makefile from line 27 to line 38
+  
   **Case 1: To add the new dataset to combined datasets before train/valid/test split, replace the line 27-38 with the scripts below**
   ```
   # define the json files to process 
