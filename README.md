@@ -212,7 +212,16 @@ aws s3 sync data s3://{bucket_name}
   # define the image folders to combine for train/valid/test split
   combine_img := raw/ucm raw/rsicd raw/new
   ```
-  **Case 2: To add the new dataset for testing only, replace line 27-28, 33-34, 37-38 with the scripts below**
+  **Case 2: To add the new dataset for training only, replace line 27-28, 33-36 with the scripts below**
+  ```
+  # define the json files to process 
+  json_to_process := rsicd ucm sydney new
+  # define the image folders to preprocess
+  img_to_process := raw/sydney raw/new
+  # define the datasets to combine for training
+  train_set := train valid new
+  ```
+  **Case 3: To add the new dataset for testing only, replace line 27-28, 33-34, 37-38 with the scripts below**
   ```
   # define the json files to process 
   json_to_process := rsicd ucm sydney new
