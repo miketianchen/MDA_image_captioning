@@ -202,25 +202,44 @@ aws s3 sync data s3://{bucket_name}
 ### 4. Add new dataset to train/valid/test sets
   - You can now choose to use this new dataset for training/validation/testing purpose
   - Go to [Makefile](Makefile)
-  - You need to modify the variables `train_set` and `train_img_loc` on line 44 and 45
-  - For example, we want to use the original `ucm` and `rsicd` plus the new dataset `new` for training, the following scripts should be used on line 44 and 45
-  ```
-  train_set := rsicd ucm new
-  train_img_loc := raw/ucm raw/rsicd raw/new
-  ```
+  - You need to modify the variables in Makefile from line 27 to line 38
   
-  **Dora's comments: this trainset will be split into train/valid/test , what if user want to add the new folder just to individual train/valid/test sets?**
-  
+  **Case 1: To add the new dataset to combined datasets before train/valid/test split, replace the line 27-38 with the scripts below**
+  ```
+  # define the json files to process 
+  json_to_process := rsicd ucm sydney new
+  # define the json file to combine for train/valid/test split
+  combine_set := rsicd ucm new
+  # define the image folders to combine for train/valid/test split
+  combine_img := raw/ucm raw/rsicd raw/new
+  ```
+  **Case 2: To add the new dataset for training only, replace line 27-28, 33-36 with the scripts below**
+  ```
+  # define the json files to process 
+  json_to_process := rsicd ucm sydney new
+  # define the image folders to preprocess
+  img_to_process := raw/sydney raw/new
+  # define the datasets to combine for training
+  train_set := train valid new
+  ```
+  **Case 3: To add the new dataset for testing only, replace line 27-28, 33-34, 37-38 with the scripts below**
+  ```
+  # define the json files to process 
+  json_to_process := rsicd ucm sydney new
+  # define the image folders to preprocess
+  img_to_process := raw/sydney raw/new
+  # define the datasets to test separately
+  test_set := test sydney new
+  ```
+
 ## Building and re-training the model with new data
 - Before running pipeline, you may want to change the final model name in 
 - Go to [Makefile](Makefile)
-- On line 43, you can define any model name
+- On line 26, you can define any model name
 ```
 final_model := final_model_new
 ```
 - Then, you can run the pipeline by typing `make all` in the terminal.
-
-**Dora's comments: it seems like final model is hardcoded in our makefile? need to discuss tomorrow. Another thing is do we call make clean before make all, if thats the case ,the original final_model will be removed... "
-
+- The trained model will be saved under results folder with the name `final_model_new.hdf5`
 
 
