@@ -232,6 +232,8 @@ def merge_two_dicts(x, y):
 #              if upload mode is 'caption' then captions will be created and uploaded
 upload_mode = sys.argv[1]
 
+selected_model = sys.argv[4]
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # load encoder
 try:
@@ -241,7 +243,7 @@ except:
 encoder.to(device)
 
 # load the trained caption model
-model = 'final_model'
+model = selected_model
 with open(f"{DATA_PATH}/results/model_info.json", 'r') as f:
          model_info = json.load(f)
 caption_model = torch.load(f"{DATA_PATH}/results/{model}.hdf5", map_location=device)
@@ -250,6 +252,7 @@ if upload_mode == "image":
     # get our data as an array from sys
     image_fullpath = sys.argv[2]
     image_name = sys.argv[3]
+
 
     if image_name.endswith('.png'):
         image_name = image_name[:-4]
