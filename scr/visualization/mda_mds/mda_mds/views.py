@@ -46,7 +46,6 @@ def get_model_list():
             continue
     return models
 ###############################################################################
-
 model_list = get_model_list()
 
 def index(request):
@@ -185,7 +184,7 @@ def external(request):
         templateurl = fs.url(filename)
 
         image = run([sys.executable,image_script_path,
-                                str(upload_mode), str(fileurl), str(filename)], shell=False, stdout=PIPE, universal_newlines=True)
+                                str(upload_mode), str(fileurl), str(filename), str(selected_model)], shell=False, stdout=PIPE, universal_newlines=True)
         sys_out = str(image.stdout).replace('Upload Successful','')
         output = sys_out.split('*')
         score = output[0]
