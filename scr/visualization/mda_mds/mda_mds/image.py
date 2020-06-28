@@ -185,7 +185,14 @@ def preprocess_image(size = (299, 299)):
     im = Image.open(image_fullpath).resize(size, Image.ANTIALIAS)
     rgb_im = im.convert('RGB')
 
-    name = image_name[:-4]
+    temp = image_name.lower()
+
+    if temp.endswith('.jpeg'):
+        name = image_name[:-5]
+    else: #.png, .jpg, .tif
+        name = image_name[:-4]
+    # name = image_name[:-4]
+
     name = name + '.jpg'
 
     output_path = os.path.join(DATA_PATH, name)
