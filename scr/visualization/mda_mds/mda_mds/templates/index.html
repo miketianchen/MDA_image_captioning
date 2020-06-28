@@ -182,22 +182,35 @@
                 <div class="tab-pane fade {% if active_tab != 'demo_tab' %}show active{% endif %}" id="home" role="tabpanel" aria-labelledby="home-tab">
                   <div class="card-body">
                     <h5 class="card-title">Upload Your Caption and Image</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">.jpg Image Formats Only Please</h6>
+
                     <form action="/external/" method="post" class="form" enctype="multipart/form-data">
                       {% csrf_token %}
 
-                      <input type="file" name="image_upload" id="image_upload">
+                      <div class="container">
+                        <div class="row">
+                            <div class="col-xs-6">
+                              <h6 class="card-subtitle mb-2 text-muted">Select your image here</h6>
+                              <input type="file" name="image_upload" id="image_upload">
+                            </div>
+                            <div class="col-xs-6">
+                              <h6 class="card-subtitle mb-2 text-muted">Select your model here</h6>
+                              <select class="" name="local_ml_models">
+                                {%for item in model_list%}
+                                    <option>{{item}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                        </div>
+                      </div>
 
-                      <br><br>
+                      <!-- <br><br>
                       <h6 class="card-subtitle mb-2 text-muted">Select your model here</h6>
                       <select class="" name="local_ml_models">
                         {%for item in model_list%}
                             <option>{{item}}</option>
                         {% endfor %}
-                      </select>
-
-
-                      <br><br>
+                      </select> -->
+                      <br>
                       <input type="submit" class="btn btn-secondary" name="upload_image_input" value="Submit Image">
                       <br>
                       <div class="post-container">
