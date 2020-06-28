@@ -20,11 +20,40 @@ import os
 import time
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
 
-# TEST
-def button(request):
-    # TEST
-     return render(request, 'index.html')
+
+######################## HELPER FUNCTION, NOT RELATED TO VIEWS ################
+def get_model_list():
+    """
+    This function is for the dropdown option in "User Image" tab
+
+    This function will get the name of all the saved local models to display
+    to the user in the selectable dropdown
+    """
+    models = list()
+    for filename in os.listdir(os.path.join(DATA_PATH, 'results')):
+        if filename.endswith(".hdf5"):
+
+            # display in dropdown without .hdf5 extenstion
+            models.append(filename.split(".")[0])
+
+            # display in dropdown with .hdf5 extenstion
+            # models.append(filename)
+
+            continue
+        else:
+            continue
+    return models
+###############################################################################
+model_list = get_model_list()
+
+def index(request):
+    """
+    For the url route '/' baseurl (homepage)
+    """
+    # test_list = ['final_model', 'test_model', 'base_model', 'doggy']
+    return render(request, 'index.html', {'model_list':model_list})
 
 # TEST
 def output(request):
@@ -35,6 +64,8 @@ def output(request):
 
 def generate(request):
     """
+    For the url route '/generate/'
+
     This is for the "Demo Example" tab.
 
     This will be called when the user presses the 'Generate' button in the "Demo Example" tab
@@ -115,21 +146,29 @@ def generate(request):
                 'bleu_2_2':image_two_bleu_2, 'bleu_3_2':image_two_bleu_3,
                 'bleu_4_2':image_two_bleu_4, 'rouge_l_2':image_two_rouge_l,
                 'cider_2':image_two_cider,
-                'spice_2':image_two_spice, 'usc_2':image_two_usc,'active_tab':'demo_tab'})
+                'spice_2':image_two_spice, 'usc_2':image_two_usc,'active_tab':'demo_tab', 'model_list':model_list})
 
 def external(request):
     """
+    For the url route '/external/'
+
     This is for the "User Image" tab.
 
-    ...
+    This tab has two 'upload_mode's for two functionalities.
+    The first 'upload_mode' is "image", this is when the user first uploads the image for model captioning
+    The second 'upload_mode' is "caption", this is for active learning, when the user wants to submit captions for the image
 
+    The image the user uplaods is in saved temporary in ../visualization/mda_mds/media/ until the user presses 'Submit Caption'
+    which is when the image will be moved to the appropriate folder in raw/upload
     """
+
 
     if 'upload_image_input' in request.POST:
         upload_mode = "image"
         # path for the image script
         image_script_path = os.path.join(BASE_DIR, 'mda_mds/image.py')
 
+        selected_model = request.POST['local_ml_models']
 
         image = request.FILES['image_upload']
         #print("image is ", image)
@@ -149,14 +188,14 @@ def external(request):
         templateurl = fs.url(filename)
 
         image = run([sys.executable,image_script_path,
-                                str(upload_mode), str(fileurl), str(filename)], shell=False, stdout=PIPE, universal_newlines=True)
+                                str(upload_mode), str(fileurl), str(filename), str(selected_model)], shell=False, stdout=PIPE, universal_newlines=True)
         sys_out = str(image.stdout).replace('Upload Successful','')
         output = sys_out.split('*')
         score = output[0]
         model_caption = output[1]
-        print("SYSTEM OUT IS "+ filename)
+        print("SYSTEM OUT IS "+ selected_model)
         return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
-                                'edit_url':image.stdout, 'score':score, 'model_caption':model_caption})
+                                'edit_url':image.stdout, 'score':score, 'model_caption':model_caption, 'model_list':model_list})
     elif 'upload_caption_input' in request.POST:
         upload_mode = "caption"
         # path for the image script
@@ -172,15 +211,17 @@ def external(request):
         image = run([sys.executable,image_script_path,
                                 str(upload_mode), str(user_caption_input), str(optional_caption_2), str(optional_caption_3), str(optional_caption_4), str(optional_caption_5)]
                                 , shell=False, stdout=PIPE, universal_newlines=True)
-        return render(request, 'index.html')
+        return render(request, 'index.html', {'model_list':model_list})
 
 
 def database(request):
     """
+    For the url route '/database/'
+
     This is for the "Database Upload" tab.
 
-    ...
-
+    The user can upload multiple image files, they're supposed to only upload one json file. No security measures
+    are implemented to ensure the uploads. 
     """
     # PATH to LOCAL DIRECTORY which temporary houses the images the user uploaded
     image_temp_save_dir = os.path.join(BASE_DIR, 'media/database_images')
@@ -214,4 +255,4 @@ def database(request):
                         shell=False, stdout=PIPE, universal_newlines=True)
 
 
-    return render(request, 'index.html')
+    return render(request, 'index.html', {'model_list':model_list})
