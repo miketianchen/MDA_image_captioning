@@ -30,7 +30,7 @@ The following pipeline chart displays the workflow used in our pipeline.
 We have prepared two google drive links for users to download the data. Please follow the steps below to download the data and prepare the database.
 
 **Option 1: Running the whole pipeline** 
-1. Download the data [here](https://drive.google.com/file/d/1ejD8fNDgdfm6GLrpRm-O889Y2r3L3Sz4/view?usp=sharing), only raw data is included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1TXo137cJqutrHAJYOeaECAm_sMJJRPZX/view?usp=sharing), only raw data is included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data foler to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
@@ -52,7 +52,7 @@ aws s3 sync s3://{bucket_name} data
 ```
 
 **Option 2: Using the visualization tool with our pre-trained model and results** 
-1. Download the data [here](https://drive.google.com/file/d/1pIT84CMI0kQIByoGJplwVnzXK9MM6A05/view?usp=sharing), all the raw data, trained model, model results and scores are included in the zip file. 
+1. Download the data [here](https://drive.google.com/file/d/1_6N7c7tXoEr5FSWgalxjBnxIPqrzGXmB/view?usp=sharing), all the raw data, trained model, model results and scores are included in the zip file. 
 2. Unzip the downloaded file
 3. Upload the data folder to your S3 bucket, you can either do it manually on S3 website or use the following script in terminal.
 ```
