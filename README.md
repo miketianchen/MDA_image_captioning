@@ -107,7 +107,7 @@ aws s3 sync data s3://{bucket_name}
 
 ## Running the Visualization Tool
 
-Before the user runs the Visualization Tool, the user must ensure his AWS Credentials (ACCESS KEY and SECRET ACCESS KEY) and S3 Bucket Name are saved in the following JSON File: '591_capstone_2020-mda-mds/scr/visualization/mda_mds/mda_mds/STATIC_VARIABLES.json'. Please paste in your credentials into the appropriate key-value pair.
+Before running the Visualization Tool, enter AWS Credentials (`ACCESS KEY` and `SECRET ACCESS KEY`) and S3 Bucket Name in `591_capstone_2020-mda-mds/scr/visualization/mda_mds/mda_mds/STATIC_VARIABLES.json`. Please paste in your credentials into the appropriate key-value pair.
 
 **Option 1: Running the whole pipeline**
 
@@ -243,3 +243,11 @@ final_model := final_model_new
 ```
 - Then, you can run the pipeline by typing `make all` in the terminal.
 - The trained model will be saved under results folder with the name `final_model_new.hdf5`
+
+## Modify models
+
+- To change models structures, modify   `591_capstone_2020-mda-mds/scr/models/model.py`.
+
+- To change feature vectors extracted from CNN, modify `591_capstone_2020-mda-mds/scr/models/extract_features.py`.
+
+- To change training process, modify `591_capstone_2020-mda-mds/scr/models/train.py`.
