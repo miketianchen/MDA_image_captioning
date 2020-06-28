@@ -154,8 +154,12 @@ def external(request):
 
     This is for the "User Image" tab.
 
-    ...
+    This tab has two 'upload_mode's for two functionalities.
+    The first 'upload_mode' is "image", this is when the user first uploads the image for model captioning
+    The second 'upload_mode' is "caption", this is for active learning, when the user wants to submit captions for the image
 
+    The image the user uplaods is in saved temporary in ../visualization/mda_mds/media/ until the user presses 'Submit Caption'
+    which is when the image will be moved to the appropriate folder in raw/upload
     """
 
 
@@ -216,8 +220,8 @@ def database(request):
 
     This is for the "Database Upload" tab.
 
-    ...
-
+    The user can upload multiple image files, they're supposed to only upload one json file. No security measures
+    are implemented to ensure the uploads. 
     """
     # PATH to LOCAL DIRECTORY which temporary houses the images the user uploaded
     image_temp_save_dir = os.path.join(BASE_DIR, 'media/database_images')
