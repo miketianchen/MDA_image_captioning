@@ -96,7 +96,7 @@ bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
 # UPLOAD THE IMAGES TO THE DATABASE
 for filename in os.listdir(DATABASE_IMAGES_DIR):
     file_path = os.path.join(DATABASE_IMAGES_DIR, filename)
-    if filename.endswith(".jpg"):
+    if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".tif"):
         print(filename)
         s3_file_name = 'raw/' + folder_name + '/' + filename
         upload_to_aws(file_path, bucket_name, s3_file_name)
