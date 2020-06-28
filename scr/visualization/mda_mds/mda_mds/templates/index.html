@@ -188,6 +188,14 @@
 
                       <input type="file" name="image_upload" id="image_upload">
 
+                      <br><br>
+                      <h6 class="card-subtitle mb-2 text-muted">Select your model here</h6>
+                      <select class="" name="local_ml_models">
+                        {%for item in model_list%}
+                            <option>{{item}}</option>
+                        {% endfor %}
+                      </select>
+
 
                       <br><br>
                       <input type="submit" class="btn btn-secondary" name="upload_image_input" value="Submit Image">
