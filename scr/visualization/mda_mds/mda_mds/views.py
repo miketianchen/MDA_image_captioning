@@ -18,10 +18,10 @@ from subprocess import run, PIPE
 import sys
 import os
 import time
+from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR))), 'data')
-
 
 ######################## HELPER FUNCTION, NOT RELATED TO VIEWS ################
 def get_model_list():
@@ -162,7 +162,6 @@ def external(request):
     which is when the image will be moved to the appropriate folder in raw/upload
     """
 
-
     if 'upload_image_input' in request.POST:
         upload_mode = "image"
         # path for the image script
@@ -171,31 +170,44 @@ def external(request):
         selected_model = request.POST['local_ml_models']
 
         image = request.FILES['image_upload']
-        #print("image is ", image)
-        fs = FileSystemStorage()
+     
+        if not os.path.exists(f'{DATA_PATH}/raw/upload'):
+            os.makedirs(f'{DATA_PATH}/raw/upload', exist_ok=True)     
+        
+        im = Image.open(image).resize((299, 299), Image.ANTIALIAS)
+        filename, extension = os.path.splitext(image.name.lower())
+        filename = f'{filename}{str(int(time.time()))}.jpg'
+        fileurl = f'{DATA_PATH}/raw/upload/{filename}'
 
-        # current image name
-        image_name = image.name
-        image_name_split = image_name.split(".")
-        image_name = image_name_split[0] + str(int(time.time())) + "." + image_name_split[1]
+        if extension != '.jpg':
+            rgb_im = im.convert('RGB')
+            rgb_im.save(fileurl, 'JPEG', quality = 95)
+        else:
+            im.save(fileurl, quality = 95)
 
-        filename = fs.save(image_name, image)
-
-        # absolute image path
-        fileurl = fs.open(filename)
-
-        # relative image path
-        templateurl = fs.url(filename)
-
-        image = run([sys.executable,image_script_path,
-                                str(upload_mode), str(fileurl), str(filename), str(selected_model)], shell=False, stdout=PIPE, universal_newlines=True)
+        image = run([sys.executable,
+                     image_script_path,
+                     str(upload_mode), 
+                     str(fileurl), 
+                     str(filename),                    
+                     str(selected_model)], 
+                    shell=False, 
+                    stdout=PIPE, 
+                    universal_newlines=True)
+        
         sys_out = str(image.stdout).replace('Upload Successful','')
         output = sys_out.split('*')
         score = output[0]
         model_caption = output[1]
         print("SYSTEM OUT IS "+ selected_model)
-        return render(request, 'index.html', {'data':str(image.stdout).replace('Upload Successful',''), 'raw_url':templateurl,
-                                'edit_url':image.stdout, 'score':score, 'model_caption':model_caption, 'model_list':model_list})
+        return render(request, 'index.html', 
+                      {'data':str(image.stdout).replace('Upload Successful',''), 
+                       'raw_url':fileurl,
+                       'edit_url':image.stdout,
+                       'score':score, 
+                       'model_caption':model_caption, 
+                       'model_list':model_list})
+    
     elif 'upload_caption_input' in request.POST:
         upload_mode = "caption"
         # path for the image script
@@ -208,9 +220,17 @@ def external(request):
         optional_caption_5 = request.POST.get('param_5')
 
 
-        image = run([sys.executable,image_script_path,
-                                str(upload_mode), str(user_caption_input), str(optional_caption_2), str(optional_caption_3), str(optional_caption_4), str(optional_caption_5)]
-                                , shell=False, stdout=PIPE, universal_newlines=True)
+        image = run([sys.executable,
+                     image_script_path,
+                     str(upload_mode), 
+                     str(user_caption_input), 
+                     str(optional_caption_2), 
+                     str(optional_caption_3), 
+                     str(optional_caption_4), 
+                     str(optional_caption_5)], 
+                    shell=False,
+                    stdout=PIPE,
+                    universal_newlines=True)
         return render(request, 'index.html', {'model_list':model_list})
 
 

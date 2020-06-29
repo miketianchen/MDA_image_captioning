@@ -44,8 +44,6 @@ from generate_captions import generate_caption
 
 # /Users/apple/Documents/MDS_labs/DSCI_591/591_capstone_2020-mda-mds/scr/visualization/mda_mds
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# PATH for JSON CAPTION FILE
-JSON_CAPTION_PATH = os.path.join(BASE_DIR, 'media/caption.json')
 # PATH for MEDIA_URL
 MEDIA_PATH = os.path.join(BASE_DIR, 'media/')
 SCR_PATH = os.path.dirname(os.path.dirname(BASE_DIR))
@@ -120,7 +118,7 @@ def upload_to_aws(local_file, bucket, s3_file = None):
 #
 #     return ['NA', captions]
 
-def get_caption(encoder, caption_model, image_name, model_info, device):
+def get_caption(encoder, caption_model, image_fullpath, model_info, device):
     """
     Function to take the user uploaded image and run the model on it
 
@@ -130,15 +128,15 @@ def get_caption(encoder, caption_model, image_name, model_info, device):
         the encoder
     caption_model: torch model
         the captioning model
-    image_name:
-        name of the image from view.py -- sys.argv[3] "third variable passed in"
+    image_fullpath:
+        path of the image from view.py -- sys.argv[2] "second variable passed in"
     model_info:
         from "{DATA_PATH}/results/model_info.json"
     device:
         torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     """
     img_feature = extract_img_features(
-        [f'{DATA_PATH}/{image_name}'],
+        [image_fullpath],
         encoder,
         device
     )
@@ -163,6 +161,9 @@ def get_caption(encoder, caption_model, image_name, model_info, device):
     with open(f"{DATA_PATH}/raw/upload_model_caption.json", 'w') as fp:
         json.dump(single_captions, fp)
 
+    with open(f"{BASE_DIR}/mda_mds/image_name.json", 'w') as fp:
+        json.dump({'image_name': image_name}, fp)
+        
     return ['NA', results[image_name]]
 
 # def read_results(output_json_name, RESULTS_PATH):
@@ -173,51 +174,55 @@ def get_caption(encoder, caption_model, image_name, model_info, device):
 #     captions = caption_dict[image_name]
 #     return captions
 
-def preprocess_image(size = (299, 299)):
-    """
-    Preprocess the image uploaded by the user
+# def preprocess_image(image_fullpath, image_name, size = (299, 299)):
+#     """
+#     Preprocess the image uploaded by the user
 
-    Parameters:
-    _______________
-    size: tuple (int x, int y)
-        resize the image into x by y pixels
-    """
-    im = Image.open(image_fullpath).resize(size, Image.ANTIALIAS)
-    rgb_im = im.convert('RGB')
+#     Parameters:
+#     _______________
+#     image_fullpath: str
+#         path to the image
+#     image_name: str
+#         image name
+#     size: tuple (int x, int y)
+#         resize the image into x by y pixels
+    
+#     Return:
+#     _______________
+#     str
+#         image name
+#     """
+#     im = Image.open(image_fullpath).resize(size, Image.ANTIALIAS)
+#     name, extension = os.path.splitext(image_name.lower())
+#     name = f'{name}.jpg'
+#     output_path = os.path.join(DATA_PATH, name)
+    
+#     if extension != '.jpg':
+#         rgb_im = im.convert('RGB')
+#         rgb_im.save(output_path, 'JPEG', quality = 95)
+#     else:
+#         im.save(output_path, quality = 95)
+#     return name    
 
-    temp = image_name.lower()
+# def relocate_image_path(image_name):
+#     """
+#     When the image is first uploaded, it has to be stored in a temporary folder
+#     (called database_images)in the media folder (.../visualization/mda_mds/media)
 
-    if temp.endswith('.jpeg'):
-        name = image_name[:-5]
-    else: #.png, .jpg, .tif
-        name = image_name[:-4]
-    # name = image_name[:-4]
+#     This function will move the images to the proper folder under the data folder
+#     (/591_capstone_2020-mda_mds/data/raw)
 
-    name = name + '.jpg'
+#     Parameters:
+#     _______________
+#     image_name: str
+#         name of the image from view.py -- sys.argv[3] "third variable passed in"
+#     """
+#     if not os.path.exists(f'{DATA_PATH}/raw/upload'):
+#         os.makedirs(f'{DATA_PATH}/raw/upload', exist_ok=True)
 
-    output_path = os.path.join(DATA_PATH, name)
-
-    rgb_im.save(output_path, 'JPEG', quality = 95)
-
-def relocate_image_path(image_name):
-    """
-    When the image is first uploaded, it has to be stored in a temporary folder
-    (called database_images)in the media folder (.../visualization/mda_mds/media)
-
-    This function will move the images to the proper folder under the data folder
-    (/591_capstone_2020-mda_mds/data/raw)
-
-    Parameters:
-    _______________
-    image_name: str
-        name of the image from view.py -- sys.argv[3] "third variable passed in"
-    """
-    if not os.path.exists(f'{DATA_PATH}/raw/upload'):
-        os.makedirs(f'{DATA_PATH}/raw/upload', exist_ok=True)
-
-    UPLOAD_PATH = os.path.join(DATA_PATH, 'raw/upload', image_name)
-    CURRENT_PATH = os.path.join(DATA_PATH, image_name)
-    shutil.move(CURRENT_PATH, UPLOAD_PATH)
+#     UPLOAD_PATH = os.path.join(DATA_PATH, 'raw/upload', image_name)
+#     CURRENT_PATH = os.path.join(DATA_PATH, image_name)
+#     shutil.move(CURRENT_PATH, UPLOAD_PATH)
 
 def merge_two_dicts(x, y):
     """
@@ -250,38 +255,35 @@ except:
 encoder.to(device)
 
 # load the trained caption model
-model = selected_model
+  
 with open(f"{DATA_PATH}/results/model_info.json", 'r') as f:
          model_info = json.load(f)
-caption_model = torch.load(f"{DATA_PATH}/results/{model}.hdf5", map_location=device)
+try:
+    caption_model = torch.load(f"{DATA_PATH}/results/{selected_model}.hdf5", map_location=device)
+except:
+    caption_model = torch.load(f"{DATA_PATH}/results/final_model.hdf5", map_location=device)
+    
 
 if upload_mode == "image":
     # get our data as an array from sys
     image_fullpath = sys.argv[2]
     image_name = sys.argv[3]
-
-
-    if image_name.endswith('.png'):
-        image_name = image_name[:-4]
-        image_name = image_name + '.jpg'
+#     image_name = preprocess_image(image_fullpath, image_name)
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     s3_images_file_name = 'raw/upload/' + image_name
-
-    s3_upload_model_caption_name = 'raw/upload_model_caption.json'
-
-    preprocess_image()
+    s3_upload_model_caption_name = 'raw/upload_model_caption.json'  
 
     # Return the score from the model
 #     output = model()
-    output = get_caption(encoder, caption_model, image_name, model_info, device)
+    output = get_caption(encoder, caption_model, image_fullpath, model_info, device)
     score = output[0]
     model_caption = output[1]
     model_caption_upload = upload_to_aws(JSON_PATH, bucket_name, s3_upload_model_caption_name)
 
     uploaded = upload_to_aws(image_fullpath, bucket_name, s3_images_file_name)
 
-    relocate_image_path(image_name)
+#     relocate_image_path(image_name)
 
     print(score+"*"+model_caption)
 
@@ -294,17 +296,8 @@ elif upload_mode == "caption":
     optional_caption_4 = sys.argv[5]
     optional_caption_5 = sys.argv[6]
 
-    for filename in os.listdir(MEDIA_PATH):
-        if filename.endswith(".jpg") or filename.endswith(".png"):
-            image_name = filename
-            os.remove(os.path.join(MEDIA_PATH, image_name))
-            continue
-        else:
-            continue
-
-    if image_name.endswith('.png'):
-        image_name = image_name[:-4]
-        image_name = image_name + '.jpg'
+    with open(f"{BASE_DIR}/mda_mds/image_name.json", 'r') as fp:
+        image_name = json.load(fp)['image_name']
 
     if (optional_caption_2 == ""):
         optional_caption_2 = user_caption_input
@@ -325,8 +318,8 @@ elif upload_mode == "caption":
     time_stamp = int(time.time())
 
     caption = {image_name: {
-        "imgid":time_stamp,
-        "sentences":[]
+        "imgid": time_stamp,
+        "sentences": []
     }}
 
     tokens_1 = nltk.word_tokenize(user_caption_input)
@@ -364,9 +357,6 @@ elif upload_mode == "caption":
         'imgid':time_stamp,
         'sentid': int(str(time_stamp) + str(5))
     })
-
-    with open(JSON_CAPTION_PATH, 'w') as outfile:
-        json.dump(caption, outfile)
 
     bucket_name = STATIC_VARIABLES["S3_BUCKET_NAME"]
     s3_captions_file_name = 'raw/upload.json'
