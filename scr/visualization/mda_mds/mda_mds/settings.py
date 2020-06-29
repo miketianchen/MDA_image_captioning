@@ -24,10 +24,10 @@ SECRET_KEY = '1ef3il_l8aji_22u8qen+xcco^v^rcrm-u88$vyb_0kx%o(h2*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-15-222-241-208.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ec2-35-183-78-34.ca-central-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = f'{os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR)))}/data/raw'
+MEDIA_URL = f'{os.path.dirname(os.path.dirname(os.path.dirname(BASE_DIR)))}/data/raw/'
 
 
 # Application definition
