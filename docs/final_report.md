@@ -86,7 +86,7 @@ encoder-decoder model as it is the most common method for image
 captioning. Here are the three model architectures we tried:
 
 1.  Our first architecture combines CNN and LSTM (Figure 1, [related
-    notebooks](../notebooks/fz-baseline_models)). At each step during
+    notebooks](../notebooks/fz-cnn_lstm_models)). At each step during
     generation, we combine the LSTM output with the image feature vector
     and pass the result through a dense layer and an output layer to
     generate the next word, which is fed back as input to the LSTM layer
@@ -236,7 +236,7 @@ but those models did not perform as well as the pre-trained CNN models
 ([related notebooks](../notebooks/jh-cnn_models)). We also trained
 embeddings from scratch with training captions and then tested the
 embeddings by predicting cosine similarity between words ([related
-notebook](../notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)).
+notebook](../notebooks/fz-cnn_lstm_models/9.4-fz-cnn_lstm_dataset_v2_compare_embeddings.ipynb)).
 Again, we found that embeddings learned from scratch did not improve the
 performance. So we decided to use pre-trained CNN models and embeddings.
 
@@ -365,7 +365,7 @@ private satellite images.
 
 ## References
 
-<div id="refs" class="references">
+<div id="refs" class="references hanging-indent">
 
 <div id="ref-spice2016">
 
