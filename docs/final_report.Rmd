@@ -64,7 +64,7 @@ We combined UCM-captions and RSICD datasets and split the combined dataset into 
 
 Image captioning has been a popular problem in recent years and several state-of-the-art deep learning models have been proposed in the literature for this problem. In this project, we focused on the encoder-decoder model as it is the most common method for image captioning. Here are the three model architectures we tried:
 
-1. Our first architecture combines CNN and LSTM (Figure 1, [related notebooks](../notebooks/fz-baseline_models)). At each step during generation, we combine the LSTM output with the image feature vector and pass the result through a dense layer and an output layer to generate the next word, which is fed back as input to the LSTM layer in the next step.
+1. Our first architecture combines CNN and LSTM (Figure 1, [related notebooks](../notebooks/fz-cnn_lstm_models)). At each step during generation, we combine the LSTM output with the image feature vector and pass the result through a dense layer and an output layer to generate the next word, which is fed back as input to the LSTM layer in the next step.
 
 This model architecture is relatively simple and easy to optimize. But the image features used in this model only represent a high-level image summary and may not carry enough information for a good caption. Based on the literature, adding attention layers can improve image captioning. So, we tried two model architectures with attention layers.
 
@@ -129,7 +129,7 @@ Table 2. Evaluation scores from the best model of each structure on the Sydney-c
 
 ### Other Considerations
 
-We trained CNN classifiers from scratch with labeled satellite images but those models did not perform as well as the pre-trained CNN models ([related notebooks](../notebooks/jh-cnn_models)). We also trained embeddings from scratch with training captions and then tested the embeddings by predicting cosine similarity between words ([related notebook](../notebooks/fz-baseline_models/9.3.3-fz-baseline_v3_dataset_v2_rnn_v2_compare_embeddings.ipynb)). Again, we found that embeddings learned from scratch did not improve the performance. So we decided to use pre-trained CNN models and embeddings.
+We trained CNN classifiers from scratch with labeled satellite images but those models did not perform as well as the pre-trained CNN models ([related notebooks](../notebooks/jh-cnn_models)). We also trained embeddings from scratch with training captions and then tested the embeddings by predicting cosine similarity between words ([related notebook](../notebooks/fz-cnn_lstm_models/9.4-fz-cnn_lstm_dataset_v2_compare_embeddings.ipynb)). Again, we found that embeddings learned from scratch did not improve the performance. So we decided to use pre-trained CNN models and embeddings.
 
 ### Future Improvements
 
